@@ -9,8 +9,9 @@ import { RootState } from "../../../store/types"; // RootState のインポー�
 const CalendarContainer = styled.div`
   max-width: 1400px;
   margin: 0 auto;
-  padding: 40px 0;
+  padding: 20px 0;
   background-color: #fff;
+  border-radius: 8px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 `;
 
@@ -32,10 +33,10 @@ interface CalendarProps {
 
 const Calendar: React.FC<CalendarProps> = ({ teacherId }) => {
   const { currentYear, currentMonth } = useSelector(
-    (state: RootState) => state.dateNavigation,
+    (state: RootState) => state.dateNavigation
   );
   const direction = useSelector(
-    (state: RootState) => state.monthNavigation.direction,
+    (state: RootState) => state.monthNavigation.direction
   ); // 型を適用
 
   const days = generateDaysForMonth(currentYear, currentMonth);

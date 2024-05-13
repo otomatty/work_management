@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import { useTranslation } from "react-i18next"; // i18nextのフックをインポート
 
 const Overlay = styled.div`
   position: absolute;
@@ -17,7 +18,9 @@ const Overlay = styled.div`
 `;
 
 const ComingSoonOverlay: React.FC = () => {
-  return <Overlay>Coming Soon ...</Overlay>;
+  const { t } = useTranslation(); // 翻訳関数の取得
+
+  return <Overlay>{t("comingSoon")}</Overlay>; // 翻訳キーを使用
 };
 
 export default ComingSoonOverlay;

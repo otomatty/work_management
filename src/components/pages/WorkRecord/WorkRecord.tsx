@@ -10,7 +10,24 @@ interface WorkRecordProps {
 }
 
 const Container = styled.div`
-  margin-bottom: 600px;
+  margin: 0;
+  padding: 20px;
+  max-width: 1400px;
+  margin: 0 auto 600px auto;
+`;
+
+// const HeaderWrapper = styled.div`
+//   max-width: 1200px;
+//   margin: 0 auto;
+// `;
+
+const CalenderInfo = styled.div`
+  margin: 20px auto 20px auto;
+  padding: 10px 20px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  box-sizing: border-box;
 `;
 
 const WorkRecord: React.FC<WorkRecordProps> = ({ selectedTeacherId }) => {
@@ -32,8 +49,11 @@ const WorkRecord: React.FC<WorkRecordProps> = ({ selectedTeacherId }) => {
 
   return (
     <Container>
-      <Header title={`勤務記録 - ${teacherName}`} />
-      <CalendarHeader currentYear={currentYear} currentMonth={currentMonth} />
+      <Header />
+      <CalenderInfo>
+        <h2>勤務記録票 - {teacherName}</h2>
+        <CalendarHeader currentYear={currentYear} currentMonth={currentMonth} />
+      </CalenderInfo>
       <Calendar
         teacherId={selectedTeacherId}
         currentYear={currentYear}

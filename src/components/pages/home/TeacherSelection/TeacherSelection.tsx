@@ -3,6 +3,7 @@ import styled from "styled-components";
 import NameSelector from "./NameSelector";
 import Button from "../../../ui/Button";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next"; // i18nextのフックをインポート
 
 const TeacherSelectBox = styled.div`
   display: flex;
@@ -13,9 +14,10 @@ const TeacherSelectBox = styled.div`
 
 const TeacherSelection: React.FC = () => {
   const [selectedTeacherId, setSelectedTeacherId] = useState<string | null>(
-    null,
+    null
   );
   const navigate = useNavigate();
+  const { t } = useTranslation(); // 翻訳関数の取得
 
   const handleTeacherSelect = (id: string) => {
     setSelectedTeacherId(id);
@@ -31,7 +33,7 @@ const TeacherSelection: React.FC = () => {
     <TeacherSelectBox>
       <NameSelector onSelect={handleTeacherSelect} />
       <Button
-        label="今月の勤務記録表を確認する"
+        label={t("checkCurrentWorkRecord")} // 翻訳キーを使用
         onClick={handleCheckCurrentRecord}
       />
     </TeacherSelectBox>

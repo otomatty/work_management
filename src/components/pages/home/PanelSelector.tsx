@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import { useTranslation } from "react-i18next"; // i18nextのフックをインポート
 import calender from "../../../assets/images/calender.svg";
 import website from "../../../assets/images/website.svg";
 import calc from "../../../assets/images/calc.svg";
@@ -13,6 +14,7 @@ import ComingSoonOverlay from "./ComingSoonOverlay";
 const PanelContainer = styled.div`
   display: flex;
   justify-content: space-around;
+  align-items: stretch; // 子要素を等高にする
   margin: 20px 0;
   gap: 20px;
 `;
@@ -29,9 +31,13 @@ const Panel = styled.div`
   border-radius: 8px;
   flex: 1;
   position: relative;
+  height: 100%; // 高さを100%に設定して親要素に合わせる
 
   h2 {
     font-size: 1.5rem;
+    min-height: 3rem; // h2の最小高さを設定
+    width: 100%;
+    text-align: center;
   }
 `;
 
@@ -47,6 +53,7 @@ const Icon = styled.img`
 const PanelSelector: React.FC = () => {
   const navigate = useNavigate();
   const [isModalOpen, setModalOpen] = useState(false);
+  const { t } = useTranslation(); // 翻訳関数の取得
 
   const handleNavigate = (path: string) => {
     navigate(path);
@@ -64,29 +71,28 @@ const PanelSelector: React.FC = () => {
     <PanelContainer>
       <CellComponent>
         <Panel onClick={openModal}>
-          <Icon src={calender} alt="Work Record Icon" />
-          <h2>勤務記録</h2>
+          <Icon src={calender} alt={t("workRecordIcon")} />
+          <h2>{t("workRecord")}</h2>
         </Panel>
       </CellComponent>
       <CellComponent>
         <Panel>
-          {/* <Panel onClick={() => handleNavigate("/home-page-management")}> */}
-          <Icon src={website} alt="Home Management Icon" />
-          <h2>ホームページ</h2>
+          <Icon src={website} alt={t("homeManagementIcon")} />
+          <h2>{t("homePage")}</h2>
           <ComingSoonOverlay />
         </Panel>
       </CellComponent>
       <CellComponent>
         <Panel>
-          <Icon src={book} alt="TermQuiz Generator Icon" />
-          <h2>英単語問題</h2>
+          <Icon src={book} alt={t("termQuizGeneratorIcon")} />
+          <h2>{t("englishVocabularyProblems")}</h2>
           <ComingSoonOverlay />
         </Panel>
       </CellComponent>
       <CellComponent>
         <Panel onClick={() => handleNavigate("/calculation-generator")}>
-          <Icon src={calc} alt="Calculation Generator Icon" />
-          <h2>計算問題</h2>
+          <Icon src={calc} alt={t("calculationGeneratorIcon")} />
+          <h2>{t("calculationProblems")}</h2>
         </Panel>
       </CellComponent>
 

@@ -10,7 +10,6 @@ import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "./firebase/firebase";
 import { User } from "firebase/auth";
 import HomePage from "./components/pages/home/HomePage";
-import TeacherSelectPage from "./components/pages/home/TeacherSelectPage";
 import WorkRecord from "./components/pages/WorkRecord/WorkRecord";
 import AdminDashboard from "./components/pages/WorkManagement/AdminDashboard";
 import ProblemSelectionPage from "./components/pages/CalcGenerate/ProblemSelection/ProblemSelectionPage";
@@ -73,10 +72,7 @@ const App: React.FC = () => {
             element={user ? <HomePage /> : <Navigate to="/login" />}
           />
           <Route path="/login" element={<LoginPage />} />
-          <Route
-            path="/teacher-select"
-            element={user ? <TeacherSelectPage /> : <Navigate to="/login" />}
-          />
+
           <Route
             path="/work-record/:teacherId"
             element={user ? <WorkRecordWrapper /> : <Navigate to="/login" />}

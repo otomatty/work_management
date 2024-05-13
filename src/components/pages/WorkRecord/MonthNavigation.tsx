@@ -11,12 +11,12 @@ import { RootState } from "../../../store/types"; // RootState のインポー�
 
 const Container = styled.div`
   display: flex;
-  justify-content: center;
-  align-items: flex-end;
+  align-items: center;
+  gap: 20px;
 `;
 
 const YearMonth = styled.h2`
-  margin: 0 2rem;
+  margin: 0;
   font-size: clamp(1.25rem, 4.5vw + 1rem, 2.5rem);
 `;
 
@@ -35,7 +35,7 @@ const DisabledButton = styled(StyledButton)<{ disabled: boolean }>`
 const MonthNavigation: React.FC = () => {
   const dispatch = useDispatch();
   const { currentYear, currentMonth } = useSelector(
-    (state: RootState) => state.dateNavigation,
+    (state: RootState) => state.dateNavigation
   );
   const today = new Date();
   const currentYearIsThisYear = currentYear === today.getFullYear();
@@ -70,10 +70,11 @@ const MonthNavigation: React.FC = () => {
 
   return (
     <Container>
-      <StyledButton label="前月" onClick={handlePreviousMonth} />
       <YearMonth>
         {currentYear}年 {monthNames[currentMonth]}
       </YearMonth>
+      <StyledButton label="前月" onClick={handlePreviousMonth} />
+
       <DisabledButton
         label="次月"
         onClick={handleNextMonth}

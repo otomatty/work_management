@@ -16,10 +16,10 @@ const PageContainer = styled.div`
 const HomePage: React.FC = () => {
   return (
     <PageContainer>
-      <Header title="佐藤英会話・五學塾 業務システム" />
+      <Header />
       <MonthYearDisplay />
       <Notifications />
-      <PanelSelector /> {/* パネル選択コンポーネントを表示 */}
+      <PanelSelector />
       <NavigationLink />
     </PageContainer>
   );
