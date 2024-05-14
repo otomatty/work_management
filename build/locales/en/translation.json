@@ -1,0 +1,21 @@
+{
+  "welcome": "Welcome to React",
+  "close": "Close",
+  "login": "Login",
+  "emailAddress": "Email Address",
+  "password": "Password",
+  "loginWithGoogle": "Login with Google",
+  "schoolName": "Sato English Conversation & Gogaku juku",
+  "logoAlt": "Logo",
+  "workRecordIcon": "Work Record Icon",
+  "workRecord": "Work Record",
+  "homeManagementIcon": "Home Management Icon",
+  "homePage": "Home Page",
+  "termQuizGeneratorIcon": "Term Quiz Generator Icon",
+  "englishVocabularyProblems": "English Vocabulary Problems",
+  "calculationGeneratorIcon": "Calculation Generator Icon",
+  "calculationProblems": "Calculation Problems",
+  "comingSoon": "Coming Soon",
+  "checkCurrentWorkRecord": "Check Current Work Record",
+  "selectName": "Select a Name"
+}

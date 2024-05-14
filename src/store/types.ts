@@ -17,6 +17,10 @@ export interface WorkRecordState {
   isVisible: boolean;
 }
 
+export interface ClassroomState {
+  selectedClassroom: string;
+}
+
 export interface RootState {
   dateNavigation: ReturnType<typeof dateNavigationSlice.reducer>;
   monthNavigation: ReturnType<typeof monthNavigationSlice.reducer>;

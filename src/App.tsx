@@ -9,11 +9,11 @@ import {
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "./firebase/firebase";
 import { User } from "firebase/auth";
-import HomePage from "./components/pages/home/HomePage";
-import WorkRecord from "./components/pages/WorkRecord/WorkRecord";
-import AdminDashboard from "./components/pages/WorkManagement/AdminDashboard";
-import ProblemSelectionPage from "./components/pages/CalcGenerate/ProblemSelection/ProblemSelectionPage";
-import LoginPage from "./components/pages/Login/LoginPage";
+import HomePage from "./pages/home/HomePage";
+import WorkRecord from "./pages/WorkRecord/WorkRecord";
+import AdminDashboard from "./pages/WorkManagement/AdminDashboard";
+import ProblemSelectionPage from "./pages/CalcGenerate/ProblemSelection/ProblemSelectionPage";
+import LoginPage from "./pages/Login/LoginPage";
 import { createGlobalStyle } from "styled-components";
 
 const GlobalStyle = createGlobalStyle`

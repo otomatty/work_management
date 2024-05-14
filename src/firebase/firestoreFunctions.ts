@@ -27,12 +27,12 @@ export interface Schedule {
 export async function addStudent(
   teacherId: string,
   dayOfWeek: string,
-  student: Student,
+  student: Student
 ) {
   try {
     const docRef = await addDoc(
       collection(db, "teachers", teacherId, "schedules", dayOfWeek, "students"),
-      student,
+      student
     );
     console.log("Document written with ID: ", docRef.id);
   } catch (e) {
@@ -43,12 +43,12 @@ export async function addStudent(
 export async function saveStudent(
   teacherId: string,
   dayOfWeek: string,
-  studentData: Omit<Student, "firestoreId">,
+  studentData: Omit<Student, "firestoreId">
 ): Promise<Student> {
   try {
     const docRef = await addDoc(
       collection(db, "teachers", teacherId, "schedules", dayOfWeek, "students"),
-      studentData,
+      studentData
     );
     // console.log("Document written with ID: ", docRef.id);
     return { ...studentData, firestoreId: docRef.id }; // 新しい生徒オブジェクトに firestoreId を追加
@@ -61,7 +61,7 @@ export async function saveStudent(
 export async function updateStudent(
   teacherId: string,
   dayOfWeek: string,
-  student: Student,
+  student: Student
 ) {
   const studentRef = doc(
     db,
@@ -70,7 +70,7 @@ export async function updateStudent(
     "schedules",
     dayOfWeek,
     "students",
-    student.firestoreId,
+    student.firestoreId
   );
   try {
     await updateDoc(studentRef, {
@@ -88,7 +88,7 @@ export async function updateStudent(
 export async function deleteStudent(
   teacherId: string,
   dayOfWeek: string,
-  studentId: string,
+  studentId: string
 ) {
   const studentRef = doc(
     db,
@@ -97,7 +97,7 @@ export async function deleteStudent(
     "schedules",
     dayOfWeek,
     "students",
-    studentId,
+    studentId
   );
   try {
     await deleteDoc(studentRef);
@@ -109,7 +109,7 @@ export async function deleteStudent(
 
 // 講師IDに基づいてスケジュールを取得
 export async function fetchSchedulesByTeacherId(
-  teacherId: string,
+  teacherId: string
 ): Promise<Record<string, Schedule>> {
   const schedulesRef = collection(db, "teachers", teacherId, "schedules");
   const schedulesData: Record<string, Schedule> = {}; // オブジェクトを使用してスケジュールをグループ化
@@ -135,7 +135,7 @@ export async function fetchWorkRecord(
   teacherId: string,
   year: number,
   month: number,
-  day: number,
+  day: number
 ): Promise<{
   startTime?: string;
   endTime?: string;
@@ -163,7 +163,7 @@ export async function fetchWorkRecord(
 // schedulesから曜日ごとの時間を取得
 export async function fetchScheduleByDay(
   teacherId: string,
-  dayOfWeek: string,
+  dayOfWeek: string
 ): Promise<{ startTime?: string; endTime?: string }> {
   const docRef = doc(db, "teachers", teacherId, "schedules", dayOfWeek);
   try {
@@ -188,7 +188,7 @@ export async function fetchScheduleByDay(
 export async function setMonthlyWorkHours(
   teacherId: string,
   year: number,
-  month: number,
+  month: number
 ) {
   const daysInMonth = new Date(year, month + 1, 0).getDate(); // その月の日数を取得
   const weekdayNames = [
@@ -211,7 +211,7 @@ export async function setMonthlyWorkHours(
       // 生徒情報を取得
       const students = await fetchStudentsByTeacherIdAndDay(
         teacherId,
-        dayOfWeek,
+        dayOfWeek
       );
       // 勤務記録を保存
       await saveDayData(
@@ -223,7 +223,7 @@ export async function setMonthlyWorkHours(
         schedule.endTime || "", // endTimeがない場合は"未設定"を使用
         students,
         [], // studentsChangeInfo は空の配列または適切なデータを設定
-        "", // workDescription は空文字列または適切な説明を設定
+        "" // workDescription は空文字列または適切な説明を設定
       );
     }
     console.log("Monthly work hours set successfully.");
@@ -237,7 +237,7 @@ export async function deleteWorkRecords(
   year: number,
   month: number,
   startDay?: number,
-  endDay?: number,
+  endDay?: number
 ) {
   const yearMonth = `${year}-${month + 1}`;
   const docRef = doc(db, "teachers", teacherId, "work_records", yearMonth);
@@ -269,7 +269,7 @@ export async function deleteWorkRecords(
 // 講師IDと曜日に基づいてschedulesから生徒を取得
 export async function fetchStudentsByTeacherIdAndDay(
   teacherId: string,
-  dayOfWeek: string,
+  dayOfWeek: string
 ): Promise<Student[]> {
   const studentsRef = collection(
     db,
@@ -277,7 +277,7 @@ export async function fetchStudentsByTeacherIdAndDay(
     teacherId,
     "schedules",
     dayOfWeek,
-    "students",
+    "students"
   );
   const students: Student[] = [];
 
@@ -302,7 +302,7 @@ export async function fetchStudentsForWorkRecords(
   teacherId: string,
   year: number,
   month: number,
-  day: number,
+  day: number
 ): Promise<Student[]> {
   const yearMonth = `${year}-${month + 1}`; // 年月を YYYY-MM 形式でフォーマット
   const dayKey = day.toString().padStart(2, "0"); // 日を 2 桁の文字列でフォーマット
@@ -340,7 +340,7 @@ export async function setTeacherScheduleWithDetails(
       subjectAndGrade: string;
       time: string;
     }>;
-  },
+  }
 ) {
   const scheduleRef = doc(db, "teachers", teacherId, "schedules", dayOfWeek);
   try {
@@ -412,7 +412,7 @@ export async function saveDayData(
   endTime: string,
   students: Student[],
   studentsChangeInfo: StudentChangeInfo[],
-  workDescription: string,
+  workDescription: string
 ) {
   const yearMonth = `${year}-${month + 1}`; // 年月を YYYY-MM 形式でフォーマット
   const dayKey = day.toString().padStart(2, "0"); // 日を 2 桁の文字列でフォーマット
@@ -447,7 +447,7 @@ export async function addWorkRecord(
   teacherId: string,
   yearMonth: string,
   day: string,
-  record: object,
+  record: object
 ) {
   const docRef = doc(db, "teachers", teacherId, "work_records", yearMonth);
   await setDoc(
@@ -455,7 +455,7 @@ export async function addWorkRecord(
     {
       [day]: record,
     },
-    { merge: true },
+    { merge: true }
   );
 }
 
@@ -463,7 +463,7 @@ export async function addWorkRecord(
 export async function saveClassroom(
   teacherId: string,
   dayOfWeek: string,
-  classroom: string,
+  classroom: string
 ): Promise<void> {
   const scheduleRef = doc(db, "teachers", teacherId, "schedules", dayOfWeek);
   try {
@@ -478,7 +478,7 @@ export async function saveClassroom(
 // 教室情報を取得する関数
 export async function fetchClassroom(
   teacherId: string,
-  dayOfWeek: string,
+  dayOfWeek: string
 ): Promise<string> {
   const scheduleRef = doc(db, "teachers", teacherId, "schedules", dayOfWeek);
   try {
@@ -501,7 +501,7 @@ export async function saveStudentChangeInfo(
   year: number,
   month: number,
   day: number,
-  studentChangeInfo: StudentChangeInfo[],
+  studentChangeInfo: StudentChangeInfo[]
 ): Promise<void> {
   const yearMonth = `${year}-${month + 1}`; // 年月を YYYY-MM 形式でフォーマット
   const dayKey = day.toString().padStart(2, "0"); // 日を 2 桁の文字列でフォーマット
@@ -513,7 +513,7 @@ export async function saveStudentChangeInfo(
       {
         [dayKey]: { studentChangeInfo },
       },
-      { merge: true },
+      { merge: true }
     );
     console.log("Student change info saved successfully");
   } catch (e) {
@@ -526,7 +526,7 @@ export async function fetchStudentChangeInfo(
   teacherId: string,
   year: number,
   month: number,
-  day: number,
+  day: number
 ): Promise<StudentChangeInfo[]> {
   const yearMonth = `${year}-${month + 1}`;
   const dayKey = day.toString().padStart(2, "0");
@@ -553,7 +553,7 @@ export async function saveWorkHours(
   year: number,
   month: number,
   day: number,
-  workHours: { startTime: string; endTime: string; workHours: string },
+  workHours: { startTime: string; endTime: string; workHours: string }
 ): Promise<void> {
   const yearMonth = `${year}-${month + 1}`;
   const dayKey = day.toString().padStart(2, "0");
@@ -565,7 +565,7 @@ export async function saveWorkHours(
       {
         [dayKey]: { ...workHours },
       },
-      { merge: true },
+      { merge: true }
     );
     console.log("Work hours saved successfully");
   } catch (e) {
@@ -578,7 +578,7 @@ export async function fetchTeachHour(
   teacherId: string,
   year: number,
   month: number,
-  day: number,
+  day: number
 ): Promise<WorkHours> {
   const yearMonth = `${year}-${month + 1}`;
   const dayKey = day.toString().padStart(2, "0");
@@ -602,7 +602,7 @@ export async function fetchTeachHour(
       teachingHours += data.students.reduce(
         (sum: number, student: { time: string }) =>
           sum + parseFloat(student.time),
-        0,
+        0
       );
     }
     if (data.studentChangeInfo) {
@@ -613,7 +613,7 @@ export async function fetchTeachHour(
           } else if (info.status === "休み") {
             teachingHours -= parseFloat(info.time);
           }
-        },
+        }
       );
     }
 
@@ -624,5 +624,58 @@ export async function fetchTeachHour(
   } catch (e) {
     console.error("Error fetching work hours:", e);
     return { teachingHours: 0, adminHours: 0 };
+  }
+}
+
+export async function saveClassroomByDate(
+  teacherId: string,
+  year: number,
+  month: number,
+  day: number,
+  classroom: string
+): Promise<void> {
+  const yearMonth = `${year}-${month + 1}`; // 年月を YYYY-MM 形式でフォーマット
+  const dayKey = day.toString().padStart(2, "0"); // 日を 2 桁の文字列でフォーマット
+  const docRef = doc(db, "teachers", teacherId, "work_records", yearMonth);
+
+  try {
+    await setDoc(
+      docRef,
+      {
+        [dayKey]: { classroom },
+      },
+      { merge: true }
+    );
+    console.log("Classroom saved successfully for:", dayKey);
+  } catch (e) {
+    console.error("Error saving classroom:", e);
+    throw new Error("Failed to save classroom");
+  }
+}
+
+export async function fetchClassroomByDate(
+  teacherId: string,
+  year: number,
+  month: number,
+  day: number
+): Promise<string> {
+  const yearMonth = `${year}-${month + 1}`;
+  const dayKey = day.toString().padStart(2, "0");
+  const docRef = doc(db, "teachers", teacherId, "work_records", yearMonth);
+
+  try {
+    const docSnap = await getDoc(docRef);
+    if (
+      docSnap.exists() &&
+      docSnap.data()[dayKey] &&
+      docSnap.data()[dayKey].classroom
+    ) {
+      return docSnap.data()[dayKey].classroom;
+    } else {
+      return ""; // 教室情報がない場合は空文字を返す
+    }
+  } catch (e) {
+    console.error("Error fetching classroom:", e);
+    return "";
   }
 }
