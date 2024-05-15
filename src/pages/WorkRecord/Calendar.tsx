@@ -1,10 +1,10 @@
 import React from "react";
 import styled from "styled-components";
 import { motion, AnimatePresence } from "framer-motion";
-import DaysGrid from "./DayGrid/DaysGrid";
-import WeekStudentSchedule from "./WeekStudentSchedule/WeekStudentSchedule";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store/types"; // RootState のインポート
+import DaysGrid from "./DayGrid/DaysGrid";
+import WeekStudentSchedule from "./WeekStudentSchedule/WeekStudentSchedule";
 
 const CalendarContainer = styled.div`
   max-width: 1400px;

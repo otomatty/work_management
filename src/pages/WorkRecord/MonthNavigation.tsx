@@ -1,22 +1,19 @@
 import React from "react";
 import styled, { css } from "styled-components";
-import StyledButton from "../../components/atoms/StyledButton";
 import { useDispatch, useSelector } from "react-redux";
-import { setDirection } from "../../store/monthNavigationSlice";
-import {
-  incrementMonth,
-  decrementMonth,
-} from "../../store/dateNavigationSlice";
+import { setDirection, incrementMonth, decrementMonth } from "../../store";
 import { RootState } from "../../store/types"; // RootState のインポート
+import { FaArrowLeft, FaArrowRight } from "react-icons/fa"; // アイコンのインポート
+import StyledButton from "../../components/atoms/StyledButton";
 
 const Container = styled.div`
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: 10px;
 `;
 
 const YearMonth = styled.h2`
-  margin: 0;
+  margin: 0 10px 0 0;
   font-size: clamp(1.25rem, 4.5vw + 1rem, 2.5rem);
 `;
 
@@ -73,10 +70,22 @@ const MonthNavigation: React.FC = () => {
       <YearMonth>
         {currentYear}年 {monthNames[currentMonth]}
       </YearMonth>
-      <StyledButton label="前月" onClick={handlePreviousMonth} />
+      <StyledButton
+        label={
+          <>
+            <FaArrowLeft /> 前月
+          </>
+        }
+        onClick={handlePreviousMonth}
+      />
 
       <DisabledButton
-        label="次月"
+        label={
+          <>
+            次月
+            <FaArrowRight />
+          </>
+        }
         onClick={handleNextMonth}
         disabled={currentMonthIsThisMonth && currentYearIsThisYear}
       />

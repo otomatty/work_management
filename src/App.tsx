@@ -9,11 +9,13 @@ import {
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "./firebase/firebase";
 import { User } from "firebase/auth";
-import HomePage from "./pages/home/HomePage";
+import HomePage from "./pages/HomePage/HomePage";
 import WorkRecord from "./pages/WorkRecord/WorkRecord";
 import AdminDashboard from "./pages/WorkManagement/AdminDashboard";
 import ProblemSelectionPage from "./pages/CalcGenerate/ProblemSelection/ProblemSelectionPage";
 import LoginPage from "./pages/Login/LoginPage";
+import LoadingAnimation from "./components/layout/LoadingAnimation";
+import { AnimatePresence } from "framer-motion";
 import { createGlobalStyle } from "styled-components";
 
 const GlobalStyle = createGlobalStyle`
@@ -50,42 +52,61 @@ input,select {
 
 const App: React.FC = () => {
   const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [animationComplete, setAnimationComplete] = useState(false);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        setUser(user);
-      } else {
-        setUser(null);
-      }
+      setUser(user);
     });
-    return () => unsubscribe();
+
+    // Set a minimum loading time for the animation
+    const timer = setTimeout(() => {
+      setAnimationComplete(true);
+    }, 2000); // 2000 milliseconds = 2 seconds
+
+    return () => {
+      unsubscribe();
+      clearTimeout(timer);
+    };
   }, []);
+
+  useEffect(() => {
+    if (animationComplete && user !== undefined) {
+      setLoading(false);
+    }
+  }, [animationComplete, user]);
 
   return (
     <>
       <GlobalStyle />
       <Router>
-        <Routes>
-          <Route
-            path="/"
-            element={user ? <HomePage /> : <Navigate to="/login" />}
-          />
-          <Route path="/login" element={<LoginPage />} />
-
-          <Route
-            path="/work-record/:teacherId"
-            element={user ? <WorkRecordWrapper /> : <Navigate to="/login" />}
-          />
-          <Route
-            path="/admin-dashboard"
-            element={user ? <AdminDashboard /> : <Navigate to="/login" />}
-          />
-          <Route
-            path="/calculation-generator"
-            element={user ? <ProblemSelectionPage /> : <Navigate to="/login" />}
-          />
-        </Routes>
+        <AnimatePresence>
+          {loading ? <LoadingAnimation /> : null}
+        </AnimatePresence>
+        {!loading && (
+          <Routes>
+            <Route
+              path="/"
+              element={user ? <HomePage /> : <Navigate to="/login" />}
+            />
+            <Route path="/login" element={<LoginPage />} />
+            <Route
+              path="/work-record/:teacherId"
+              element={user ? <WorkRecordWrapper /> : <Navigate to="/login" />}
+            />
+            <Route
+              path="/admin-dashboard"
+              element={user ? <AdminDashboard /> : <Navigate to="/login" />}
+            />
+            <Route
+              path="/calculation-generator"
+              element={
+                user ? <ProblemSelectionPage /> : <Navigate to="/login" />
+              }
+            />
+          </Routes>
+        )}
       </Router>
     </>
   );

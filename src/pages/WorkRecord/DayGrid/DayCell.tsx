@@ -1,25 +1,25 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useDispatch } from "react-redux";
-import { setIsVisible } from "../../../store/workRecordSlice";
 import styled from "styled-components";
+import { setIsVisible } from "../../../store";
+import { fetchWorkRecord, fetchClassroom } from "../../../firebase";
+import { StudentChangeInfo } from "../../../types";
 import CellComponent from "../../../components/atoms/AnimatedCell";
 import WorkDescriptionDisplay from "./WorkDescriptionDisplay";
-import { StudentChangeInfo } from "../../../types";
-import { fetchWorkRecord } from "../../../firebase/firestoreFunctions";
-import ClassroomDisplay from "./ClassroomDisplay"; // Import ClassroomDisplay
+import ClassroomDisplay from "./ClassroomDisplay";
 
 const Wrapper = styled.div<{ $isSaturday: boolean; $isSunday: boolean }>`
   border-radius: 8px;
   border: 2px solid
     ${(props) =>
-      props.$isSaturday ? "#ADD8E6" : props.$isSunday ? "#FFC0CB" : "#f0f0f0"};
+      props.$isSaturday ? "#c3f0ff" : props.$isSunday ? "#ffd8df" : "#f0f0f0"};
   height: 100%;
   box-sizing: border-box;
 `;
 
 const Daybox = styled.div<{ $isSaturday: boolean; $isSunday: boolean }>`
   background-color: ${(props) =>
-    props.$isSaturday ? "#ADD8E6" : props.$isSunday ? "#FFC0CB" : "#f0f0f0"};
+    props.$isSaturday ? "#c3f0ff" : props.$isSunday ? "#ffd8df" : "#f0f0f0"};
   padding: 4px;
   margin-bottom: 10px;
 `;
@@ -79,22 +79,6 @@ interface DayCellProps {
   onEdit: () => void;
 }
 
-// 曜日を取得するヘルパー関数
-const getDayOfWeek = (year: number, month: number, day: number): string => {
-  const date = new Date(year, month - 1, day); // JavaScript の月は0から始まるため、month - 1 が必要
-  const dayOfWeek = date.getDay(); // 曜日を数値で取得 (0=日曜日, 1=月曜日, ..., 6=土曜日)
-  const weekdays = [
-    "Sunday",
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday",
-    "Friday",
-    "Saturday",
-  ];
-  return weekdays[dayOfWeek];
-};
-
 const DayCell: React.FC<DayCellProps> = ({
   day,
   isSaturday,
@@ -114,6 +98,7 @@ const DayCell: React.FC<DayCellProps> = ({
   const cellRef = useRef<HTMLDivElement>(null);
   const [weekday, setWeekday] = useState("");
   const dispatch = useDispatch();
+  const [classroom, setClassroom] = useState(""); // classroom 状態を追加
 
   useEffect(() => {
     const date = new Date(year, month, day);
@@ -145,6 +130,20 @@ const DayCell: React.FC<DayCellProps> = ({
     loadData();
   }, [teacherId, year, month, day, dataVersion]);
 
+  useEffect(() => {
+    const loadClassroom = async () => {
+      const dateIdentifier = `${year}-${month + 1}-${day.toString().padStart(2, "0")}`;
+      const fetchedClassroom = await fetchClassroom(
+        teacherId,
+        dateIdentifier,
+        false
+      );
+      setClassroom(fetchedClassroom);
+    };
+
+    loadClassroom();
+  }, [teacherId, year, month, day, dataVersion]); // 依存関係に dataVersion を追加
+
   const handleClick = () => {
     dispatch(setIsVisible(true));
     if (cellRef.current) {
@@ -168,6 +167,7 @@ const DayCell: React.FC<DayCellProps> = ({
               year={year}
               month={month}
               day={day}
+              classroom={classroom} // 状態から classroom を渡す
             />
             <div>
               <Title>出勤時間</Title>

@@ -11,13 +11,13 @@ const Container = styled.div`
 const Label = styled.label`
   font-size: 1rem;
   color: #333;
-  margin-right: 15px;
   font-weight: 500;
+  width: 12%;
 `;
 
 const Input = styled.input`
   cursor: text;
-  width: 80%;
+  width: 88%;
   padding: 8px;
   font-size: 1rem;
   border: 2px solid #ccc;

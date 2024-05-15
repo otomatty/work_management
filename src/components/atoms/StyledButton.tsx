@@ -3,12 +3,15 @@ import styled from "styled-components";
 import { motion } from "framer-motion";
 
 interface ButtonProps {
-  label: string;
+  label: React.ReactNode; // Type changed to React.ReactNode
   onClick: () => void;
   disabled?: boolean;
 }
 
 const StyledButton = styled(motion.button)<{ disabled?: boolean }>`
+  display: flex;
+  align-items: center;
+  justify-content: center;
   padding: 8px 16px;
   border: none;
   border-radius: 4px;

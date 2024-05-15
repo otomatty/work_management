@@ -15,3 +15,14 @@ export interface WorkHours {
   teachingHours: number;
   adminHours: number;
 }
+
+export interface Schedule {
+  dayOfWeek: string;
+  startTime?: string;
+  endTime?: string;
+  students?: Array<{
+    studentName: string;
+    subjectAndGrade: string;
+    time: string;
+  }>;
+}

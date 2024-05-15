@@ -6,10 +6,10 @@ import { StudentChangeInfo } from "../../../types";
 import {
   saveStudentChangeInfo,
   fetchStudentChangeInfo,
-} from "../../../firebase/firestoreFunctions";
+} from "../../../firebase";
 
 const Table = styled.table`
-  width: 50%;
+  width: 100%;
   border-collapse: collapse;
 `;
 
@@ -30,7 +30,7 @@ const Td = styled.td`
 `;
 
 const AddButtonWrapper = styled.div`
-  width: 50%;
+  width: 100%;
 `;
 
 const AddButton = styled.button`

@@ -2,10 +2,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import { Student } from "../../../types";
 import Modal from "../../../components/molecules/Modal";
-import {
-  updateStudent,
-  deleteStudent,
-} from "../../../firebase/firestoreFunctions"; // 関数をインポート
+import { updateStudent, deleteStudent } from "../../../firebase";
 
 const Form = styled.form`
   display: flex;

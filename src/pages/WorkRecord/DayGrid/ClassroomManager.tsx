@@ -1,11 +1,8 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import {
-  fetchClassroomByDate,
-  saveClassroomByDate,
-} from "../../../firebase/firestoreFunctions";
+import { fetchClassroom, saveClassroomByDate } from "../../../firebase";
 import { useDispatch } from "react-redux";
-import { setSelectedClassroom as setReduxSelectedClassroom } from "../../../store/classroomSlice";
+import { setSelectedClassroom as setReduxSelectedClassroom } from "../../../store";
 
 interface ClassroomManagerProps {
   teacherId: string;
@@ -14,13 +11,13 @@ interface ClassroomManagerProps {
   day: number;
 }
 
-const Container = styled.div<{ dayOfWeek: string }>`
-  margin: 10px 8px 0 8px;
+const Container = styled.div<{ $dayOfWeek: string }>`
+  margin-top: 10px;
   padding-bottom: 8px;
-  border-bottom: ${({ dayOfWeek }) =>
-    dayOfWeek === "Saturday"
+  border-bottom: ${({ $dayOfWeek }) =>
+    $dayOfWeek === "Saturday"
       ? "2px solid #bbebfa"
-      : dayOfWeek === "Sunday"
+      : $dayOfWeek === "Sunday"
         ? "2px solid #ffd9df"
         : "2px solid #f0f0f0"};
 `;
@@ -66,8 +63,13 @@ const ClassroomManager: React.FC<ClassroomManagerProps> = ({
 
   useEffect(() => {
     const loadClassroom = async () => {
-      const classroom = await fetchClassroomByDate(teacherId, year, month, day);
-      setSelectedClassroom(classroom);
+      const dateIdentifier = `${year}-${month + 1}-${day.toString().padStart(2, "0")}`;
+      const fetchedClassroom = await fetchClassroom(
+        teacherId,
+        dateIdentifier,
+        false
+      );
+      setSelectedClassroom(fetchedClassroom);
     };
 
     loadClassroom();
@@ -82,7 +84,7 @@ const ClassroomManager: React.FC<ClassroomManagerProps> = ({
   };
 
   return (
-    <Container dayOfWeek={dayOfWeek}>
+    <Container $dayOfWeek={dayOfWeek}>
       <Title>教室</Title>
       <StyledSelect
         value={selectedClassroom}

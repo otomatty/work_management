@@ -10,7 +10,7 @@ interface WorkRecordState {
   workDescription: string;
   isVisible: boolean;
   dataVersion: number;
-  clearDayCellData: boolean; // 新しい状態を追加
+  classroom: string; // Added classroom field
 }
 
 const initialState: WorkRecordState = {
@@ -20,7 +20,7 @@ const initialState: WorkRecordState = {
   workDescription: "",
   isVisible: false,
   dataVersion: 0,
-  clearDayCellData: false,
+  classroom: "", // Initialized with an empty string
 };
 
 export const workRecordSlice = createSlice({
@@ -42,20 +42,18 @@ export const workRecordSlice = createSlice({
     setIsVisible: (state, action: PayloadAction<boolean>) => {
       state.isVisible = action.payload;
     },
-
+    setClassroom: (state, action: PayloadAction<string>) => {
+      // Added setClassroom action
+      state.classroom = action.payload;
+    },
     incrementDataVersion: (state) => {
       state.dataVersion += 1;
     },
-
-    setClearDayCellData: (state, action: PayloadAction<boolean>) => {
-      // 新しいアクションを追加
-      state.clearDayCellData = action.payload;
-    },
-
     clearWorkRecords: (state) => {
       state.startTime = "";
       state.endTime = "";
       state.students = [];
+      state.classroom = ""; // Clear classroom as well
     },
   },
 });
@@ -66,23 +64,9 @@ export const {
   setStudents,
   setWorkDescription,
   setIsVisible,
+  setClassroom,
   incrementDataVersion,
-  setClearDayCellData,
   clearWorkRecords,
 } = workRecordSlice.actions;
-
-export const deleteAllWorkRecords =
-  (): ThunkAction<void, RootState, unknown, Action<string>> =>
-  async (dispatch) => {
-    try {
-      // 一括削除のロジックを実行
-      await deleteAllWorkRecords(); // 関数名を確認してください
-      setTimeout(() => {
-        dispatch(incrementDataVersion()); // データバージョンをインクリメント
-      }, 500);
-    } catch (error) {
-      console.error("Error deleting records:", error);
-    }
-  };
 
 export default workRecordSlice.reducer;

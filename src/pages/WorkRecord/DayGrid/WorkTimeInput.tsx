@@ -3,9 +3,7 @@ import styled from "styled-components";
 import TimeInput from "../TimeInput";
 import ModalSubTitle from "../../../components/atoms/ModalSubTitle";
 
-const Container = styled.div`
-  width: 50%;
-`;
+const Container = styled.div``;
 
 interface WorkTimeInputsProps {
   startTime: string;

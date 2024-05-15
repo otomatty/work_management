@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
+import { fetchTeacherNameById } from "../../firebase";
+
 import Calendar from "./Calendar";
 import Header from "../../components/organisms/Header";
 import CalendarHeader from "./CalendarHeader"; // CalendarHeaderをインポート
-import { fetchTeacherNameById } from "../../firebase/firestoreFunctions";
 
 interface WorkRecordProps {
   selectedTeacherId: string;

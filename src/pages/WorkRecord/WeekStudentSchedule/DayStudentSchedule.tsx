@@ -1,17 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import styled from "styled-components";
+import {
+  saveStudent,
+  fetchStudentsByTeacherIdAndDay,
+  saveClassroom,
+} from "../../../firebase/";
+import { Student, Schedule } from "../../../types";
 import StudentList from "./StudentList";
 import StudentRegister from "./StudentRegister";
 import Modal from "../../../components/molecules/Modal";
 import WorkTimeDisplay from "./WorkTimeDisplay"; // 新しいコンポーネントをインポート
-import {
-  Schedule,
-  saveStudent,
-  fetchStudentsByTeacherIdAndDay,
-  saveClassroom, // 新しい関数をインポート
-} from "../../../firebase/firestoreFunctions"; // Schedule 型をインポート
-import { Student } from "../../../types";
 import ClassroomSelect from "./ClassroomSelect"; // ClassroomSelect コンポーネントをインポート
 
 const DayContainer = styled.div<{ dayOfWeek: string }>`

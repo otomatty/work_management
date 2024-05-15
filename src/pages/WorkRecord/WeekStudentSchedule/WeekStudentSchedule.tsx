@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { motion, AnimatePresence } from "framer-motion";
-import DayStudentSchedule from "./DayStudentSchedule";
 import {
   fetchSchedulesByTeacherId,
   setTeacherScheduleWithDetails,
-} from "../../../firebase/firestoreFunctions";
-import { Schedule } from "../../../firebase/firestoreFunctions"; // Schedule 型をインポート
+} from "../../../firebase";
+import { Schedule } from "../../../types";
+import DayStudentSchedule from "./DayStudentSchedule";
 import AnimatedCaret from "../../../components/atoms/AnimatedCaret";
 import Tooltip from "../../../components/atoms/Tooltip"; // Tooltip コンポーネントをインポート
 
@@ -21,13 +21,13 @@ const dayOfWeekMap: Record<string, string> = {
 };
 
 const daysOfWeek = [
+  "Sunday",
   "Monday",
   "Tuesday",
   "Wednesday",
   "Thursday",
   "Friday",
   "Saturday",
-  "Sunday",
 ];
 
 interface WeekStudentScheduleProps {
@@ -78,12 +78,7 @@ const WeekStudentSchedule: React.FC<WeekStudentScheduleProps> = ({
     loadSchedules();
   }, [teacherId]);
 
-  const firstDay = new Date(currentYear, currentMonth, 0).getDay();
-
-  const rotatedDaysOfWeek = [
-    ...daysOfWeek.slice(firstDay),
-    ...daysOfWeek.slice(0, firstDay),
-  ];
+  const rotatedDaysOfWeek = daysOfWeek;
 
   const toggleAccordion = () => {
     setIsOpen(!isOpen);
@@ -146,4 +141,5 @@ const WeekStudentSchedule: React.FC<WeekStudentScheduleProps> = ({
     </Container>
   );
 };
+
 export default WeekStudentSchedule;

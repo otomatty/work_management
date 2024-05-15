@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { fetchClassroomByDate } from "../../../firebase/firestoreFunctions";
+import { fetchClassroom } from "../../../firebase";
 import styled from "styled-components";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../store/store";
@@ -9,6 +9,7 @@ interface ClassroomDisplayProps {
   year: number;
   month: number;
   day: number;
+  classroom: string;
 }
 
 // 教室名に基づいて背景色を決定するヘルパー関数
@@ -74,17 +75,17 @@ const ClassroomDisplay: React.FC<ClassroomDisplayProps> = ({
 
   useEffect(() => {
     const loadClassroom = async () => {
-      const classroomFromDB = await fetchClassroomByDate(
+      const dateIdentifier = `${year}-${month + 1}-${day.toString().padStart(2, "0")}`;
+      const fetchedClassroom = await fetchClassroom(
         teacherId,
-        year,
-        month,
-        day
+        dateIdentifier,
+        false
       );
-      setFetchedClassroom(classroomFromDB);
+      setFetchedClassroom(fetchedClassroom);
     };
 
     loadClassroom();
-  }, [teacherId, year, month, day]);
+  }, [teacherId, year, month, day]); // 依存関係に dataVersion を追加
 
   // 最終的に表示する教室情報を決定
   const classroomToShow = selectedClassroom || fetchedClassroom;

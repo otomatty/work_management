@@ -5,13 +5,16 @@ import DateRangePicker from "../../../components/molecules/DateRangePicker";
 import Modal from "../../../components/molecules/Modal";
 import Button from "../../../components/atoms/Button";
 import ButtonGroup from "../../../components/layout/ButtonGroup";
-import { deleteWorkRecords } from "../../../firebase/firestoreFunctions"; // Firestore 関数をインポート
-import LoadingScreen from "../../../components/atoms/LoadingScreen"; // LoadingScreen をインポート
+import { deleteWorkRecords } from "../../../firebase";
+import LoadingScreen from "../../../components/atoms/LoadingScreen";
 import { useDispatch } from "react-redux";
 import {
   incrementDataVersion,
   clearWorkRecords,
-} from "../../../store/workRecordSlice"; // clearWorkRecords をインポート
+  setClassroom,
+} from "../../../store/workRecordSlice";
+import { fetchClassroom } from "../../../firebase/classroomOperations";
+import Dropdown from "../../../components/molecules/Dropdown";
 
 const ToolbarContainer = styled.div`
   display: flex;
@@ -20,29 +23,6 @@ const ToolbarContainer = styled.div`
   border-radius: 8px;
   margin-bottom: 20px;
   gap: 10px;
-`;
-
-const DropdownMenu = styled.div`
-  position: absolute;
-  background-color: #f9f9f9;
-  min-width: 160px;
-  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
-  z-index: 1;
-`;
-
-const DropdownItem = styled.div<{ $isCloseButton?: boolean }>`
-  cursor: pointer;
-  padding: 12px 16px;
-  text-decoration: none;
-  display: block;
-  background-color: ${(props) =>
-    props.$isCloseButton ? "#007bff" : "#f9f9f9"};
-  color: ${(props) => (props.$isCloseButton ? "white" : "black")};
-  text-align: ${(props) => (props.$isCloseButton ? "center" : "left")};
-  &:hover {
-    background-color: ${(props) =>
-      props.$isCloseButton ? "#0056b3" : "#f1f1f1"};
-  }
 `;
 
 interface ToolbarProps {
@@ -64,8 +44,8 @@ const Toolbar: React.FC<ToolbarProps> = ({
   const [showDeleteDropdown, setShowDeleteDropdown] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [showConfirmDeleteModal, setShowConfirmDeleteModal] = useState(false);
-  const [showDateAlertModal, setShowDateAlertModal] = useState(false); // 新しい状態を追加
-  const [isLoading, setIsLoading] = useState(false); // ローディング状態を追加
+  const [showDateAlertModal, setShowDateAlertModal] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
 
   const handleRangeDelete = (startDate: Date, endDate: Date) => {
@@ -74,21 +54,37 @@ const Toolbar: React.FC<ToolbarProps> = ({
     onBulkDelete(startDay, endDay);
     setShowDeleteDropdown(false);
   };
-  const [message, setMessage] = useState(""); // メッセージ表示用の状態を追加
 
   const handleConfirmBulkInsert = async () => {
-    setIsLoading(true); // ローディング開始
+    setIsLoading(true);
     try {
       const startOfMonth = new Date(year, month, 1);
       const endOfMonth = new Date(year, month + 1, 0);
-      await onBulkInsert(startOfMonth, endOfMonth); // 非同期処理をawaitで待つ
-      setMessage("自動入力が完了しました"); // 成功メッセージを設定
+      const daysInMonth = endOfMonth.getDate();
+
+      for (let day = 1; day <= daysInMonth; day++) {
+        const date = new Date(year, month, day);
+        const dayOfWeek = date.getDay();
+        try {
+          const classroom = await fetchClassroom(teacherId, dayOfWeek);
+          dispatch(setClassroom(classroom));
+        } catch (innerError) {
+          const error = innerError as Error;
+          console.error(`Error fetching classroom for day ${day}:`, error);
+          throw new Error(
+            `Failed to fetch classroom for day ${day}: ${error.message}`
+          );
+        }
+      }
+
+      await onBulkInsert(startOfMonth, endOfMonth);
     } catch (error) {
-      console.error("一括入力エラー:", error);
-      setMessage("一括入力に失敗しました"); // エラーメッセージを定
+      const typedError = error as Error;
+      console.error("一括入力エラー:", typedError);
     } finally {
-      setIsLoading(false); // ローディング終了
-      setShowConfirmModal(false); // モーダルを閉じる
+      setIsLoading(false);
+      setShowConfirmModal(false);
+      setShowInsertDropdown(false);
     }
   };
 
@@ -96,21 +92,20 @@ const Toolbar: React.FC<ToolbarProps> = ({
     setIsLoading(true);
     try {
       await deleteWorkRecords(teacherId, year, month);
-      setMessage("自動削除が完了しました");
-      dispatch(incrementDataVersion()); // データバージョンをインクリメント
-      dispatch(clearWorkRecords()); // 出勤時間、退勤時間、学生情報をクリア
+      dispatch(incrementDataVersion());
+      dispatch(clearWorkRecords());
     } catch (error) {
       console.error("削除エラー:", error);
-      setMessage("自動削除に失敗しました");
     } finally {
       setIsLoading(false);
       setShowConfirmDeleteModal(false);
+      setShowDeleteDropdown(false);
     }
   };
 
   const handlePeriodicInsert = (startDate: Date, endDate: Date) => {
     if (!startDate || !endDate) {
-      setShowDateAlertModal(true); // 日付が選択されていない場合、警告モーダルを表示
+      setShowDateAlertModal(true);
       return;
     }
     onBulkInsert(startDate, endDate);
@@ -121,9 +116,6 @@ const Toolbar: React.FC<ToolbarProps> = ({
   return (
     <ToolbarContainer>
       {isLoading && <LoadingScreen />}
-      {message && (
-        <Modal isOpen={true} onClose={() => setMessage("")} message={message} />
-      )}
       <div>
         <Button
           onClick={() => {
@@ -135,23 +127,20 @@ const Toolbar: React.FC<ToolbarProps> = ({
           icon={faKeyboard}
         />
         {showInsertDropdown && (
-          <DropdownMenu>
-            <DropdownItem onClick={() => setShowConfirmModal(true)}>
-              全日登録
-            </DropdownItem>
-            <DropdownItem onClick={() => setShowInsertDropdown(true)}>
-              期間指定登録
-            </DropdownItem>
+          <Dropdown
+            items={[
+              { label: "全日登録", onClick: () => setShowConfirmModal(true) },
+              {
+                label: "期間指定登録",
+                onClick: () => setShowInsertDropdown(true),
+              },
+            ]}
+            onClose={() => setShowInsertDropdown(false)}
+          >
             {showInsertDropdown && (
               <DateRangePicker onDateRangeSelect={handlePeriodicInsert} />
             )}
-            <DropdownItem
-              onClick={() => setShowInsertDropdown(false)}
-              $isCloseButton
-            >
-              閉じる
-            </DropdownItem>
-          </DropdownMenu>
+          </Dropdown>
         )}
       </div>
       <Modal
@@ -183,24 +172,23 @@ const Toolbar: React.FC<ToolbarProps> = ({
           icon={faTrash}
         />
         {showDeleteDropdown && (
-          <DropdownMenu>
-            <DropdownItem onClick={() => setShowConfirmDeleteModal(true)}>
-              全日削除
-            </DropdownItem>
-            <DropdownItem onClick={() => setShowDeleteDropdown(true)}>
-              期間指定削除
-            </DropdownItem>
-
+          <Dropdown
+            items={[
+              {
+                label: "全日削除",
+                onClick: () => setShowConfirmDeleteModal(true),
+              },
+              {
+                label: "期間指定削除",
+                onClick: () => setShowDeleteDropdown(true),
+              },
+            ]}
+            onClose={() => setShowDeleteDropdown(false)}
+          >
             {showDeleteDropdown && (
               <DateRangePicker onDateRangeSelect={handleRangeDelete} />
             )}
-            <DropdownItem
-              onClick={() => setShowDeleteDropdown(false)}
-              $isCloseButton
-            >
-              閉じる
-            </DropdownItem>
-          </DropdownMenu>
+          </Dropdown>
         )}
       </div>
       <Modal

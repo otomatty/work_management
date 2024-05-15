@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { AnimatePresence } from "framer-motion";
-import { setMonthlyWorkHours } from "../../../firebase/firestoreFunctions";
+import { setMonthlyWorkHours } from "../../../firebase";
 import { StudentChangeInfo } from "../../../types";
-import { fetchWorkRecord } from "../../../firebase/firestoreFunctions";
 import DayCell from "./DayCell";
 import DayEditPanel from "./DayEditPanel";
 import Toolbar from "./Toolbar";
@@ -35,9 +34,26 @@ const Title = styled.h3`
   margin: 0 8px 0 4px;
 `;
 
-const calculateRowForEditDay = (editDay: number, days: number[]): number => {
-  const dayIndex = days.findIndex((day) => day === editDay);
-  return Math.floor(dayIndex / 7) + 2;
+const DayOfWeekHeader = styled.div`
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 8px;
+  margin-bottom: 8px;
+`;
+
+const DayOfWeek = styled.div`
+  text-align: center;
+  font-weight: bold;
+`;
+
+const calculateRowForEditDay = (
+  editDay: number,
+  year: number,
+  month: number
+): number => {
+  const firstDayOfMonth = new Date(year, month, 1).getDay();
+  const dayIndex = editDay - 1; // 0-based index
+  return Math.floor((dayIndex + firstDayOfMonth) / 7) + 2;
 };
 
 const DaysGrid: React.FC<DaysGridProps> = ({
@@ -55,9 +71,7 @@ const DaysGrid: React.FC<DaysGridProps> = ({
     StudentChangeInfo[]
   >([]);
   const [workDescription, setWorkDescription] = useState<string>("");
-  const [slideDirection, setSlideDirection] = useState(0); // スライド方向の状態を追加
-  const [isLoading, setIsLoading] = useState(false); // ローディング状態を追加
-  const [message, setMessage] = useState(""); // メッセージ表示用の状態を追加
+  const [slideDirection, setSlideDirection] = useState(0);
 
   useEffect(() => {
     if (editDay !== null) {
@@ -68,7 +82,7 @@ const DaysGrid: React.FC<DaysGridProps> = ({
   const handleSave = async (e?: React.MouseEvent<HTMLButtonElement>) => {
     e?.preventDefault();
     console.log("Save data");
-    setDataVersion((prev) => prev + 1); // データを保存した後、dataVersion を更新
+    setDataVersion((prev) => prev + 1);
   };
 
   const handleSetMonthlySchedule = async () => {
@@ -85,64 +99,54 @@ const DaysGrid: React.FC<DaysGridProps> = ({
     try {
       // ここに一括削除のロジックを実装
       console.log("Bulk delete executed");
-      setDataVersion((prev) => prev + 1); // データのバージョンを更新してUIをリフレッシュ
+      setDataVersion((prev) => prev + 1);
     } catch (error) {
       console.error("Failed to bulk delete:", error);
     }
   };
 
   const handleEditDay = async (day: number) => {
-    if (editDay === day) {
-      setEditDay(null); // 同じ日が再度クリックされた場合、editDayをnullに設定して折りたたむ
-    } else {
-      const currentRow =
-        editDay !== null
-          ? Math.floor(days.findIndex((d) => d === editDay) / 7)
-          : -1;
-      const newRow = Math.floor(days.findIndex((d) => d === day) / 7);
+    const firstDayOfMonth = new Date(year, month, 1).getDay();
+    const currentRow =
+      editDay !== null ? Math.floor((editDay - 1 + firstDayOfMonth) / 7) : -1;
+    const newRow = Math.floor((day - 1 + firstDayOfMonth) / 7);
 
-      if (
-        currentRow !== -1 &&
-        newRow !== -1 &&
-        currentRow === newRow &&
-        editDay !== null
-      ) {
-        const direction = day > editDay ? 1 : -1;
-        setSlideDirection(direction); // スライド方向を設定
-        setEditDay(day); // 編集画面を閉じずに新しい日に更新
-      } else {
-        setEditDay(null);
-        await new Promise((resolve) => setTimeout(resolve, 500)); // スクロールのための遅延
-        const element = document.querySelector(`#day-${day}`);
-        if (element) {
-          element.scrollIntoView({ behavior: "smooth", block: "start" });
-          await new Promise((resolve) => setTimeout(resolve, 500)); // スクロール完了を待つ
-        }
-        setEditDay(day);
-        setSlideDirection(0);
+    if (editDay === day) {
+      setSlideDirection(0);
+      await new Promise((resolve) => setTimeout(resolve, 300));
+      setEditDay(null);
+    } else if (currentRow === newRow && editDay !== null) {
+      const direction = day > editDay ? 1 : -1;
+      setSlideDirection(direction);
+      console.log(`Slide direction: ${direction > 0 ? "right" : "left"}`);
+      setEditDay(day); // DayEditPanelを開いたままスライド
+    } else {
+      setEditDay(null);
+      await new Promise((resolve) => setTimeout(resolve, 300));
+
+      const element = document.querySelector(`#day-${day}`);
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth", block: "start" });
+        await new Promise<void>((resolve) => {
+          const observer = new IntersectionObserver((entries) => {
+            if (entries[0].isIntersecting) {
+              resolve();
+              observer.disconnect();
+            }
+          });
+          observer.observe(element);
+        });
+        await new Promise((resolve) => setTimeout(resolve, 500));
       }
-      try {
-        const workRecord = await fetchWorkRecord(teacherId, year, month, day);
-        if (workRecord) {
-          setStartTime(workRecord.startTime || "");
-          setEndTime(workRecord.endTime || "");
-          setStudentsChangeInfo(workRecord.studentsChangeInfo || []);
-          setWorkDescription(workRecord.workDescription || "");
-        } else {
-          setStartTime("");
-          setEndTime("");
-          setStudentsChangeInfo([]);
-          setWorkDescription("");
-        }
-      } catch (error) {
-        console.error("Failed to fetch work record:", error);
-        setStartTime("");
-        setEndTime("");
-        setStudentsChangeInfo([]);
-        setWorkDescription("");
-      }
+      setSlideDirection(0);
+      setEditDay(day);
     }
   };
+
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const firstDayOfMonth = new Date(year, month, 1).getDay();
+  const calendarDays = Array.from({ length: daysInMonth }, (_, i) => i + 1);
+  const leadingEmptyDays = Array.from({ length: firstDayOfMonth }, () => null);
 
   return (
     <Container>
@@ -153,11 +157,19 @@ const DaysGrid: React.FC<DaysGridProps> = ({
         onBulkInsert={handleSetMonthlySchedule}
         onBulkDelete={handleBulkDelete}
         teacherId={teacherId}
-        year={year} // 年を渡す
-        month={month} // 月を渡す
+        year={year}
+        month={month}
       />
+      <DayOfWeekHeader>
+        {["日", "月", "火", "水", "木", "金", "土"].map((day, index) => (
+          <DayOfWeek key={index}>{day}</DayOfWeek>
+        ))}
+      </DayOfWeekHeader>
       <GridContainer>
-        {days.map((day, index) => {
+        {leadingEmptyDays.map((_, index) => (
+          <div key={`empty-${index}`} />
+        ))}
+        {calendarDays.map((day, index) => {
           const date = new Date(year, month, day);
           const dayOfWeek = date.getDay();
           const isEditDay = editDay === day;
@@ -191,8 +203,8 @@ const DaysGrid: React.FC<DaysGridProps> = ({
                     setWorkDescription={setWorkDescription}
                     onSave={handleSave}
                     style={{
-                      gridColumn: "1 / -1",
-                      gridRow: calculateRowForEditDay(editDay, days),
+                      gridColumn: `1 / -1`,
+                      gridRow: calculateRowForEditDay(editDay, year, month),
                     }}
                     slideDirection={slideDirection}
                   />

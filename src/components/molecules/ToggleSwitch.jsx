@@ -45,7 +45,7 @@ const LabelText = styled.span`
   font-weight: bold;
   text-align: center;
   display: inline-block;
-  width: 100px;
+  width: auto;
 `;
 
 // コンポーネント定義

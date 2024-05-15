@@ -12,7 +12,7 @@ const LanguageSwitcher: React.FC = () => {
   return (
     <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
       <ToggleSwitch
-        label={i18n.language === "ja" ? "日本語" : "English"}
+        label={i18n.language === "ja" ? "Switch Language" : "言語を切り替える"}
         isChecked={i18n.language === "ja"}
         onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
           handleToggle(e.target.checked)

@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/static/css/main.d0321b1e.css",
-    "main.js": "/static/js/main.952651e4.js",
+    "main.js": "/static/js/main.a3d8c0e9.js",
     "static/media/logo.webp": "/static/media/logo.a430be698702c68f7863.webp",
     "static/media/KaTeX_AMS-Regular.ttf": "/static/media/KaTeX_AMS-Regular.853be92419a6c3766b9a.ttf",
     "static/media/KaTeX_Main-Regular.ttf": "/static/media/KaTeX_Main-Regular.9eba1d77abcf2aa6e94e.ttf",
@@ -70,10 +70,10 @@
     "index.html": "/index.html",
     "static/media/getFetch.cjs": "/static/media/getFetch.c4cca45e22bc1b2c7d0d.cjs",
     "main.d0321b1e.css.map": "/static/css/main.d0321b1e.css.map",
-    "main.952651e4.js.map": "/static/js/main.952651e4.js.map"
+    "main.a3d8c0e9.js.map": "/static/js/main.a3d8c0e9.js.map"
   },
   "entrypoints": [
     "static/css/main.d0321b1e.css",
-    "static/js/main.952651e4.js"
+    "static/js/main.a3d8c0e9.js"
   ]
 }

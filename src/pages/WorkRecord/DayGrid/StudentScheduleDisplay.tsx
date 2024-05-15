@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import { fetchStudentsForWorkRecords } from "../../../firebase/firestoreFunctions";
+import { fetchStudentsForWorkRecords } from "../../../firebase";
 import { Student } from "../../../types";
 import Section from "../../../components/layout/SectionComponent";
 import Tooltip from "../../../components/atoms/Tooltip";
@@ -18,7 +18,7 @@ const TitleContainer = styled.div`
 `;
 
 const StyledTable = styled.table`
-  width: 50%;
+  width: 100%;
   border-collapse: collapse;
   margin-top: 10px;
 `;

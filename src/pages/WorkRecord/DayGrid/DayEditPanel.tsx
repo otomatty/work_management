@@ -1,16 +1,16 @@
-import React, { useState } from "react";
+import React from "react";
 import styled from "styled-components";
 import { motion, AnimatePresence } from "framer-motion";
 import { StudentChangeInfo } from "../../../types";
-import { fetchTeachHour } from "../../../firebase/firestoreFunctions";
+import { fetchTeachHour } from "../../../firebase";
 import { useDispatch } from "react-redux";
-import { setWorkHours } from "../../../store/workHourSlice";
+import { setWorkHours } from "../../../store";
 import WorkTimeInputs from "./WorkTimeInput";
 import StudentInputList from "./StudentInputList";
 import WorkDescriptionInput from "./WorkDescriptionInput";
 import StudentScheduleDisplay from "./StudentScheduleDisplay";
-import WorkHoursPanel from "./WorkHourPanel";
 import ClassroomManager from "./ClassroomManager"; // ClassroomManager component imported
+import Button from "../../../components/atoms/Button";
 
 interface DayEditPanelProps {
   teacherId: string;
@@ -38,38 +38,29 @@ const EditPanelContainer = styled(motion.div)<{ style: React.CSSProperties }>`
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  width: 100%;
   grid-column: ${(props) => props.style.gridColumn};
   grid-row: ${(props) => props.style.gridRow};
   overflow: hidden;
 `;
 
-const WorkTimeWrapper = styled.div`
-  display: flex;
+const InputArea = styled.div`
+  width: 50%;
 `;
 
 const containerVariants = {
   hidden: {
     opacity: 0,
-    transition: {
-      duration: 0.5,
-      ease: "easeInOut",
-    },
   },
   visible: {
     opacity: 1,
-    height: "auto",
     transition: {
       duration: 0.5,
-      ease: "easeInOut",
     },
   },
   exit: {
     opacity: 0,
-    height: 0,
     transition: {
       duration: 0.5,
-      ease: "easeInOut",
     },
   },
   slide: (direction: number) => ({
@@ -102,7 +93,6 @@ const DayEditPanel: React.FC<DayEditPanelProps> = ({
   slideDirection,
 }) => {
   const dispatch = useDispatch(); // ディスパッチ関数を取得
-  const [isVisible, setIsVisible] = useState(true);
 
   // 日付から曜日を計算
   const date = new Date(year, month, day); // JavaScript の月は 0 から始まるため、month - 1 が必要
@@ -121,37 +111,30 @@ const DayEditPanel: React.FC<DayEditPanelProps> = ({
 
   return (
     <AnimatePresence>
-      {isVisible && (
-        <EditPanelContainer
-          style={style}
-          variants={containerVariants}
-          initial="hidden"
-          animate={slideDirection !== 0 ? "slide" : "visible"}
-          exit="exit"
-          custom={slideDirection}
-          layout
-        >
-          <h3>{day}日</h3>
+      <EditPanelContainer
+        style={style}
+        variants={containerVariants}
+        initial="hidden"
+        animate={slideDirection !== 0 ? "slide" : "visible"}
+        exit="exit"
+        custom={slideDirection}
+        layout
+      >
+        <h3>{day}日</h3>
+
+        <InputArea>
           <ClassroomManager
             teacherId={teacherId}
             year={year}
             month={month}
             day={day}
           />
-          <WorkTimeWrapper>
-            <WorkTimeInputs
-              startTime={startTime}
-              setStartTime={setStartTime}
-              endTime={endTime}
-              setEndTime={setEndTime}
-            />
-            <WorkHoursPanel
-              teacherId={teacherId}
-              year={year}
-              month={month}
-              day={day}
-            />
-          </WorkTimeWrapper>
+          <WorkTimeInputs
+            startTime={startTime}
+            setStartTime={setStartTime}
+            endTime={endTime}
+            setEndTime={setEndTime}
+          />
           <StudentScheduleDisplay
             teacherId={teacherId}
             dayOfWeek={dayOfWeek}
@@ -171,10 +154,9 @@ const DayEditPanel: React.FC<DayEditPanelProps> = ({
             value={workDescription}
             onChange={(e) => setWorkDescription(e.target.value)}
           />
-
-          <button onClick={onSave}>保存</button>
-        </EditPanelContainer>
-      )}
+          <Button label="保存" onClick={onSave} />
+        </InputArea>
+      </EditPanelContainer>
     </AnimatePresence>
   );
 };

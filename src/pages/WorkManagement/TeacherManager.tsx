@@ -2,11 +2,7 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components"; // この行を追加
 import TeacherTable from "./TeacherTable";
 import DeleteModeToggle from "./DeleteModeToggle";
-import {
-  registerTeacher,
-  deleteTeacher,
-  fetchTeachers,
-} from "../../firebase/firestoreFunctions";
+import { registerTeacher, deleteTeacher, fetchTeachers } from "../../firebase";
 
 // スタイルドコンポーネントの定義
 const AddButton = styled.button`

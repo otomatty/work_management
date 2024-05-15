@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import { fetchClassroom } from "../../../firebase/firestoreFunctions";
+import { fetchClassroom } from "../../../firebase";
 
 interface ClassroomSelectProps {
   teacherId: string;
