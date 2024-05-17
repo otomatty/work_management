@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import { fetchTeacherNameById } from "../../firebase";
+import { getTeacher } from "../../firebase";
 
 import Calendar from "./Calendar";
 import Header from "../../components/organisms/Header";
-import CalendarHeader from "./CalendarHeader"; // CalendarHeaderをインポート
+import MonthNavigation from "./MonthNavigation";
 
 interface WorkRecordProps {
   selectedTeacherId: string;
@@ -33,13 +33,12 @@ const CalenderInfo = styled.div`
 
 const WorkRecord: React.FC<WorkRecordProps> = ({ selectedTeacherId }) => {
   const [teacherName, setTeacherName] = useState("");
-  const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
-  const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
+
   // const [direction, setDirection] = useState(0);
 
   useEffect(() => {
     const fetchName = async () => {
-      const name = await fetchTeacherNameById(selectedTeacherId);
+      const name = await getTeacher(selectedTeacherId);
       setTeacherName(name);
     };
 
@@ -53,13 +52,9 @@ const WorkRecord: React.FC<WorkRecordProps> = ({ selectedTeacherId }) => {
       <Header />
       <CalenderInfo>
         <h2>勤務記録票 - {teacherName}</h2>
-        <CalendarHeader currentYear={currentYear} currentMonth={currentMonth} />
+        <MonthNavigation />
       </CalenderInfo>
-      <Calendar
-        teacherId={selectedTeacherId}
-        currentYear={currentYear}
-        currentMonth={currentMonth}
-      />
+      <Calendar teacherId={selectedTeacherId} />
     </Container>
   );
 };

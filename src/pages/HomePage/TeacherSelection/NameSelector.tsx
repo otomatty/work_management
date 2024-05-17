@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import { fetchTeachers } from "../../../firebase/teacherOperations";
+import { getTeachers } from "../../../services/teachers/teachersService";
 import { useTranslation } from "react-i18next"; // i18nextのフックをインポート
 
 const SelectorContainer = styled.div`
@@ -27,8 +27,8 @@ const NameSelector: React.FC<{
 
   useEffect(() => {
     const loadTeachers = async () => {
-      const fetchedTeachers = await fetchTeachers();
-      setTeachers(fetchedTeachers);
+      const gotTeachers = await getTeachers();
+      setTeachers(gotTeachers);
     };
 
     loadTeachers();

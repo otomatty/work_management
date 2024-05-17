@@ -1,10 +1,14 @@
 import React from "react";
 import styled, { css } from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
-import { setDirection, incrementMonth, decrementMonth } from "../../store";
-import { RootState } from "../../store/types"; // RootState のインポート
-import { FaArrowLeft, FaArrowRight } from "react-icons/fa"; // アイコンのインポート
+import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import StyledButton from "../../components/atoms/StyledButton";
+import { RootState } from "../../redux/store"; // RootStateをインポート
+import {
+  setDirection,
+  decrementMonth,
+  incrementMonth,
+} from "../../redux/workRecords/dateNavigationSlice"; // 必要なアクションをインポート
 
 const Container = styled.div`
   display: flex;

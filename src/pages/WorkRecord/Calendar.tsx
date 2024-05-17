@@ -2,9 +2,9 @@ import React from "react";
 import styled from "styled-components";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSelector } from "react-redux";
-import { RootState } from "../../store/types"; // RootState のインポート
-import DaysGrid from "./DayGrid/DaysGrid";
-import WeekStudentSchedule from "./WeekStudentSchedule/WeekStudentSchedule";
+import DaysGrid from "./WorkRecordCalender/DaysGrid";
+import WeekTeacherSchedule from "./Schedules/WeekTeacherSchedule";
+import { RootState } from "../../redux/store"; // RootStateをインポート
 
 const CalendarContainer = styled.div`
   max-width: 1400px;
@@ -27,17 +27,12 @@ const generateDaysForMonth = (year: number, month: number): Date[] => {
 
 interface CalendarProps {
   teacherId: string;
-  currentYear: number;
-  currentMonth: number;
 }
 
 const Calendar: React.FC<CalendarProps> = ({ teacherId }) => {
-  const { currentYear, currentMonth } = useSelector(
+  const { currentYear, currentMonth, direction } = useSelector(
     (state: RootState) => state.dateNavigation
   );
-  const direction = useSelector(
-    (state: RootState) => state.monthNavigation.direction
-  ); // 型を適用
 
   const days = generateDaysForMonth(currentYear, currentMonth);
   const dayNumbers = days.map((day) => day.getDate());
@@ -69,11 +64,7 @@ const Calendar: React.FC<CalendarProps> = ({ teacherId }) => {
           animate="animate"
           exit="exit"
         >
-          <WeekStudentSchedule
-            currentYear={currentYear}
-            currentMonth={currentMonth}
-            teacherId={teacherId}
-          />
+          <WeekTeacherSchedule />
           <DaysGrid
             teacherId={teacherId}
             days={dayNumbers}

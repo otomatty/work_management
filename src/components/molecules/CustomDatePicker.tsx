@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { useSelector } from "react-redux";
-import { RootState } from "../../store/store";
+import { RootState } from "../../redux/store";
 
 const CalendarContainer = styled.div`
   display: inline-block;
@@ -47,10 +47,10 @@ const CustomDatePicker: React.FC<CustomDatePickerProps> = ({
   onDateSelect,
 }) => {
   const currentMonth = useSelector(
-    (state: RootState) => state.dateNavigation.currentMonth,
+    (state: RootState) => state.dateNavigation.currentMonth
   );
   const currentYear = useSelector(
-    (state: RootState) => state.dateNavigation.currentYear,
+    (state: RootState) => state.dateNavigation.currentYear
   );
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
@@ -107,7 +107,7 @@ const CustomDatePicker: React.FC<CustomDatePickerProps> = ({
           $isInRange={isDateInRange(dayDate)}
         >
           {i}
-        </Day>,
+        </Day>
       );
       daysRendered++;
     }

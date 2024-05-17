@@ -2,27 +2,29 @@ export interface Student {
   firestoreId: string; // Firebase のドキュメント ID
   studentName: string;
   subjectAndGrade: string;
-  time: string;
+  time: number;
 }
 
-export interface StudentChangeInfo {
+export interface LessonInfo {
   studentName: string;
+  subject: string;
+  grade: string;
   status: string;
-  time: string;
-}
-
-export interface WorkHours {
-  teachingHours: number;
-  adminHours: number;
+  time: number;
 }
 
 export interface Schedule {
   dayOfWeek: string;
-  startTime?: string;
-  endTime?: string;
-  students?: Array<{
-    studentName: string;
-    subjectAndGrade: string;
-    time: string;
-  }>;
+  classroom: string;
+  startTime: string;
+  endTime: string;
+  students: Student[];
+}
+
+export interface WorkRecord {
+  classroom: string;
+  startTime: string;
+  endTime: string;
+  lessonInfo: LessonInfo[];
+  workDescription: string;
 }
