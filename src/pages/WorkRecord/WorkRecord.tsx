@@ -54,7 +54,7 @@ const WorkRecord: React.FC<WorkRecordProps> = ({ selectedTeacherId }) => {
         <h2>勤務記録票 - {teacherName}</h2>
         <MonthNavigation />
       </CalenderInfo>
-      <Calendar teacherId={selectedTeacherId} />
+      <Calendar />
     </Container>
   );
 };

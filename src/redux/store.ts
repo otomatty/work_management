@@ -2,9 +2,10 @@ import { configureStore, ThunkAction, Action } from "@reduxjs/toolkit";
 import createSagaMiddleware from "redux-saga";
 import rootReducer from "./reducers";
 import rootSaga from "./sagas";
-import dateNavigationReducer from "./workRecords/dateNavigationSlice"; // 新しいスライスをインポート
-import scheduleReducer from "./workRecords/scheduleSlice"; // Added scheduleReducer
-import teacherReducer from "./teacherSlice"; // Added teacherReducer
+import dateNavigationReducer from "./teacher/dateNavigationSlice"; // 新しいスライスをインポート
+import scheduleReducer from "./teacher/scheduleSlice"; // Added scheduleReducer
+import teacherReducer from "./teacher/teacherSlice"; // Added teacherReducer
+import workRecordsReducer from "./teacher/workRecordsSlice"; // Added workRecordsReducer
 
 const sagaMiddleware = createSagaMiddleware();
 
@@ -14,6 +15,7 @@ const store = configureStore({
     dateNavigation: dateNavigationReducer, // 新しいスライスを追加
     schedule: scheduleReducer, // Added schedule slice
     teacher: teacherReducer, // Added teacher slice
+    workRecords: workRecordsReducer, // Added workRecords slice
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(sagaMiddleware),

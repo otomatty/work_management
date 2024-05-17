@@ -1,12 +1,12 @@
-import React, { useState, useEffect, useRef } from "react";
-import { useDispatch } from "react-redux";
+import React, { useEffect, useRef } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
-import { setIsVisible } from "../../../redux";
-import { fetchWorkRecord, fetchClassroom } from "../../../firebase";
-import { LessonInfo } from "../../../types";
 import CellComponent from "../../../components/atoms/AnimatedCell";
 import WorkDescriptionDisplay from "./WorkDescriptionDisplay";
 import ClassroomDisplay from "./ClassroomDisplay";
+import WorkHoursDisplay from "./WorkHoursDisplay"; // New component imported
+import { RootState } from "../../../redux/store";
+import { fetchWorkRecordsRequest } from "../../../redux/actions";
 
 const Wrapper = styled.div<{ $isSaturday: boolean; $isSunday: boolean }>`
   border-radius: 8px;
@@ -39,14 +39,6 @@ const Title = styled.span`
   font-size: 0.8rem;
 `;
 
-const Time = styled.time`
-  display: inline-block;
-  font-size: 1.6rem;
-  font-weight: bold;
-  margin: 4px 0;
-  height: 2.4rem;
-`;
-
 const Table = styled.table`
   width: 100%;
   border-collapse: collapse;
@@ -72,10 +64,8 @@ interface DayCellProps {
   day: number;
   isSaturday: boolean;
   isSunday: boolean;
-  teacherId: string;
   year: number;
   month: number;
-  dataVersion: number;
   onEdit: () => void;
 }
 
@@ -83,76 +73,28 @@ const DayCell: React.FC<DayCellProps> = ({
   day,
   isSaturday,
   isSunday,
-  teacherId,
   year,
   month,
-  dataVersion,
   onEdit,
 }) => {
-  const [startTime, setStartTime] = useState("");
-  const [endTime, setEndTime] = useState("");
-  const [lessonInfo, setLessonInfo] = useState<LessonInfo[]>([
-    { studentName: "", grade: "", subject: "", status: "", time: "" },
-  ]);
-  const [workDescription, setWorkDescription] = useState("");
-  const cellRef = useRef<HTMLDivElement>(null);
-  const [weekday, setWeekday] = useState("");
   const dispatch = useDispatch();
-  const [classroom, setClassroom] = useState(""); // classroom 状態を追加
+  const teacherId = useSelector((state: RootState) => state.teacher.teacherId);
+  const dateKey = `${year}-${month}-${day}`;
+  const workRecord = useSelector(
+    (state: RootState) => state.workRecords.workRecords[dateKey]
+  );
+  const cellRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const date = new Date(year, month, day);
-    const weekdayNames = [
-      "Sunday",
-      "Monday",
-      "Tuesday",
-      "Wednesday",
-      "Thursday",
-      "Friday",
-      "Saturday",
-    ];
-    setWeekday(weekdayNames[date.getDay()]);
-    const loadData = async () => {
-      const workRecord = await fetchWorkRecord(teacherId, year, month, day);
-      if (workRecord) {
-        setStartTime(workRecord.startTime || "");
-        setEndTime(workRecord.endTime || "");
-        const formattedLessonInfo =
-          workRecord.lessonInfo?.map((lessonInfo) => ({
-            studentName: lessonInfo.studentName,
-            grade: lessonInfo.grade,
-            subject: lessonInfo.subject,
-            status: lessonInfo.status,
-            time: lessonInfo.time,
-          })) || [];
-        setLessonInfo(formattedLessonInfo);
-        setWorkDescription(workRecord.workDescription || "");
-      }
-    };
-    loadData();
-  }, [teacherId, year, month, day, dataVersion]);
-
-  useEffect(() => {
-    const loadClassroom = async () => {
-      const dateIdentifier = `${year}-${month + 1}-${day.toString().padStart(2, "0")}`;
-      const fetchedClassroom = await fetchClassroom(
-        teacherId,
-        dateIdentifier,
-        false
-      );
-      setClassroom(fetchedClassroom);
-    };
-
-    loadClassroom();
-  }, [teacherId, year, month, day, dataVersion]); // 依存関係に dataVersion を追加
+    if (teacherId) {
+      dispatch(fetchWorkRecordsRequest(teacherId, year, month, day));
+    }
+  }, [dispatch, teacherId, year, month, day]);
 
   const handleClick = () => {
-    dispatch(setIsVisible(true));
     if (cellRef.current) {
       cellRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
-      setTimeout(() => {
-        onEdit();
-      }, 500);
+      onEdit();
     }
   };
 
@@ -164,26 +106,16 @@ const DayCell: React.FC<DayCellProps> = ({
             <Day>{day}</Day>
           </Daybox>
           <InfoBox>
-            <ClassroomDisplay
-              teacherId={teacherId}
-              year={year}
-              month={month}
-              day={day}
-              classroom={classroom} // 状態から classroom を渡す
+            <ClassroomDisplay classroom={workRecord?.classroom || ""} />
+            <WorkHoursDisplay
+              teachHour={workRecord?.teachHour || 0}
+              officeHour={workRecord?.officeHour || 0}
             />
             <div>
-              <Title>出勤時間</Title>
-              <Time>{startTime || ""}</Time>
-            </div>
-            <div>
-              <Title>退勤時間</Title>
-              <Time>{endTime || ""}</Time>
-            </div>
-            <div>
-              <Title>レッスン変更</Title>
+              <Title>レッスン内容</Title>
               <Table>
                 <tbody>
-                  {lessonInfo.map((lessonInfo, index) => (
+                  {workRecord?.lessonInfo?.map((lessonInfo, index) => (
                     <Tr key={index}>
                       <Td $status={lessonInfo.status}>
                         {lessonInfo.studentName}
@@ -195,7 +127,9 @@ const DayCell: React.FC<DayCellProps> = ({
                 </tbody>
               </Table>
             </div>
-            <WorkDescriptionDisplay description={workDescription} />
+            <WorkDescriptionDisplay
+              description={workRecord?.workDescription || ""}
+            />
           </InfoBox>
         </Wrapper>
       </CellComponent>

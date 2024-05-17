@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { AppThunk, RootState } from "./../store";
+import { AppThunk, RootState } from "../store";
 import { schedulesService } from "../../services/teachers/schedulesService"; // API呼び出し関数をインポート
 
 interface ScheduleState {

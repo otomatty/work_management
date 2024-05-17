@@ -446,4 +446,23 @@ export const workRecordsService = {
       throw error;
     }
   },
+
+  deleteWorkRecords: async (startDate, endDate, year, month) => {
+    // 実際の削除ロジックをここに実装
+  },
+  insertWorkRecords: async (workRecords) => {
+    // 実際の挿入ロジックをここに実装
+    for (const { date, workRecord } of workRecords) {
+      await fetch(
+        `/api/workRecords/${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(workRecord),
+        }
+      );
+    }
+  },
 };

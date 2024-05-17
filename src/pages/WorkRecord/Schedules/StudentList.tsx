@@ -111,7 +111,7 @@ const StudentList: React.FC<StudentListProps> = ({
             key={student.firestoreId}
             onClick={() => handleStudentClick(student)}
           >
-            {student.studentName} ({student.subjectAndGrade}) {student.time}
+            {student.studentName} ({student.subject}) {student.time}
           </ListItem>
         ))}
         {isModalOpen && (

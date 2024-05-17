@@ -1,30 +1,23 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { motion, AnimatePresence } from "framer-motion";
-import { LessonInfo } from "../../../types";
-import { fetchTeachHour } from "../../../firebase";
-import { useDispatch } from "react-redux";
-import { setWorkHours } from "../../../redux";
+import { useDispatch, useSelector } from "react-redux";
 import WorkTimeInputs from "./WorkTimeInput";
 import LessonInputList from "./LessonInputList";
 import WorkDescriptionInput from "./WorkDescriptionInput";
-import ClassroomManager from "./ClassroomManager"; // ClassroomManager component imported
+import ClassroomManager from "./ClassroomManager";
 import Button from "../../../components/atoms/Button";
+import { RootState } from "../../../redux/store";
+import {
+  fetchWorkRecordsRequest,
+  saveWorkRecordRequest,
+} from "../../../redux/actions";
+import { LessonInfo } from "../../../types";
 
 interface DayEditPanelProps {
-  teacherId: string;
   year: number;
   month: number;
   day: number;
-  startTime: string;
-  setStartTime: React.Dispatch<React.SetStateAction<string>>;
-  endTime: string;
-  setEndTime: React.Dispatch<React.SetStateAction<string>>;
-  lessonInfo: LessonInfo[];
-  setLessonInfo: React.Dispatch<React.SetStateAction<LessonInfo[]>>;
-  workDescription: string;
-  setWorkDescription: React.Dispatch<React.SetStateAction<string>>;
-  onSave: (e?: React.MouseEvent<HTMLButtonElement>) => void;
   style: React.CSSProperties;
   slideDirection: number;
 }
@@ -74,35 +67,81 @@ const containerVariants = {
 };
 
 const DayEditPanel: React.FC<DayEditPanelProps> = ({
-  teacherId,
   year,
   month,
   day,
-  startTime,
-  setStartTime,
-  endTime,
-  setEndTime,
-  lessonInfo,
-  setLessonInfo,
-  workDescription,
-  setWorkDescription,
   style,
   slideDirection,
 }) => {
-  const dispatch = useDispatch(); // ディスパッチ関数を取得
+  const dispatch = useDispatch();
+  const teacherId = useSelector((state: RootState) => state.teacher.teacherId);
+  const workRecord = useSelector(
+    (state: RootState) =>
+      state.workRecords.workRecords[`${year}-${month}-${day}`]
+  );
 
-  // 日付から曜日を計算
-  const date = new Date(year, month, day); // JavaScript の月は 0 から始まるため、month - 1 が必要
-  const dayOfWeek = date.toLocaleString("en-us", { weekday: "long" });
+  const [classroom, setClassroom] = useState(workRecord?.classroom || "");
+  const [startTime, setStartTime] = useState(workRecord?.startTime || "");
+  const [endTime, setEndTime] = useState(workRecord?.endTime || "");
+  const [lessonInfo, setLessonInfo] = useState(workRecord?.lessonInfo || []);
+  const [workDescription, setWorkDescription] = useState(
+    workRecord?.workDescription || ""
+  );
+
+  useEffect(() => {
+    if (teacherId) {
+      dispatch(fetchWorkRecordsRequest(teacherId, year, month, day));
+    }
+  }, [dispatch, teacherId, year, month, day]);
+
+  useEffect(() => {
+    if (workRecord) {
+      setClassroom(workRecord.classroom);
+      setStartTime(workRecord.startTime);
+      setEndTime(workRecord.endTime);
+      setLessonInfo(workRecord.lessonInfo);
+      setWorkDescription(workRecord.workDescription);
+    }
+  }, [workRecord]);
+
+  const saveLessonInfo = async (
+    teacherId: string,
+    year: number,
+    month: number,
+    day: number,
+    lessonInfo: LessonInfo[]
+  ) => {
+    try {
+      const updatedWorkRecord = {
+        classroom,
+        startTime,
+        endTime,
+        lessonInfo,
+        workDescription,
+      };
+      dispatch(
+        saveWorkRecordRequest(teacherId, year, month, day, updatedWorkRecord)
+      );
+    } catch (error) {
+      console.error("Failed to save lesson info:", error);
+    }
+  };
 
   const onSave = async (e?: React.MouseEvent<HTMLButtonElement>) => {
     e?.preventDefault();
     try {
-      const workHours = await fetchTeachHour(teacherId, year, month, day);
-      // Redux ストアを更新するアクションをディスパッチ
-      dispatch(setWorkHours(workHours));
+      const updatedWorkRecord = {
+        classroom,
+        startTime,
+        endTime,
+        lessonInfo,
+        workDescription,
+      };
+      dispatch(
+        saveWorkRecordRequest(teacherId, year, month, day, updatedWorkRecord)
+      );
     } catch (error) {
-      console.error("Failed to fetch work hours:", error);
+      console.error("Failed to save work record:", error);
     }
   };
 
@@ -120,12 +159,7 @@ const DayEditPanel: React.FC<DayEditPanelProps> = ({
         <h3>{day}日</h3>
 
         <InputArea>
-          <ClassroomManager
-            teacherId={teacherId}
-            year={year}
-            month={month}
-            day={day}
-          />
+          <ClassroomManager classroom={classroom} setClassroom={setClassroom} />
           <WorkTimeInputs
             startTime={startTime}
             setStartTime={setStartTime}
@@ -134,12 +168,9 @@ const DayEditPanel: React.FC<DayEditPanelProps> = ({
           />
 
           <LessonInputList
-            teacherId={teacherId}
-            year={year}
-            month={month}
-            day={day}
             lessonInfo={lessonInfo}
             setLessonInfo={setLessonInfo}
+            saveLessonInfo={saveLessonInfo}
           />
           <WorkDescriptionInput
             value={workDescription}

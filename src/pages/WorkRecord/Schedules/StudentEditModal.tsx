@@ -50,9 +50,8 @@ const StudentEditModal: React.FC<StudentEditModalProps> = ({
   onDelete,
 }) => {
   const [studentName, setStudentName] = useState(student?.studentName || "");
-  const [subjectAndGrade, setSubjectGrade] = useState(
-    student?.subjectAndGrade || ""
-  );
+  const [grade, setGrade] = useState(student?.grade || "");
+  const [subject, setSubject] = useState(student?.subject || "");
   const [time, setTime] = useState<string | number>(student?.time || "");
 
   const handleUpdateClick = () => {
@@ -60,7 +59,8 @@ const StudentEditModal: React.FC<StudentEditModalProps> = ({
       const updatedStudent: Student = {
         ...student,
         studentName,
-        subjectAndGrade,
+        grade,
+        subject,
         time: Number(time),
       };
       onUpdate(updatedStudent);
@@ -83,9 +83,15 @@ const StudentEditModal: React.FC<StudentEditModalProps> = ({
         />
         <Input
           type="text"
-          value={subjectAndGrade}
-          onChange={(e) => setSubjectGrade(e.target.value)}
+          value={grade}
+          onChange={(e) => setGrade(e.target.value)}
         />
+        <Input
+          type="text"
+          value={subject}
+          onChange={(e) => setSubject(e.target.value)}
+        />
+
         <Select value={time} onChange={(e) => setTime(Number(e.target.value))}>
           {Array.from({ length: 11 }, (_, i) => i * 10).map((time, index) => (
             <option key={index} value={time.toString()}>

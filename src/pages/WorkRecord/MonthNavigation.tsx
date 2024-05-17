@@ -8,7 +8,7 @@ import {
   setDirection,
   decrementMonth,
   incrementMonth,
-} from "../../redux/workRecords/dateNavigationSlice"; // 必要なアクションをインポート
+} from "../../redux/teacher/dateNavigationSlice"; // 必要なアクションをインポート
 
 const Container = styled.div`
   display: flex;

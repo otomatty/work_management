@@ -1,9 +1,8 @@
-import React, { useEffect } from "react";
+import React from "react";
 import styled from "styled-components";
 import ModalSubTitle from "../../../components/atoms/ModalSubTitle";
 import Section from "../../../components/layout/SectionComponent";
 import { LessonInfo } from "../../../types";
-import { saveLessonInfo, fetchLessonInfo } from "../../../firebase";
 
 const Table = styled.table`
   width: 100%;
@@ -70,45 +69,32 @@ const DeleteButton = styled.button`
 `;
 
 interface LessonInputListProps {
-  teacherId: string;
-  year: number;
-  month: number;
-  day: number;
   lessonInfo: LessonInfo[];
   setLessonInfo: (lessonInfo: LessonInfo[]) => void;
+  saveLessonInfo: (
+    teacherId: string,
+    year: number,
+    month: number,
+    day: number,
+    lessonInfo: LessonInfo[]
+  ) => Promise<void>;
 }
 
 const LessonInputList: React.FC<LessonInputListProps> = ({
-  teacherId,
-  year,
-  month,
-  day,
   lessonInfo,
   setLessonInfo,
 }) => {
-  useEffect(() => {
-    const loadData = async () => {
-      const fetchedLessonInfo = await fetchLessonInfo(
-        teacherId,
-        year,
-        month,
-        day
-      );
-      setLessonInfo(fetchedLessonInfo);
-    };
-
-    loadData();
-  }, [teacherId, year, month, day, setLessonInfo]);
-
   const handleInputChange = async (
     index: number,
     field: keyof LessonInfo,
     value: string
   ) => {
     const updatedLessons = [...lessonInfo];
-    updatedLessons[index][field] = value;
+    updatedLessons[index] = {
+      ...updatedLessons[index],
+      [field]: field === "time" ? Number(value) : value,
+    };
     setLessonInfo(updatedLessons);
-    await saveLessonInfo(teacherId, year, month, day, updatedLessons);
   };
 
   const handleAddLesson = async () => {
@@ -117,17 +103,15 @@ const LessonInputList: React.FC<LessonInputListProps> = ({
       grade: "",
       subject: "",
       status: "",
-      time: "",
+      time: 0, // 初期値を number 型に変更
     };
     const newLessonInfo = [...lessonInfo, newLesson];
     setLessonInfo(newLessonInfo);
-    await saveLessonInfo(teacherId, year, month, day, newLessonInfo);
   };
 
   const handleRemoveLesson = async (index: number) => {
     const filteredLessons = lessonInfo.filter((_, i) => i !== index);
     setLessonInfo(filteredLessons);
-    await saveLessonInfo(teacherId, year, month, day, filteredLessons);
   };
 
   return (
@@ -156,7 +140,24 @@ const LessonInputList: React.FC<LessonInputListProps> = ({
                   placeholder="生徒名"
                 />
               </Td>
-              <Td></Td>
+              <Td>
+                <input
+                  type="text"
+                  value={lesson.grade}
+                  onChange={(e) =>
+                    handleInputChange(index, "grade", e.target.value)
+                  }
+                  placeholder="学年"
+                />
+                <input
+                  type="text"
+                  value={lesson.subject}
+                  onChange={(e) =>
+                    handleInputChange(index, "subject", e.target.value)
+                  }
+                  placeholder="教科"
+                />
+              </Td>
               <Td>
                 <select
                   value={lesson.status}

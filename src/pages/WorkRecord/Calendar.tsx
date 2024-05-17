@@ -15,27 +15,12 @@ const CalendarContainer = styled.div`
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 `;
 
-const generateDaysForMonth = (year: number, month: number): Date[] => {
-  const date = new Date(year, month, 1);
-  const days = [];
-  while (date.getMonth() === month) {
-    days.push(new Date(date));
-    date.setDate(date.getDate() + 1);
-  }
-  return days;
-};
+interface CalendarProps {}
 
-interface CalendarProps {
-  teacherId: string;
-}
-
-const Calendar: React.FC<CalendarProps> = ({ teacherId }) => {
+const Calendar: React.FC<CalendarProps> = () => {
   const { currentYear, currentMonth, direction } = useSelector(
     (state: RootState) => state.dateNavigation
   );
-
-  const days = generateDaysForMonth(currentYear, currentMonth);
-  const dayNumbers = days.map((day) => day.getDate());
 
   const variants = {
     initial: (direction: number) => ({
@@ -65,12 +50,7 @@ const Calendar: React.FC<CalendarProps> = ({ teacherId }) => {
           exit="exit"
         >
           <WeekTeacherSchedule />
-          <DaysGrid
-            teacherId={teacherId}
-            days={dayNumbers}
-            year={currentYear}
-            month={currentMonth}
-          />
+          <DaysGrid year={currentYear} month={currentMonth} />
         </motion.div>
       </AnimatePresence>
     </CalendarContainer>

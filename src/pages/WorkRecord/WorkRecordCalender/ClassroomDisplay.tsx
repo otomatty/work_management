@@ -1,14 +1,7 @@
-import React, { useState, useEffect } from "react";
-import { fetchClassroom } from "../../../firebase";
+import React from "react";
 import styled from "styled-components";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../redux/store";
 
 interface ClassroomDisplayProps {
-  teacherId: string;
-  year: number;
-  month: number;
-  day: number;
   classroom: string;
 }
 
@@ -40,7 +33,7 @@ const translateClassroomName = (classroom: string): string => {
     case "TwoClassrooms":
       return "2教室";
     default:
-      return "未割り当て";
+      return "未設定";
   }
 };
 
@@ -57,51 +50,15 @@ const ClassroomTag = styled.div<{ color: string }>`
   text-align: center;
 `;
 
-const NoDataTag = styled(ClassroomTag).attrs({
-  color: "#525252", // Default gray color
-})``;
-
-const ClassroomDisplay: React.FC<ClassroomDisplayProps> = ({
-  teacherId,
-  year,
-  month,
-  day,
-}) => {
-  const [fetchedClassroom, setFetchedClassroom] = useState("");
-  const selectedClassroom = useSelector(
-    (state: RootState) =>
-      state.classroom.selectedClassroom[`${year}-${month}-${day}`]
-  );
-
-  useEffect(() => {
-    const loadClassroom = async () => {
-      const dateIdentifier = `${year}-${month + 1}-${day.toString().padStart(2, "0")}`;
-      const fetchedClassroom = await fetchClassroom(
-        teacherId,
-        dateIdentifier,
-        false
-      );
-      setFetchedClassroom(fetchedClassroom);
-    };
-
-    loadClassroom();
-  }, [teacherId, year, month, day]); // 依存関係に dataVersion を追加
-
-  // 最終的に表示する教室情報を決定
-  const classroomToShow = selectedClassroom || fetchedClassroom;
-
-  const classroomColor = getClassroomColor(classroomToShow);
-  const translatedClassroomName = translateClassroomName(classroomToShow);
+const ClassroomDisplay: React.FC<ClassroomDisplayProps> = ({ classroom }) => {
+  const classroomColor = getClassroomColor(classroom);
+  const translatedClassroomName = translateClassroomName(classroom);
 
   return (
     <Container>
-      {classroomToShow ? (
-        <ClassroomTag color={classroomColor}>
-          {translatedClassroomName}
-        </ClassroomTag>
-      ) : (
-        <NoDataTag color="#D3D3D3">未設定</NoDataTag>
-      )}
+      <ClassroomTag color={classroomColor}>
+        {translatedClassroomName}
+      </ClassroomTag>
     </Container>
   );
 };

@@ -11,16 +11,13 @@ const DateRangePicker: React.FC<DateRangePickerProps> = ({
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
 
-  const handleStartDateSelect = (date: Date) => {
-    setStartDate(date);
-    // If endDate is already set and is before the new startDate, reset endDate
-    if (endDate && date > endDate) {
+  const handleDateSelect = (date: Date) => {
+    if (!startDate || (startDate && endDate)) {
+      setStartDate(date);
       setEndDate(null);
-    }
-  };
-
-  const handleEndDateSelect = (date: Date) => {
-    if (startDate && date >= startDate) {
+    } else if (date < startDate) {
+      setStartDate(date);
+    } else {
       setEndDate(date);
       onDateRangeSelect(startDate, date);
     }
@@ -28,8 +25,11 @@ const DateRangePicker: React.FC<DateRangePickerProps> = ({
 
   return (
     <div>
-      <CustomDatePicker onDateSelect={handleStartDateSelect} />
-      {startDate && <CustomDatePicker onDateSelect={handleEndDateSelect} />}
+      <div>
+        <p>開始日: {startDate ? startDate.toLocaleDateString() : "未選択"}</p>
+        <p>終了日: {endDate ? endDate.toLocaleDateString() : "未選択"}</p>
+      </div>
+      <CustomDatePicker onDateSelect={handleDateSelect} />
     </div>
   );
 };

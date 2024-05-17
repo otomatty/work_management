@@ -1,11 +1,11 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface TeacherState {
-  teacherId: string | null;
+  teacherId: string;
 }
 
 const initialState: TeacherState = {
-  teacherId: null,
+  teacherId: "",
 };
 
 const teacherSlice = createSlice({

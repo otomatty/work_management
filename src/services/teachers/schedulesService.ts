@@ -234,4 +234,11 @@ export const schedulesService = {
       throw error;
     }
   },
+  fetchSchedules: async () => {
+    const response = await fetch("/api/schedules");
+    if (!response.ok) {
+      throw new Error("Failed to fetch schedules");
+    }
+    return await response.json();
+  },
 };

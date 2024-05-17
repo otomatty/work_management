@@ -68,3 +68,74 @@ export const fetchWorkRecordsFailure = (error: any) => ({
   type: FETCH_WORK_RECORDS_FAILURE,
   payload: error,
 });
+
+export const SAVE_WORK_RECORD_REQUEST = "SAVE_WORK_RECORD_REQUEST";
+export const SAVE_WORK_RECORD_SUCCESS = "SAVE_WORK_RECORD_SUCCESS";
+export const SAVE_WORK_RECORD_FAILURE = "SAVE_WORK_RECORD_FAILURE";
+
+export const saveWorkRecordRequest = (
+  teacherId: string,
+  year: number,
+  month: number,
+  day: number,
+  workRecord: any
+) => ({
+  type: SAVE_WORK_RECORD_REQUEST,
+  payload: { teacherId, year, month, day, workRecord },
+});
+
+export const saveWorkRecordSuccess = (workRecord: any) => ({
+  type: SAVE_WORK_RECORD_SUCCESS,
+  payload: workRecord,
+});
+
+export const saveWorkRecordFailure = (error: any) => ({
+  type: SAVE_WORK_RECORD_FAILURE,
+  payload: error,
+});
+
+export const DELETE_WORK_RECORDS_REQUEST = "DELETE_WORK_RECORDS_REQUEST";
+export const DELETE_WORK_RECORDS_SUCCESS = "DELETE_WORK_RECORDS_SUCCESS";
+export const DELETE_WORK_RECORDS_FAILURE = "DELETE_WORK_RECORDS_FAILURE";
+
+export const INSERT_WORK_RECORDS_REQUEST = "INSERT_WORK_RECORDS_REQUEST";
+export const INSERT_WORK_RECORDS_SUCCESS = "INSERT_WORK_RECORDS_SUCCESS";
+export const INSERT_WORK_RECORDS_FAILURE = "INSERT_WORK_RECORDS_FAILURE";
+
+export const deleteWorkRecordsRequest = (
+  startDate: Date,
+  endDate: Date,
+  year: number,
+  month: number
+) => ({
+  type: DELETE_WORK_RECORDS_REQUEST,
+  payload: { startDate, endDate, year, month },
+});
+
+export const deleteWorkRecordsSuccess = () => ({
+  type: DELETE_WORK_RECORDS_SUCCESS,
+});
+
+export const deleteWorkRecordsFailure = (error: any) => ({
+  type: DELETE_WORK_RECORDS_FAILURE,
+  payload: error,
+});
+
+export const insertWorkRecordsRequest = (
+  startDate: Date,
+  endDate: Date,
+  year: number,
+  month: number
+) => ({
+  type: INSERT_WORK_RECORDS_REQUEST,
+  payload: { startDate, endDate, year, month },
+});
+
+export const insertWorkRecordsSuccess = () => ({
+  type: INSERT_WORK_RECORDS_SUCCESS,
+});
+
+export const insertWorkRecordsFailure = (error: any) => ({
+  type: INSERT_WORK_RECORDS_FAILURE,
+  payload: error,
+});

@@ -1,15 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { AnimatePresence } from "framer-motion";
-import { setMonthlyWorkRecord } from "../../../firebase";
-import { LessonInfo } from "../../../types";
 import DayCell from "./DayCell";
 import DayEditPanel from "./DayEditPanel";
 import Toolbar from "./Toolbar";
 
 interface DaysGridProps {
-  teacherId: string;
-  days: number[];
   year: number;
   month: number;
 }
@@ -56,52 +52,9 @@ const calculateRowForEditDay = (
   return Math.floor((dayIndex + firstDayOfMonth) / 7) + 2;
 };
 
-const DaysGrid: React.FC<DaysGridProps> = ({
-  teacherId,
-  days,
-  year,
-  month,
-}) => {
-  const [dataVersion, setDataVersion] = useState(0);
-
+const DaysGrid: React.FC<DaysGridProps> = ({ year, month }) => {
   const [editDay, setEditDay] = useState<number | null>(null);
-  const [startTime, setStartTime] = useState<string>("");
-  const [endTime, setEndTime] = useState<string>("");
-  const [lessonInfo, setLessonInfo] = useState<LessonInfo[]>([]);
-  const [workDescription, setWorkDescription] = useState<string>("");
   const [slideDirection, setSlideDirection] = useState(0);
-
-  useEffect(() => {
-    if (editDay !== null) {
-      // Additional logic can be placed here if needed when editDay changes
-    }
-  }, [editDay]);
-
-  const handleSave = async (e?: React.MouseEvent<HTMLButtonElement>) => {
-    e?.preventDefault();
-    console.log("Save data");
-    setDataVersion((prev) => prev + 1);
-  };
-
-  const handleSetMonthlyWorkRecord = async () => {
-    try {
-      await setMonthlyWorkRecord(teacherId, year, month);
-      console.log("Monthly schedule set for all days");
-      setDataVersion((prev) => prev + 1);
-    } catch (error) {
-      console.error("Failed to set monthly schedule:", error);
-    }
-  };
-
-  const handleBulkDelete = async () => {
-    try {
-      // ここに一括削除のロジックを実装
-      console.log("Bulk delete executed");
-      setDataVersion((prev) => prev + 1);
-    } catch (error) {
-      console.error("Failed to bulk delete:", error);
-    }
-  };
 
   const handleEditDay = async (day: number) => {
     const firstDayOfMonth = new Date(year, month, 1).getDay();
@@ -150,13 +103,7 @@ const DaysGrid: React.FC<DaysGridProps> = ({
       <TitleContainer>
         <Title>勤務記録表</Title>
       </TitleContainer>
-      <Toolbar
-        onBulkInsert={handleSetMonthlyWorkRecord}
-        onBulkDelete={handleBulkDelete}
-        teacherId={teacherId}
-        year={year}
-        month={month}
-      />
+      <Toolbar year={year} month={month} />
       <DayOfWeekHeader>
         {["日", "月", "火", "水", "木", "金", "土"].map((day, index) => (
           <DayOfWeek key={index}>{day}</DayOfWeek>
@@ -176,29 +123,17 @@ const DaysGrid: React.FC<DaysGridProps> = ({
                 day={day}
                 isSaturday={dayOfWeek === 6}
                 isSunday={dayOfWeek === 0}
-                teacherId={teacherId}
                 year={year}
                 month={month}
-                dataVersion={dataVersion}
                 onEdit={() => handleEditDay(day)}
               />
               <AnimatePresence>
                 {isEditDay && editDay !== null && (
                   <DayEditPanel
-                    teacherId={teacherId}
                     year={year}
                     month={month}
                     key={editDay}
                     day={editDay}
-                    startTime={startTime}
-                    setStartTime={setStartTime}
-                    endTime={endTime}
-                    setEndTime={setEndTime}
-                    lessonInfo={lessonInfo}
-                    setLessonInfo={setLessonInfo}
-                    workDescription={workDescription}
-                    setWorkDescription={setWorkDescription}
-                    onSave={handleSave}
                     style={{
                       gridColumn: `1 / -1`,
                       gridRow: calculateRowForEditDay(editDay, year, month),
