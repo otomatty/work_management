@@ -31,6 +31,16 @@ import {
 
 import { WorkRecord, LessonInfo } from "../../types"; // 型定義をインポート
 
+import {
+  collection,
+  query,
+  where,
+  getDocs,
+  writeBatch,
+  doc,
+} from "firebase/firestore";
+import { db } from "../../firebase/firebase";
+
 export const workRecordsService = {
   // Work Record related functions
   addWorkRecord: async (
@@ -447,22 +457,60 @@ export const workRecordsService = {
     }
   },
 
-  deleteWorkRecords: async (startDate, endDate, year, month) => {
-    // 実際の削除ロジックをここに実装
-  },
-  insertWorkRecords: async (workRecords) => {
-    // 実際の挿入ロジックをここに実装
-    for (const { date, workRecord } of workRecords) {
-      await fetch(
-        `/api/workRecords/${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(workRecord),
-        }
+  deleteWorkRecords: async (
+    teacherId: string,
+    startDate: Date,
+    endDate: Date
+  ): Promise<void> => {
+    try {
+      const workRecordsCollection = collection(db, "workRecords");
+      const q = query(
+        workRecordsCollection,
+        where("teacherId", "==", teacherId),
+        where("date", ">=", startDate),
+        where("date", "<=", endDate)
       );
+
+      const querySnapshot = await getDocs(q);
+      const batch = writeBatch(db);
+
+      querySnapshot.forEach((doc) => {
+        batch.delete(doc.ref);
+      });
+
+      await batch.commit();
+      console.log("Work records deleted successfully");
+    } catch (error) {
+      console.error("Error deleting work records:", error);
+      throw error;
+    }
+  },
+
+  insertWorkRecords: async (
+    teacherId: string,
+    workRecords: { date: Date; workRecord: WorkRecord }[]
+  ): Promise<void> => {
+    try {
+      const batch = writeBatch(db);
+      const workRecordsCollection = collection(db, "workRecords");
+
+      for (const { date, workRecord } of workRecords) {
+        const docRef = doc(
+          workRecordsCollection,
+          `${teacherId}_${date.toISOString()}`
+        );
+        batch.set(docRef, {
+          ...workRecord,
+          date: date.toISOString(),
+          teacherId, // teacherId を追加
+        });
+      }
+
+      await batch.commit();
+      console.log("Work records inserted successfully");
+    } catch (error) {
+      console.error("Error inserting work records:", error);
+      throw error;
     }
   },
 };

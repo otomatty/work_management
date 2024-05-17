@@ -139,3 +139,58 @@ export const insertWorkRecordsFailure = (error: any) => ({
   type: INSERT_WORK_RECORDS_FAILURE,
   payload: error,
 });
+
+export const FETCH_TEACHERS_REQUEST = "FETCH_TEACHERS_REQUEST";
+export const FETCH_TEACHERS_SUCCESS = "FETCH_TEACHERS_SUCCESS";
+export const FETCH_TEACHERS_FAILURE = "FETCH_TEACHERS_FAILURE";
+export const ADD_NEW_TEACHER_REQUEST = "ADD_NEW_TEACHER_REQUEST";
+export const ADD_NEW_TEACHER_SUCCESS = "ADD_NEW_TEACHER_SUCCESS";
+export const ADD_NEW_TEACHER_FAILURE = "ADD_NEW_TEACHER_FAILURE";
+export const REMOVE_TEACHER_REQUEST = "REMOVE_TEACHER_REQUEST";
+export const REMOVE_TEACHER_SUCCESS = "REMOVE_TEACHER_SUCCESS";
+export const REMOVE_TEACHER_FAILURE = "REMOVE_TEACHER_FAILURE";
+
+// Action creators
+export const fetchTeachersRequest = () => ({
+  type: FETCH_TEACHERS_REQUEST,
+});
+
+export const fetchTeachersSuccess = (teachers: any) => ({
+  type: FETCH_TEACHERS_SUCCESS,
+  payload: teachers,
+});
+
+export const fetchTeachersFailure = (error: any) => ({
+  type: FETCH_TEACHERS_FAILURE,
+  payload: error,
+});
+
+export const addNewTeacherRequest = (name: string) => ({
+  type: ADD_NEW_TEACHER_REQUEST,
+  payload: name,
+});
+
+export const addNewTeacherSuccess = (teacher: any) => ({
+  type: ADD_NEW_TEACHER_SUCCESS,
+  payload: teacher,
+});
+
+export const addNewTeacherFailure = (error: any) => ({
+  type: ADD_NEW_TEACHER_FAILURE,
+  payload: error,
+});
+
+export const removeTeacherRequest = (id: string) => ({
+  type: REMOVE_TEACHER_REQUEST,
+  payload: id,
+});
+
+export const removeTeacherSuccess = (id: string) => ({
+  type: REMOVE_TEACHER_SUCCESS,
+  payload: id,
+});
+
+export const removeTeacherFailure = (error: any) => ({
+  type: REMOVE_TEACHER_FAILURE,
+  payload: error,
+});

@@ -1,5 +1,11 @@
 import { db } from "../../firebase/firebase";
-import { collection, getDocs } from "firebase/firestore";
+import {
+  collection,
+  getDocs,
+  addDoc,
+  deleteDoc,
+  doc,
+} from "firebase/firestore";
 
 // 講師一覧を取得する関数
 export async function getTeachers(): Promise<{ id: string; name: string }[]> {
@@ -10,4 +16,19 @@ export async function getTeachers(): Promise<{ id: string; name: string }[]> {
     name: doc.data().name,
   }));
   return teachersList;
+}
+
+// 講師を追加する関数
+export async function addTeacher(
+  name: string
+): Promise<{ id: string; name: string }> {
+  const teachersCollection = collection(db, "teachers");
+  const newTeacherRef = await addDoc(teachersCollection, { name });
+  return { id: newTeacherRef.id, name };
+}
+
+// 講師を削除する関数
+export async function deleteTeacher(id: string): Promise<void> {
+  const teacherDoc = doc(db, "teachers", id);
+  await deleteDoc(teacherDoc);
 }

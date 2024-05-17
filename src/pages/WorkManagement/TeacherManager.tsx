@@ -1,11 +1,15 @@
 import React, { useState, useEffect } from "react";
-import styled from "styled-components"; // この行を追加
+import styled from "styled-components";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../../redux/store";
+import {
+  fetchTeachersRequest,
+  addNewTeacherRequest,
+  removeTeacherRequest,
+} from "../../redux/actions";
 import TeacherTable from "./TeacherTable";
 import DeleteModeToggle from "./DeleteModeToggle";
-import { addTeacher, deleteTeacher } from "../../firebase";
-import { getTeachers } from "../../services";
 
-// スタイルドコンポーネントの定義
 const AddButton = styled.button`
   padding: 10px 20px;
   background-color: #007bff;
@@ -25,32 +29,24 @@ const AddButton = styled.button`
 `;
 
 const TeacherManager: React.FC = () => {
-  const [teachers, setTeachers] = useState<{ id: string; name: string }[]>([]);
+  const dispatch = useDispatch();
+  const { teachers, loading, error } = useSelector(
+    (state: RootState) => state.teacher
+  );
   const [adding, setAdding] = useState(false);
   const [deleteMode, setDeleteMode] = useState(false);
 
   useEffect(() => {
-    const loadTeachers = async () => {
-      const loadedTeachers = await getTeachers();
-      setTeachers(loadedTeachers);
-    };
-    loadTeachers();
-  }, []);
+    dispatch(fetchTeachersRequest());
+  }, [dispatch]);
 
-  const handleAddTeacher = async (name: string) => {
-    await addTeacher(name);
+  const handleAddTeacher = (name: string) => {
+    dispatch(addNewTeacherRequest(name));
     setAdding(false);
-    reloadTeachers();
   };
 
-  const handleDeleteTeacher = async (id: string) => {
-    await deleteTeacher(id);
-    reloadTeachers();
-  };
-
-  const reloadTeachers = async () => {
-    const loadedTeachers = await getTeachers();
-    setTeachers(loadedTeachers);
+  const handleDeleteTeacher = (id: string) => {
+    dispatch(removeTeacherRequest(id));
   };
 
   return (
@@ -68,11 +64,11 @@ const TeacherManager: React.FC = () => {
         deleteMode={deleteMode}
         onDelete={handleDeleteTeacher}
         adding={adding}
-        onAdd={(name: string) => {
-          handleAddTeacher(name);
-        }}
+        onAdd={handleAddTeacher}
         onCancel={() => setAdding(false)}
       />
+      {loading && <p>Loading...</p>}
+      {error && <p>Error: {error}</p>}
     </div>
   );
 };

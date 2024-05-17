@@ -20,6 +20,7 @@ import {
   insertWorkRecordsFailure,
 } from "./actions";
 import { schedulesService, workRecordsService } from "../services";
+import { Schedule, WorkRecord } from "../types"; // 型をインポート
 
 function* fetchSchedule(action: any): any {
   try {
@@ -77,13 +78,12 @@ function* addSchedule(action: any): any {
 
 function* deleteWorkRecords(action: any): any {
   try {
-    const { startDate, endDate, year, month } = action.payload;
+    const { teacherId, startDate, endDate } = action.payload;
     yield call(
       workRecordsService.deleteWorkRecords,
+      teacherId,
       startDate,
-      endDate,
-      year,
-      month
+      endDate
     );
     yield put(deleteWorkRecordsSuccess());
   } catch (error) {
@@ -93,17 +93,22 @@ function* deleteWorkRecords(action: any): any {
 
 function* insertWorkRecords(action: any): any {
   try {
-    const { startDate, endDate, year, month } = action.payload;
-    const schedules = yield call(schedulesService.getSchedules);
+    const { teacherId, startDate, endDate } = action.payload;
+    const schedules: Schedule[] = yield call(
+      schedulesService.getSchedules,
+      teacherId
+    );
 
-    const workRecords = [];
+    const workRecords: { date: Date; workRecord: WorkRecord }[] = [];
     for (
       let date = new Date(startDate);
       date <= endDate;
       date.setDate(date.getDate() + 1)
     ) {
       const dayOfWeek = date.getDay();
-      const schedule = schedules.find((s) => s.dayOfWeek === dayOfWeek);
+      const schedule = schedules.find(
+        (s) => s.dayOfWeek === dayOfWeek.toString()
+      );
       if (schedule) {
         const lessonInfo = schedule.students.map((student) => ({
           studentName: student.studentName,
@@ -113,10 +118,12 @@ function* insertWorkRecords(action: any): any {
           time: student.time,
         }));
 
-        const workRecord = {
+        const workRecord: WorkRecord = {
           classroom: schedule.classroom,
           startTime: schedule.startTime,
           endTime: schedule.endTime,
+          officeHour: 0, // 必要に応じて適切な値を設定
+          teachHour: 0, // 必要に応じて適切な値を設���
           lessonInfo,
           workDescription: "",
         };
@@ -125,7 +132,7 @@ function* insertWorkRecords(action: any): any {
       }
     }
 
-    yield call(workRecordsService.insertWorkRecords, workRecords);
+    yield call(workRecordsService.insertWorkRecords, teacherId, workRecords);
     yield put(insertWorkRecordsSuccess());
   } catch (error) {
     yield put(insertWorkRecordsFailure(error));

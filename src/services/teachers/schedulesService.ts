@@ -19,7 +19,7 @@ import {
   addSchedule, // Existing function imported
 } from "../../firebase";
 
-import { Student } from "../../types";
+import { Student, Schedule } from "../../types";
 
 export const schedulesService = {
   // Student related functions
@@ -201,7 +201,9 @@ export const schedulesService = {
     }
   },
   // getSchedulesメソッドの追加
-  getSchedules: async (teacherId: string) => {
+  getSchedules: async (
+    teacherId: string
+  ): Promise<Record<string, Schedule>> => {
     try {
       return await getSchedules(teacherId);
     } catch (error) {
