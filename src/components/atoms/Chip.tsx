@@ -5,7 +5,11 @@ import { FaCheck } from "react-icons/fa";
 import { InlineMath } from "react-katex";
 import "katex/dist/katex.min.css";
 
-const ChipContainer = styled(motion.div)`
+interface ChipContainerProps {
+  checked?: boolean;
+}
+
+const ChipContainer = styled(motion.div)<ChipContainerProps>`
   width: 10%;
   height: 100px;
   min-width: 60px;
@@ -20,7 +24,9 @@ const ChipContainer = styled(motion.div)`
   cursor: pointer;
   margin: 5px 5px 20px;
   user-select: none;
-  transition: background-color 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    background-color 0.2s ease,
+    box-shadow 0.2s ease;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   color: #333;
 
@@ -63,10 +69,14 @@ const CheckMark = styled(motion.div)`
   transition={{ type: "spring", stiffness: 260, damping: 20 }}
 `;
 
-const Icon = styled.div`
+interface IconProps {
+  fontSize?: string;
+}
+
+const Icon = styled.div<IconProps>`
   margin-bottom: 8px;
   font-size: ${(props) =>
-    props.fontSize || "40px"}; // デフォルトのフォントサイズは24px
+    props.fontSize || "24px"}; // デフォルトのフォントサイズを24pxに修正
 `;
 
 const Label = styled.span`
@@ -74,7 +84,15 @@ const Label = styled.span`
   font-weight: bold;
 `;
 
-const Chip = ({ icon, label, checked, onChange, fontSize }) => {
+interface ChipProps {
+  icon: string; // または適切な型に変更してください
+  label: string;
+  checked: boolean;
+  onChange: () => void; // または適切な型に変更してください
+  fontSize?: string;
+}
+
+const Chip = ({ icon, label, checked, onChange, fontSize }: ChipProps) => {
   return (
     <ChipContainer
       checked={checked}

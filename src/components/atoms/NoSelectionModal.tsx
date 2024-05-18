@@ -21,7 +21,12 @@ const ModalContent = styled.div`
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 `;
 
-const NoSelectionModal = ({ isOpen, onClose }) => {
+interface NoSelectionModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+const NoSelectionModal = ({ isOpen, onClose }: NoSelectionModalProps) => {
   if (!isOpen) return null;
 
   return (

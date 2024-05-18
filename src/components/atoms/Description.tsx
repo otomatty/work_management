@@ -23,7 +23,12 @@ const Text = styled.span`
   font-weight: bold;
 `;
 
-const Description = ({ number, text }) => {
+interface DescriptionProps {
+  number: number;
+  text: string;
+}
+
+const Description = ({ number, text }: DescriptionProps) => {
   return (
     <Container>
       <Number>{number}</Number>

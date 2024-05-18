@@ -58,8 +58,15 @@ const Value = styled.input`
   }
 `;
 
-const Stepper = ({ initialValue = 0, onValueChange }) => {
-  const [value, setValue] = useState(parseInt(initialValue, 10));
+interface StepperProps {
+  initialValue?: number;
+  onValueChange: (newValue: number) => void;
+}
+
+const Stepper = ({ initialValue = 0, onValueChange }: StepperProps) => {
+  const [value, setValue] = useState<number>(
+    parseInt(initialValue.toString(), 10)
+  );
 
   const handleIncrement = () => {
     updateValue(value + 1);
@@ -71,12 +78,12 @@ const Stepper = ({ initialValue = 0, onValueChange }) => {
     }
   };
 
-  const handleChange = (e) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = parseInt(e.target.value, 10);
     updateValue(isNaN(newValue) ? 0 : Math.max(0, newValue));
   };
 
-  const updateValue = (newValue) => {
+  const updateValue = (newValue: number) => {
     setValue(newValue);
     onValueChange(newValue);
   };

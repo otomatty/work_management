@@ -37,8 +37,20 @@ const Icon = styled(FaCaretDown)`
 
 const Option = styled.option``;
 
+// 型定義
+interface Option {
+  value: string;
+  label: string;
+}
+
+interface SelectBoxProps {
+  options: Option[];
+  defaultValue: string;
+  onChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
+}
+
 // コンポーネント定義
-const SelectBox = ({ options, defaultValue, onChange }) => {
+const SelectBox = ({ options, defaultValue, onChange }: SelectBoxProps) => {
   return (
     <SelectContainer>
       <Select defaultValue={defaultValue} onChange={onChange}>

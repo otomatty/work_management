@@ -18,7 +18,8 @@ const HiddenRadio = styled.input.attrs({ type: "radio" })`
   height: 0;
 `;
 
-const StyledRadio = styled(motion.div)`
+const StyledRadio = styled(motion.div)<{ checked: boolean }>`
+  // <{ checked: boolean }> added to specify checked prop type
   width: 24px;
   height: 24px;
   border-radius: 50%;
@@ -61,9 +62,23 @@ const Label = styled.span`
   margin-left: 8px;
 `;
 
-const RadioButton = ({ label, name, value, checked, onChange }) => {
+interface RadioButtonProps {
+  label: string;
+  name: string;
+  value: string;
+  checked: boolean;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+}
+
+const RadioButton = ({
+  label,
+  name,
+  value,
+  checked,
+  onChange,
+}: RadioButtonProps) => {
   // onChangeイベントハンドラを修正
-  const handleChange = (e) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     // オリジナルのonChangeプロパティがあれば呼び出す
     if (onChange) {
       onChange(e);
