@@ -6,7 +6,7 @@ import calender from "../../assets/images/calender.svg";
 import website from "../../assets/images/website.svg";
 import calc from "../../assets/images/calc.svg";
 import book from "../../assets/images/book.svg";
-import CellComponent from "../../components/atoms/AnimatedCell";
+import CellComponent from "../../components/atoms/AnimatedCell/AnimatedCell";
 import Modal from "../../components/molecules/Modal";
 import TeacherSelection from "./TeacherSelection/TeacherSelection";
 import ComingSoonOverlay from "./ComingSoonOverlay";

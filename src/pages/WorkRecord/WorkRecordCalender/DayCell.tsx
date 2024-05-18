@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
-import CellComponent from "../../../components/atoms/AnimatedCell";
+import CellComponent from "../../../components/atoms/AnimatedCell/AnimatedCell";
 import WorkDescriptionDisplay from "./WorkDescriptionDisplay";
 import ClassroomDisplay from "./ClassroomDisplay";
 import WorkHoursDisplay from "./WorkHoursDisplay"; // New component imported

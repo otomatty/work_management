@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import Modal from "../../../components/molecules/Modal";
 import TimeInput from "../../../components/atoms/TimeInput";
-import CellComponent from "../../../components/atoms/AnimatedCell";
+import CellComponent from "../../../components/atoms/AnimatedCell/AnimatedCell";
 
 const Container = styled.div<{ $dayOfWeek: string }>`
   padding-bottom: 8px;
