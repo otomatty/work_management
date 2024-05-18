@@ -11,10 +11,15 @@ const DescriptionBox = styled.div`
   display: flex;
 `;
 
+interface NumberFormatToggleProps {
+  selectedFormats: string[];
+  onSelect: (selected: string[]) => void;
+}
+
 const NumberFormatToggle = ({
   selectedFormats: initialSelectedFormats,
   onSelect,
-}) => {
+}: NumberFormatToggleProps) => {
   // 数のフォーマットとそれに対応するアイコンをTeX形式で定義
   const formats = [
     { label: "整数", icon: "\\text{1}" },
@@ -22,16 +27,19 @@ const NumberFormatToggle = ({
     { label: "少数", icon: "0.5" },
   ];
 
-  // 初期状態では全てのフォーマットをfalse（非選択）とする
-  const initialFormatStates = formats.reduce((acc, format) => {
-    acc[format.label] = initialSelectedFormats.includes(format.label);
-    return acc;
-  }, {});
+  // 初期状態では全てのフォーマ���をfalse（非選択）とする
+  const initialFormatStates = formats.reduce<{ [key: string]: boolean }>(
+    (acc, format) => {
+      acc[format.label] = initialSelectedFormats.includes(format.label);
+      return acc;
+    },
+    {}
+  );
 
   const [selectedFormats, setSelectedFormats] = useState(initialFormatStates);
 
   const handleSelect = useCallback(
-    (label) => {
+    (label: string) => {
       // 選択されたフォーマットの状態を反転させる
       const updatedFormats = {
         ...selectedFormats,

@@ -5,7 +5,15 @@ import Description from "../../../components/atoms/Description";
 import SelectBox from "../../../components/atoms/Selectbox";
 
 // コンポーネント定義
-const TermSelector = ({ selectedTerms, onSelect }) => {
+interface TermSelectorProps {
+  selectedTerms: string; // または適切な型に変更してください
+  onSelect: (value: string) => void; // onSelect関数の型を明示
+}
+
+const TermSelector: React.FC<TermSelectorProps> = ({
+  selectedTerms,
+  onSelect,
+}) => {
   // セレクトボックスのオプション
   const options = [
     { value: "2", label: "2項" },

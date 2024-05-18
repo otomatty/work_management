@@ -12,10 +12,16 @@ const DescriptionBox = styled.div`
 `;
 
 // コンポーネント定義
-const ProblemCountSelector = ({ selectedCount, onSelect }) => {
+const ProblemCountSelector = ({
+  selectedCount,
+  onSelect,
+}: {
+  selectedCount: number;
+  onSelect: (value: number) => void;
+}) => {
   const counts = [10, 20]; // 問題数の選択肢
 
-  const handleChange = (e) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     onSelect(Number(e.target.value)); // 文字列を数値に変換
   };
 

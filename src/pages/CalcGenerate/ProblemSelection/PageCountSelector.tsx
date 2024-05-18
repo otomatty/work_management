@@ -4,10 +4,18 @@ import Wrapper from "../../../components/layout/Wrapper";
 import Stepper from "../../../components/atoms/Stepper"; // Stepper コンポーネントをインポート
 import Description from "../../../components/atoms/Description";
 
+interface PageCountSelectorProps {
+  selectedPageCount: number;
+  onSelect: (newValue: number) => void;
+}
+
 // コンポーネント定義
-const PageCountSelector = ({ selectedPageCount, onSelect }) => {
+const PageCountSelector = ({
+  selectedPageCount,
+  onSelect,
+}: PageCountSelectorProps) => {
   // Stepperからの値の変更を処理する関数
-  const handleValueChange = (newValue) => {
+  const handleValueChange = (newValue: number) => {
     onSelect(newValue);
   };
 

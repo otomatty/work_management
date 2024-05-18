@@ -10,10 +10,18 @@ const DescriptionBox = styled.div`
   display: flex;
 `;
 
-const ProblemTypeToggle = ({ selectedTypes, onSelect }) => {
+interface ProblemTypeToggleProps {
+  selectedTypes: string[];
+  onSelect: (newTypes: string[]) => void;
+}
+
+const ProblemTypeToggle = ({
+  selectedTypes,
+  onSelect,
+}: ProblemTypeToggleProps) => {
   // プロパティを受け取るように変更
 
-  const toggleType = (type) => {
+  const toggleType = (type: string) => {
     let newTypes;
     if (selectedTypes.includes(type)) {
       newTypes = selectedTypes.filter((t) => t !== type);

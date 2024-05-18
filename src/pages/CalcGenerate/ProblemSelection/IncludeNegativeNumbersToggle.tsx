@@ -12,7 +12,15 @@ const StyledLabel = styled.label`
   gap: 8px; // チェックボックスとテキストの間に8pxのスペースを追加
 `;
 
-const IncludeNegativeNumbersToggle = ({ includeNegatives, onToggle }) => {
+interface IncludeNegativeNumbersToggleProps {
+  includeNegatives: boolean;
+  onToggle: () => void; // ここでonToggleの型を指定
+}
+
+const IncludeNegativeNumbersToggle = ({
+  includeNegatives,
+  onToggle,
+}: IncludeNegativeNumbersToggleProps) => {
   return (
     <Container>
       <Description
@@ -21,7 +29,11 @@ const IncludeNegativeNumbersToggle = ({ includeNegatives, onToggle }) => {
       ></Description>
       <Wrapper>
         <StyledLabel>
-          <Checkbox checked={includeNegatives} onChange={onToggle} />
+          <Checkbox
+            checked={includeNegatives}
+            onChange={onToggle}
+            className=""
+          />
           負の数を含む
         </StyledLabel>
       </Wrapper>

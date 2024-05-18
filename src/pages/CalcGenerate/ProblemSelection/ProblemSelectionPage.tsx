@@ -49,7 +49,7 @@ const ProblemSelectionPage = () => {
     location.state?.selectedFormats || ["integer"]
   );
   const [terms, setTerms] = useState(location.state?.terms || "2");
-  const [problemCount, setProblemCount] = useState("10");
+  const [problemCount, setProblemCount] = useState(10); // 初期値を数値に変更
   const [pageCount, setPageCount] = useState(location.state?.pageCount || "1");
   const [includeNegatives, setIncludeNegatives] = useState(
     location.state?.includeNegatives || false
@@ -76,9 +76,13 @@ const ProblemSelectionPage = () => {
     // console.log("Include Negatives Toggled:", !includeNegatives);
   };
 
-  const handleSelectFormat = (formats) => {
+  const handleSelectFormat = (formats: string[]) => {
     setSelectedFormats(formats);
     // console.log("Formats Selected:", formats);
+  };
+
+  const handleSelectProblemCount = (count: number) => {
+    setProblemCount(count); // 直接数値を状態に設定
   };
 
   const handleCreateProblems = () => {
@@ -92,7 +96,7 @@ const ProblemSelectionPage = () => {
         selectedTypes,
         selectedFormats,
         terms,
-        problemCount, // 1ページあたりの問題数
+        problemCount: problemCount.toString(), // 1ページあたりの問題数を文字列に変換
         includeNegatives,
         pageCount, // 追加: ページ数
       },
@@ -107,7 +111,7 @@ const ProblemSelectionPage = () => {
         <SelectWrapper>
           <ProblemTypeToggle
             selectedTypes={selectedTypes}
-            onSelect={(types) => {
+            onSelect={(types: string[]) => {
               setSelectedTypes(types);
             }}
           />
@@ -121,15 +125,13 @@ const ProblemSelectionPage = () => {
           />
           <TermSelector
             selectedTerms={terms}
-            onSelect={(terms) => {
+            onSelect={(terms: string) => {
               setTerms(terms);
             }}
           />
           <ProblemCountSelector
             selectedCount={problemCount}
-            onSelect={(count) => {
-              setProblemCount(count);
-            }}
+            onSelect={handleSelectProblemCount}
           />
           <PageCountSelector
             selectedPageCount={pageCount}
@@ -142,7 +144,7 @@ const ProblemSelectionPage = () => {
           selectedTypes={selectedTypes}
           selectedFormats={selectedFormats}
           terms={terms}
-          problemCount={problemCount}
+          problemCount={problemCount.toString()} // 1ページあたりの問題数を文字列に変換
           includeNegatives={includeNegatives}
           onCreateProblems={handleCreateProblems} // 修正: プロパティを更新
         />
