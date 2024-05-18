@@ -51,6 +51,10 @@ const DayTeacherSchedule: React.FC<DayTeacherScheduleProps> = ({
     }
   }, [dispatch, dayOfWeek, teacherId]);
 
+  useEffect(() => {
+    console.log("Fetched schedule:", schedule);
+  }, [schedule]);
+
   const handleClassroomChange = (classroom: string) => {
     if (teacherId) {
       const updatedSchedule = { ...schedule, classroom };
