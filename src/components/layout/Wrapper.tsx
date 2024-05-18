@@ -1,7 +1,10 @@
-import React from "react";
+import React, { ReactNode } from "react";
 import styled from "styled-components";
 
-const StyledWrapper = styled.div`
+const StyledWrapper = styled.div<{
+  $flexDirection?: string;
+  justifyContent?: string;
+}>`
   display: flex;
   flex-direction: ${(props) => props.$flexDirection || "row"};
   flex-wrap: wrap;
@@ -11,7 +14,13 @@ const StyledWrapper = styled.div`
   gap: 10px;
 `;
 
-const Wrapper = ({ children, flexDirection, justifyContent }) => {
+interface WrapperProps {
+  children: ReactNode;
+  flexDirection?: string;
+  justifyContent?: string;
+}
+
+const Wrapper = ({ children, flexDirection, justifyContent }: WrapperProps) => {
   return (
     <StyledWrapper
       $flexDirection={flexDirection}

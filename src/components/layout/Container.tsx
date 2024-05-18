@@ -8,7 +8,7 @@ const StyledContainer = styled.section`
   }
 `;
 
-const Container = ({ children }) => {
+const Container = ({ children }: { children: React.ReactNode }) => {
   return <StyledContainer>{children}</StyledContainer>;
 };
 
