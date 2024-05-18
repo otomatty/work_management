@@ -49,13 +49,21 @@ const LabelText = styled.span`
 `;
 
 // コンポーネント定義
+interface ToggleSwitchProps {
+  label: string;
+  isChecked: boolean;
+  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  checkedColor: string;
+  uncheckedColor?: string;
+}
+
 const ToggleSwitch = ({
   label,
   isChecked,
   onChange,
   checkedColor,
   uncheckedColor = "#ccc",
-}) => {
+}: ToggleSwitchProps) => {
   const sliderVariants = {
     checked: {
       backgroundColor: checkedColor || "#007bff", // Use checkedColor or default to "#007bff"

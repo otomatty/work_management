@@ -2,22 +2,29 @@ import React from "react";
 import { generateProblems } from "../../utils/problemGenerator";
 import Button from "../atoms/Button";
 
-const CreateProblemButton = ({
+// プロパティの型を定義
+interface CreateProblemButtonProps {
+  selectedTypes: string[];
+  selectedFormats: string[];
+  terms: string;
+  problemCount: string;
+  includeNegatives: boolean;
+  onCreateProblems: (problems?: any[]) => void; // 問題の型が不明なので、anyを使用
+}
+
+const CreateProblemButton: React.FC<CreateProblemButtonProps> = ({
   selectedTypes,
   selectedFormats,
   terms,
   problemCount,
   includeNegatives,
-  onCreateProblems, // コールバック関数をプロパティとして受け取る
+  onCreateProblems,
 }) => {
-  // console.log(selectedTypes); // 受け取った selectedTypes を確認
   const handleCreateProblem = () => {
-    // 問題の種類や形式が適切に選択されているかチェック
     if (selectedTypes.length === 0 || selectedFormats.length === 0) {
-      onCreateProblems(); // 問題が選択されていないことを示すためにコールバックを呼び出す
-      return; // ここで処理を終了
+      onCreateProblems();
+      return;
     }
-    // 問題生成ロジック
     const problems = generateProblems(
       selectedTypes,
       selectedFormats,
