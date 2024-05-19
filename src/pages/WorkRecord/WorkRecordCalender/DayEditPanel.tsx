@@ -27,7 +27,6 @@ const EditPanelContainer = styled(motion.div)<{ style: React.CSSProperties }>`
   box-sizing: border-box;
   padding: 20px;
   border-radius: 10px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   grid-column: ${(props) => props.style.gridColumn};
   grid-row: ${(props) => props.style.gridRow};
   overflow: hidden;
@@ -118,9 +117,15 @@ const DayEditPanel: React.FC<DayEditPanelProps> = ({
         endTime,
         lessonInfo,
         workDescription,
+        officeHour: workRecord?.officeHour || "", // Added
+        teachHour: workRecord?.teachHour || "", // Added
       };
       dispatch(
-        saveWorkRecordRequest(teacherId, year, month, day, updatedWorkRecord)
+        saveWorkRecordRequest(teacherId, year, month, day, {
+          ...updatedWorkRecord,
+          officeHour: Number(workRecord?.officeHour) || 0,
+          teachHour: Number(workRecord?.teachHour) || 0,
+        })
       );
     } catch (error) {
       console.error("Failed to save lesson info:", error);
@@ -129,6 +134,10 @@ const DayEditPanel: React.FC<DayEditPanelProps> = ({
 
   const onSave = async (e?: React.MouseEvent<HTMLButtonElement>) => {
     e?.preventDefault();
+    if (!teacherId) {
+      console.error("Teacher ID is null");
+      return;
+    }
     try {
       const updatedWorkRecord = {
         classroom,
@@ -136,9 +145,15 @@ const DayEditPanel: React.FC<DayEditPanelProps> = ({
         endTime,
         lessonInfo,
         workDescription,
+        officeHour: workRecord?.officeHour || "", // Added
+        teachHour: workRecord?.teachHour || "", // Added
       };
       dispatch(
-        saveWorkRecordRequest(teacherId, year, month, day, updatedWorkRecord)
+        saveWorkRecordRequest(teacherId, year, month, day, {
+          ...updatedWorkRecord,
+          officeHour: Number(workRecord?.officeHour) || 0,
+          teachHour: Number(workRecord?.teachHour) || 0,
+        })
       );
     } catch (error) {
       console.error("Failed to save work record:", error);

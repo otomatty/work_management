@@ -7,14 +7,14 @@ import {
 } from "../../services/teachers/teachersService";
 
 interface TeacherState {
-  teacherId: string;
+  teacherId: string | null;
   teachers: { id: string; name: string }[];
   loading: boolean;
   error: string | null;
 }
 
 const initialState: TeacherState = {
-  teacherId: "",
+  teacherId: null,
   teachers: [],
   loading: false,
   error: null,
@@ -50,6 +50,9 @@ const teacherSlice = createSlice({
         (teacher) => teacher.id !== action.payload
       );
     },
+    setTeacherId(state, action: PayloadAction<string>) {
+      state.teacherId = action.payload;
+    },
   },
 });
 
@@ -59,6 +62,7 @@ export const {
   fetchTeachersFailure,
   addTeacherSuccess,
   deleteTeacherSuccess,
+  setTeacherId,
 } = teacherSlice.actions;
 
 export const fetchTeachers = (): AppThunk => async (dispatch) => {

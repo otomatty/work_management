@@ -15,8 +15,8 @@ import {
   updateEndTime,
   deleteStartTime,
   deleteEndTime,
-  getSchedules,
-  addSchedule, // Existing function imported
+  getSchedules as fetchSchedulesFromFirebase,
+  addSchedule,
 } from "../../firebase";
 
 import { Student, Schedule } from "../../types";
@@ -205,7 +205,12 @@ export const schedulesService = {
     teacherId: string
   ): Promise<Record<string, Schedule>> => {
     try {
-      return await getSchedules(teacherId);
+      const schedules = await fetchSchedulesFromFirebase(teacherId);
+      for (const dayOfWeek in schedules) {
+        const students = await getStudents(teacherId, dayOfWeek);
+        schedules[dayOfWeek].students = students;
+      }
+      return schedules;
     } catch (error) {
       console.error("Error fetching schedules:", error);
       throw error;
@@ -219,7 +224,7 @@ export const schedulesService = {
   }) => {
     try {
       // API呼び出し処理を実装
-      const schedules = await getSchedules(params.teacherId);
+      const schedules = await schedulesService.getSchedules(params.teacherId);
       return schedules;
     } catch (error) {
       console.error("Error fetching schedules from API:", error);

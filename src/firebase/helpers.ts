@@ -89,24 +89,27 @@ export const getData = async (
 };
 
 // コレクションを取得する汎用ヘルパー関数
-export const getCollectionData = async (
+export async function getCollectionData(
   teacherId: string,
   collectionName: string
-) => {
-  const collectionRef = collection(db, "teachers", teacherId, collectionName);
-  const data: any[] = [];
-
+) {
   try {
+    const collectionRef = collection(db, "teachers", teacherId, collectionName);
     const querySnapshot = await getDocs(collectionRef);
-    querySnapshot.forEach((doc) => {
-      data.push({ id: doc.id, ...doc.data() });
+    const data = querySnapshot.docs.map((doc) => {
+      const docData = doc.data();
+      docData.id = doc.id; // ドキュメント名を id プロパティとして追加
+      return docData;
     });
     return data;
-  } catch (e) {
-    console.error(`Error fetching collection ${collectionName}:`, e);
-    return [];
+  } catch (error) {
+    console.error(
+      `Error fetching data from ${collectionName} collection:`,
+      error
+    ); // エラーログ
+    throw error;
   }
-};
+}
 
 // コレクションにドキュメントを追加する汎用ヘルパー関数
 export const addCollectionData = async (

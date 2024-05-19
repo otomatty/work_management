@@ -11,7 +11,7 @@ import {
 } from "./actions";
 
 const initialState = {
-  schedules: [],
+  schedules: {},
   workRecords: [],
   schedule: null,
   loading: false,
@@ -29,10 +29,15 @@ const rootReducer = (state = initialState, action: any) => {
         error: null,
       };
     case FETCH_SCHEDULE_SUCCESS:
+      console.log(
+        "FETCH_SCHEDULE_SUCCESS called with payload:",
+        action.payload
+      );
       return {
         ...state,
         loading: false,
-        schedule: action.payload,
+        schedules: action.payload,
+        error: null,
       };
     case FETCH_WORK_RECORDS_SUCCESS:
       return {
@@ -44,9 +49,18 @@ const rootReducer = (state = initialState, action: any) => {
       return {
         ...state,
         loading: false,
-        schedules: [...state.schedules, action.payload],
+        schedules: { ...state.schedules, ...action.payload },
       };
     case FETCH_SCHEDULE_FAILURE:
+      console.log(
+        "FETCH_SCHEDULE_FAILURE called with payload:",
+        action.payload
+      );
+      return {
+        ...state,
+        loading: false,
+        error: action.payload,
+      };
     case FETCH_WORK_RECORDS_FAILURE:
     case ADD_SCHEDULE_FAILURE:
       return {

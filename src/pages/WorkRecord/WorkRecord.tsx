@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { getTeacher } from "../../firebase";
+import { useDispatch } from "react-redux";
+import { setTeacherId } from "../../redux/teacher/teacherSlice";
 
 import Calendar from "./Calendar";
 import Header from "../../components/organisms/Header";
@@ -46,6 +48,15 @@ const WorkRecord: React.FC<WorkRecordProps> = ({ selectedTeacherId }) => {
       fetchName();
     }
   }, [selectedTeacherId]);
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (selectedTeacherId) {
+      dispatch(setTeacherId(selectedTeacherId));
+      // console.log("Dispatched setTeacherId with:", selectedTeacherId); // デバッグ用ログ
+    }
+  }, [selectedTeacherId, dispatch]);
 
   return (
     <Container>

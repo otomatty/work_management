@@ -37,6 +37,27 @@ const workRecordsSlice = createSlice({
       state.loading = false;
       state.error = action.payload;
     },
+    saveWorkRecordStart(state) {
+      state.loading = true;
+      state.error = null;
+    },
+    saveWorkRecordSuccess(
+      state,
+      action: PayloadAction<{
+        year: number;
+        month: number;
+        day: number;
+        workRecord: WorkRecord;
+      }>
+    ) {
+      const { year, month, day, workRecord } = action.payload;
+      state.workRecords[`${year}-${month}-${day}`] = workRecord;
+      state.loading = false;
+    },
+    saveWorkRecordFailure(state, action: PayloadAction<string>) {
+      state.loading = false;
+      state.error = action.payload;
+    },
   },
 });
 
@@ -44,6 +65,9 @@ export const {
   fetchWorkRecordsStart,
   fetchWorkRecordsSuccess,
   fetchWorkRecordsFailure,
+  saveWorkRecordStart,
+  saveWorkRecordSuccess,
+  saveWorkRecordFailure,
 } = workRecordsSlice.actions;
 
 export const fetchWorkRecords =
