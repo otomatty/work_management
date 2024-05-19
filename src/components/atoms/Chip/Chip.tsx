@@ -58,12 +58,11 @@ const CheckMark = styled(motion.div)`
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 50%; // 丸形にする
-  background-color: white; // 背景色を白に
+  border-radius: 50%;
+  background-color: white;
   color: #007bff;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); // チェックマークにも影を追加
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 
-  // アニメーションの定義
   initial={{ scale: 0 }}
   animate={{ scale: 1 }}
   transition={{ type: "spring", stiffness: 260, damping: 20 }}
@@ -75,8 +74,7 @@ interface IconProps {
 
 const Icon = styled.div<IconProps>`
   margin-bottom: 8px;
-  font-size: ${(props) =>
-    props.fontSize || "24px"}; // デフォルトのフォントサイズを24pxに修正
+  font-size: ${(props) => props.fontSize || "24px"};
 `;
 
 const Label = styled.span`
@@ -85,10 +83,10 @@ const Label = styled.span`
 `;
 
 interface ChipProps {
-  icon: string; // または適切な型に変更してください
+  icon: string;
   label: string;
   checked: boolean;
-  onChange: () => void; // または適切な型に変更してください
+  onChange: () => void;
   fontSize?: string;
 }
 

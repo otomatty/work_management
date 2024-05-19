@@ -3,9 +3,9 @@ import styled from "styled-components";
 import Container from "../../../components/layout/Container";
 import Wrapper from "../../../components/layout/Wrapper";
 
-import RadioButton from "../../../components/atoms/RadioButton";
-import Description from "../../../components/atoms/Description";
-import ModalTooltip from "../../../components/atoms/ModalTooltip";
+import RadioButton from "../../../components/atoms/RadioButton/RadioButton";
+import Description from "../../../components/atoms/Description/Description";
+import ModalTooltip from "../../../components/atoms/ModalTooltip/ModalTooltip";
 
 const DescriptionBox = styled.div`
   display: flex;

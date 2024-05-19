@@ -19,7 +19,6 @@ const HiddenRadio = styled.input.attrs({ type: "radio" })`
 `;
 
 const StyledRadio = styled(motion.div)<{ checked: boolean }>`
-  // <{ checked: boolean }> added to specify checked prop type
   width: 24px;
   height: 24px;
   border-radius: 50%;
@@ -30,7 +29,7 @@ const StyledRadio = styled(motion.div)<{ checked: boolean }>`
   cursor: pointer;
   position: relative;
   overflow: hidden;
-  background-color: #fff; // 背景色を白に設定
+  background-color: #fff;
 
   &::after {
     content: "";
@@ -39,16 +38,12 @@ const StyledRadio = styled(motion.div)<{ checked: boolean }>`
     height: 100%;
     background: #007bff;
     border-radius: 50%;
-    transform: scale(
-      ${(props) => (props.checked ? 0.5 : 0)}
-    ); // 選択時は中心に小さな円を表示
+    transform: scale(${(props) => (props.checked ? 0.5 : 0)});
     transition: transform 0.3s ease;
   }
 
   &:hover::after {
-    transform: scale(
-      ${(props) => (props.checked ? 0.5 : 0.7)}
-    ); // マウスオーバー時にリップルエフェクト
+    transform: scale(${(props) => (props.checked ? 0.5 : 0.7)});
   }
 
   &:active::after {
@@ -77,9 +72,7 @@ const RadioButton = ({
   checked,
   onChange,
 }: RadioButtonProps) => {
-  // onChangeイベントハンドラを修正
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // オリジナルのonChangeプロパティがあれば呼び出す
     if (onChange) {
       onChange(e);
     }
@@ -91,7 +84,7 @@ const RadioButton = ({
         name={name}
         value={value}
         checked={checked}
-        onChange={handleChange} // 修正したhandleChangeを使用
+        onChange={handleChange}
       />
       <StyledRadio
         checked={checked}

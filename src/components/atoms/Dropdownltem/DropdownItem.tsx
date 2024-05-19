@@ -1,11 +1,11 @@
 import React from "react";
-import { DropdownMenu } from "../atoms/DropdownMenu/DropdownMenu";
-import { DropdownItem } from "../atoms/DropdownItem/DropdownItem";
+import { DropdownMenu } from "../DropdownMenu/DropdownMenu";
+import { DropdownItem } from "../DropdownItem/DropdownItem";
 
 interface DropdownProps {
   items: { label: string; onClick: () => void; isCloseButton?: boolean }[];
   onClose: () => void;
-  children?: React.ReactNode; // children プロパティを追加
+  children?: React.ReactNode;
 }
 
 const Dropdown: React.FC<DropdownProps> = ({ items, onClose, children }) => {

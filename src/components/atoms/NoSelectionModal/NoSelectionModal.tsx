@@ -32,8 +32,6 @@ const NoSelectionModal = ({ isOpen, onClose }: NoSelectionModalProps) => {
   return (
     <ModalBackground onClick={onClose}>
       <ModalContent onClick={(e) => e.stopPropagation()}>
-        {" "}
-        {/* モーダルの内容部分のクリックでモーダルが閉じないようにする */}
         <p>問題を選択してください。</p>
         <button onClick={onClose}>閉じる</button>
       </ModalContent>

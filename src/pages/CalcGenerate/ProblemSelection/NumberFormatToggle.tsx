@@ -3,9 +3,9 @@ import styled from "styled-components";
 import "katex/dist/katex.min.css"; // KaTeX CSSをインポート
 import Container from "../../../components/layout/Container";
 import Wrapper from "../../../components/layout/Wrapper";
-import Chip from "../../../components/atoms/Chip"; // Chip コンポーネントをインポート
-import Description from "../../../components/atoms/Description";
-import MultiSelectTag from "../../../components/atoms/MultiSelectTag";
+import Chip from "../../../components/atoms/Chip/Chip"; // Chip コンポーネントをインポート
+import Description from "../../../components/atoms/Description/Description";
+import MultiSelectTag from "../../../components/atoms/MultiSelectTag/MultiSelectTag";
 
 const DescriptionBox = styled.div`
   display: flex;

@@ -6,7 +6,7 @@ import WorkTimeInputs from "./WorkTimeInput";
 import LessonInputList from "./LessonInputList";
 import WorkDescriptionInput from "./WorkDescriptionInput";
 import ClassroomManager from "./ClassroomManager";
-import Button from "../../../components/atoms/Button";
+import Button from "../../../components/atoms/Button/Button";
 import { RootState } from "../../../redux/store";
 import {
   fetchWorkRecordsRequest,

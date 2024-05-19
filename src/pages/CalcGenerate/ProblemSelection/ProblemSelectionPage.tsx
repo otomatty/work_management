@@ -9,7 +9,7 @@ import ProblemCountSelector from "./ProblemCountSelector";
 import PageCountSelector from "./PageCountSelector";
 import IncludeNegativeNumbersToggle from "./IncludeNegativeNumbersToggle";
 import CreateProblemButton from "../../../components/molecules/CreateProblemButton";
-import NoSelectionModal from "../../../components/atoms/NoSelectionModal";
+import NoSelectionModal from "../../../components/atoms/NoSelectionModal/NoSelectionModal";
 // その他のインポートは省略
 const GlobalStyle = createGlobalStyle`
   body {

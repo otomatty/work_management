@@ -2,9 +2,9 @@ import React from "react";
 import styled from "styled-components";
 import Container from "../../../components/layout/Container";
 import Wrapper from "../../../components/layout/Wrapper";
-import Chip from "../../../components/atoms/Chip";
-import Description from "../../../components/atoms/Description";
-import MultiSelectTag from "../../../components/atoms/MultiSelectTag";
+import Chip from "../../../components/atoms/Chip/Chip";
+import Description from "../../../components/atoms/Description/Description";
+import MultiSelectTag from "../../../components/atoms/MultiSelectTag/MultiSelectTag";
 
 const DescriptionBox = styled.div`
   display: flex;

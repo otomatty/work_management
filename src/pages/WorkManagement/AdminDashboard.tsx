@@ -1,7 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom"; // useNavigate フックをインポート
 import TeacherManager from "./TeacherManager"; // TeacherManager コンポーネントのインポート
-import Button from "../../components/atoms/Button"; // Button コンポーネントのインポート
+import Button from "../../components/atoms/Button/Button"; // Button コンポーネントのインポート
 
 const AdminDashboard: React.FC = () => {
   const navigate = useNavigate(); // useNavigate フックを使用

@@ -1,6 +1,6 @@
 import React from "react";
 import { generateProblems } from "../../utils/problemGenerator";
-import Button from "../atoms/Button";
+import Button from "../atoms/Button/Button";
 
 // プロパティの型を定義
 interface CreateProblemButtonProps {

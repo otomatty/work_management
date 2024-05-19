@@ -2,10 +2,10 @@ import React, { useState } from "react";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import DateRangePicker from "../../../../components/molecules/DateRangePicker";
 import Modal from "../../../../components/molecules/Modal";
-import Button from "../../../../components/atoms/Button";
+import Button from "../../../../components/atoms/Button/Button";
 import ButtonGroup from "../../../../components/layout/ButtonGroup";
 import Dropdown from "../../../../components/molecules/Dropdown";
-import LoadingScreen from "../../../../components/atoms/LoadingScreen";
+import LoadingScreen from "../../../../components/atoms/LodingScreen/LoadingScreen";
 
 interface BulkDeleteProps {
   isLoading: boolean;

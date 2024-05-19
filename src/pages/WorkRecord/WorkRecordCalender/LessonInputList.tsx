@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import ModalSubTitle from "../../../components/atoms/ModalSubTitle";
+import ModalSubTitle from "../../../components/atoms/ModalSubTitle/ModalSubTitle";
 import Section from "../../../components/layout/SectionComponent";
 import { LessonInfo } from "../../../types";
 

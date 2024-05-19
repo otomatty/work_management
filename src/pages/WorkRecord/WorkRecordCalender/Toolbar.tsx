@@ -3,7 +3,7 @@ import styled from "styled-components";
 import BulkInsert from "./ui/BulkInsert";
 import BulkDelete from "./ui/BulkDelete";
 import Modal from "../../../components/molecules/Modal";
-import LoadingScreen from "../../../components/atoms/LoadingScreen";
+import LoadingScreen from "../../../components/atoms/LodingScreen/LoadingScreen";
 import { useDispatch } from "react-redux";
 import {
   deleteWorkRecordsRequest,

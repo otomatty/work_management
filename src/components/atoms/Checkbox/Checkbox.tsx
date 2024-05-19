@@ -20,7 +20,11 @@ const HiddenCheckbox = styled.input.attrs({ type: "checkbox" })`
   margin: 0;
 `;
 
-const StyledCheckbox = styled(motion.div)`
+interface StyledCheckboxProps {
+  checked: boolean;
+}
+
+const StyledCheckbox = styled(motion.div)<StyledCheckboxProps>`
   display: inline-flex;
   width: 20px;
   height: 20px;
@@ -36,13 +40,22 @@ const StyledCheckbox = styled(motion.div)`
   }
 `;
 
-// アニメーションのバリアントを定義
 const checkboxVariants = {
   checked: { scale: 1.2 },
   unchecked: { scale: 1 },
 };
 
-const Checkbox = ({ className, checked, ...props }) => (
+interface CheckboxProps {
+  className?: string;
+  checked: boolean;
+  [key: string]: any;
+}
+
+const Checkbox: React.FC<CheckboxProps> = ({
+  className,
+  checked,
+  ...props
+}) => (
   <CheckboxContainer className={className}>
     <HiddenCheckbox checked={checked} {...props} />
     <StyledCheckbox

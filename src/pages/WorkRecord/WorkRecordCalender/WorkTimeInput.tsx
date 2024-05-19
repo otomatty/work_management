@@ -1,7 +1,7 @@
 import React, { Dispatch, SetStateAction } from "react";
 import styled from "styled-components";
 import TimeInput from "../../../components/atoms/TimeInput";
-import ModalSubTitle from "../../../components/atoms/ModalSubTitle";
+import ModalSubTitle from "../../../components/atoms/ModalSubTitle/ModalSubTitle";
 
 const Container = styled.div``;
 

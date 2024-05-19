@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import ProblemList from "./ProblemList";
 import { generateProblems } from "../../../utils/problemGenerator";
-import Button from "../../../components/atoms/Button";
+import Button from "../../../components/atoms/Button/Button";
 import styled from "styled-components";
 
 // スタイルドコンポーネントでメディアクエリを定義

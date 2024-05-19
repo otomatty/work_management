@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, ReactNode } from "react";
 import styled from "styled-components";
 
 const TooltipContainer = styled.div`
@@ -21,11 +21,15 @@ const TooltipTrigger = styled.span`
   user-select: none;
 `;
 
-// isVisibleを受け取り、visibilityとopacityを制御するが、DOMには渡さない
-const ModalBackground = styled.div.attrs((props) => ({
-  // isVisible プロパティを除外し、残りのプロパティをそのまま渡す
-  ...props,
-  isVisible: undefined,
+interface ModalBackgroundProps {
+  isVisible: boolean;
+}
+
+const ModalBackground = styled.div.attrs<ModalBackgroundProps>((props) => ({
+  style: {
+    visibility: props.isVisible ? "visible" : "hidden",
+    opacity: props.isVisible ? 1 : 0,
+  },
 }))`
   position: fixed;
   top: 0;
@@ -36,8 +40,6 @@ const ModalBackground = styled.div.attrs((props) => ({
   display: flex;
   align-items: center;
   justify-content: center;
-  visibility: ${({ isVisible }) => (isVisible ? "visible" : "hidden")};
-  opacity: ${({ isVisible }) => (isVisible ? 1 : 0)};
   transition: opacity 0.3s ease;
 `;
 
@@ -61,7 +63,11 @@ const CloseButton = styled.button`
   cursor: pointer;
 `;
 
-const ModalTooltip = ({ children }) => {
+interface ModalTooltipProps {
+  children: ReactNode;
+}
+
+const ModalTooltip = ({ children }: ModalTooltipProps) => {
   const [isVisible, setIsVisible] = useState(false);
 
   const toggleVisibility = () => {

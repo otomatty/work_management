@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import NameSelector from "./NameSelector";
-import Button from "../../../components/atoms/Button";
+import Button from "../../../components/atoms/Button/Button";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next"; // i18nextのフックをインポート
 

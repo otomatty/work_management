@@ -9,7 +9,7 @@ interface ButtonProps {
   onClick: () => void;
   backgroundColor?: string;
   disabled?: boolean;
-  icon?: IconDefinition; // アイコンのプロパティを追加
+  icon?: IconDefinition;
 }
 
 const StyledButton = styled(motion.button)<{ style: React.CSSProperties }>`
