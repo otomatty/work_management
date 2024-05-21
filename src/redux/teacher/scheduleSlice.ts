@@ -35,16 +35,16 @@ const scheduleSlice = createSlice({
       state.loading = false;
       state.error = action.payload;
     },
-    addScheduleStart(state) {
+    updateScheduleStart(state) {
       state.loading = true;
       state.error = null;
     },
-    addScheduleSuccess(state, action: PayloadAction<Schedule>) {
+    updateScheduleSuccess(state, action: PayloadAction<Schedule>) {
       const { dayOfWeek } = action.payload;
       state.schedules[dayOfWeek] = action.payload;
       state.loading = false;
     },
-    addScheduleFailure(state, action: PayloadAction<string>) {
+    updateScheduleFailure(state, action: PayloadAction<string>) {
       state.loading = false;
       state.error = action.payload;
     },
@@ -55,9 +55,9 @@ export const {
   fetchSchedulesStart,
   fetchSchedulesSuccess,
   fetchSchedulesFailure,
-  addScheduleStart,
-  addScheduleSuccess,
-  addScheduleFailure,
+  updateScheduleStart,
+  updateScheduleSuccess,
+  updateScheduleFailure,
 } = scheduleSlice.actions;
 
 export const fetchSchedules =
@@ -76,19 +76,19 @@ export const fetchSchedules =
     }
   };
 
-export const addSchedule =
+export const updateSchedule =
   (teacherId: string, dayOfWeek: string, schedule: Schedule): AppThunk =>
   async (dispatch) => {
     try {
-      dispatch(addScheduleStart());
-      await schedulesService.addSchedule(teacherId, dayOfWeek, schedule);
-      dispatch(addScheduleSuccess(schedule));
+      dispatch(updateScheduleStart());
+      await schedulesService.updateSchedule(teacherId, dayOfWeek, schedule);
+      dispatch(updateScheduleSuccess(schedule));
     } catch (error) {
       let errorMessage = "An unknown error occurred";
       if (error instanceof Error) {
         errorMessage = error.message;
       }
-      dispatch(addScheduleFailure(errorMessage));
+      dispatch(updateScheduleFailure(errorMessage));
     }
   };
 

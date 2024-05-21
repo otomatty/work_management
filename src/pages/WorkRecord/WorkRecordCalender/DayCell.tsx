@@ -4,7 +4,8 @@ import styled from "styled-components";
 import CellComponent from "../../../components/atoms/AnimatedCell/AnimatedCell";
 import WorkDescriptionDisplay from "./WorkDescriptionDisplay";
 import ClassroomDisplay from "./ClassroomDisplay";
-import WorkHoursDisplay from "./WorkHoursDisplay"; // New component imported
+import WorkHoursDisplay from "./WorkHoursDisplay";
+import { WorkRecord } from "../../../types";
 import { RootState } from "../../../redux/store";
 import { fetchWorkRecordsRequest } from "../../../redux/actions";
 
@@ -66,6 +67,7 @@ interface DayCellProps {
   isSunday: boolean;
   year: number;
   month: number;
+  workRecords: WorkRecord;
   onEdit: () => void;
 }
 
@@ -75,14 +77,11 @@ const DayCell: React.FC<DayCellProps> = ({
   isSunday,
   year,
   month,
+  workRecords,
   onEdit,
 }) => {
   const dispatch = useDispatch();
   const teacherId = useSelector((state: RootState) => state.teacher.teacherId);
-  const dateKey = `${year}-${month}-${day}`;
-  const workRecord = useSelector(
-    (state: RootState) => state.workRecords.workRecords[dateKey]
-  );
   const cellRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -106,16 +105,16 @@ const DayCell: React.FC<DayCellProps> = ({
             <Day>{day}</Day>
           </Daybox>
           <InfoBox>
-            <ClassroomDisplay classroom={workRecord?.classroom || ""} />
+            <ClassroomDisplay classroom={workRecords?.classroom || ""} />
             <WorkHoursDisplay
-              teachHour={workRecord?.teachHour || 0}
-              officeHour={workRecord?.officeHour || 0}
+              teachHour={workRecords?.teachHour || 0}
+              officeHour={workRecords?.officeHour || 0}
             />
             <div>
               <Title>レッスン内容</Title>
               <Table>
                 <tbody>
-                  {workRecord?.lessonInfo?.map((lessonInfo, index) => (
+                  {workRecords?.lessonInfo?.map((lessonInfo, index) => (
                     <Tr key={index}>
                       <Td $status={lessonInfo.status}>
                         {lessonInfo.studentName}
@@ -128,7 +127,7 @@ const DayCell: React.FC<DayCellProps> = ({
               </Table>
             </div>
             <WorkDescriptionDisplay
-              description={workRecord?.workDescription || ""}
+              description={workRecords?.workDescription || ""}
             />
           </InfoBox>
         </Wrapper>

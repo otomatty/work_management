@@ -1,5 +1,5 @@
 export interface Student {
-  firestoreId: string; // Firebase のドキュメント ID
+  studentId: string; // Firebase のドキュメント ID
   studentName: string;
   grade: string;
   subject: string;
@@ -23,6 +23,7 @@ export interface Schedule {
 }
 
 export interface WorkRecord {
+  date: string; // 追加
   classroom: string;
   startTime: string;
   endTime: string;

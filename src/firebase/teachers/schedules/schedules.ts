@@ -45,7 +45,14 @@ export async function addSchedule(
   dayOfWeek: string,
   schedule: Schedule
 ): Promise<void> {
-  await saveData(teacherId, "schedules", dayOfWeek, schedule, "Schedule added");
+  const { students, ...scheduleWithoutStudents } = schedule; // studentsを除外
+  await saveData(
+    teacherId,
+    "schedules",
+    dayOfWeek,
+    scheduleWithoutStudents,
+    "Schedule added"
+  );
 }
 
 // スケジュールを更新

@@ -35,7 +35,7 @@ const ModalOverlay = styled(motion.div)<ModalOverlayProps>`
 
 const ModalContent = styled(motion.div)`
   align-self: center;
-  width: 40%;
+  min-width: 40%;
   border-radius: 8px;
   max-width: 500px;
   padding: 30px 15px;

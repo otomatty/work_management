@@ -1,6 +1,5 @@
 import {
   addWorkRecord,
-  getWorkRecord,
   updateWorkRecord,
   deleteWorkRecord,
   addWorkHour,
@@ -27,6 +26,7 @@ import {
   getLessonInfo,
   updateLessonInfo,
   deleteLessonInfo,
+  getMonthlyWorkRecords,
 } from "../../firebase";
 
 import { WorkRecord, LessonInfo } from "../../types"; // 型定義をインポート
@@ -58,19 +58,7 @@ export const workRecordsService = {
       throw error;
     }
   },
-  getWorkRecord: async (
-    teacherId: string,
-    year: number,
-    month: number,
-    day: number
-  ): Promise<WorkRecord | null> => {
-    try {
-      return await getWorkRecord(teacherId, year, month, day);
-    } catch (error) {
-      console.error("Error fetching work record:", error);
-      throw error;
-    }
-  },
+
   updateWorkRecord: async (
     teacherId: string,
     year: number,
@@ -510,6 +498,50 @@ export const workRecordsService = {
       console.log("Work records inserted successfully");
     } catch (error) {
       console.error("Error inserting work records:", error);
+      throw error;
+    }
+  },
+
+  // 月毎の勤務記録を取得し、全日に対してデータを整形��る関数
+  getFullMonthlyWorkRecords: async (
+    teacherId: string,
+    year: number,
+    month: number
+  ): Promise<Record<string, WorkRecord | {}>> => {
+    try {
+      const numDays = new Date(year, month + 1, 0).getDate(); // その月の日数を取得
+      const monthlyRecords = await getMonthlyWorkRecords(
+        teacherId,
+        year,
+        month - 1
+      ); // 月は0から始まるため、1を引く
+      const fullMonthlyRecords: Record<string, WorkRecord | {}> = {};
+
+      // 全日に対して空のデータを初期化
+      for (let day = 1; day <= numDays; day++) {
+        const dayKey = day.toString().padStart(2, "0");
+        fullMonthlyRecords[dayKey] = {
+          classroom: "",
+          startTime: "",
+          endTime: "",
+          teachHour: 0,
+          officeHour: 0,
+          workDescription: "",
+          lessonInfo: [] as LessonInfo[],
+        }; // 空のデータで初期化
+      }
+
+      // 取得したデータで上書き
+      Object.keys(monthlyRecords).forEach((dayKey) => {
+        fullMonthlyRecords[dayKey] = {
+          ...fullMonthlyRecords[dayKey],
+          ...monthlyRecords[dayKey],
+        };
+      });
+
+      return fullMonthlyRecords;
+    } catch (error) {
+      console.error("Error fetching full monthly work records:", error);
       throw error;
     }
   },

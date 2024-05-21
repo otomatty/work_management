@@ -53,6 +53,7 @@ export async function getStudents(
       const studentData = doc.data() as Student;
       students.push({
         ...studentData,
+        studentId: doc.id, // ドキュメントIDを追加
       });
     });
     return students;

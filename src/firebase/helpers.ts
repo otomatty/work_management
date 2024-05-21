@@ -17,7 +17,7 @@ export const handleFirestoreError = (e: any, action: string) => {
 
 // workRecordsにおいてドキュメントIDと日付キーを生成するヘルパー関数
 export const getDocIdAndDayKey = (year: number, month: number, day: number) => {
-  const docId = `${year}-${month + 1}`;
+  const docId = `${year}-${(month + 2).toString().padStart(2, "0")}`; // 月を2桁にフォーマット
   const dayKey = day.toString().padStart(2, "0");
   return { docId, dayKey };
 };
@@ -43,7 +43,7 @@ export const saveData = async (
 
   try {
     await setDoc(docRef, data, { merge: true });
-    console.log(`${action} successfully for:`, docId);
+    // console.log(`${action} successfully for:`, docId);
   } catch (e) {
     handleFirestoreError(e, action);
   }

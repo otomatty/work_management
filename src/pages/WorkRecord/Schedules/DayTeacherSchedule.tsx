@@ -7,7 +7,7 @@ import WorkTimeDisplay from "./WorkTimeDisplay";
 import StudentList from "./StudentList";
 import {
   fetchSchedules,
-  addSchedule,
+  updateSchedule,
 } from "../../../redux/teacher/scheduleSlice";
 import { RootState } from "../../../redux/store";
 
@@ -60,21 +60,21 @@ const DayTeacherSchedule: React.FC<DayTeacherScheduleProps> = ({
   const handleClassroomChange = (classroom: string) => {
     if (teacherId) {
       const updatedSchedule = { ...schedule, classroom };
-      dispatch(addSchedule(teacherId, dayOfWeek, updatedSchedule));
+      dispatch(updateSchedule(teacherId, dayOfWeek, updatedSchedule));
     }
   };
 
   const handleWorkTimeChange = (startTime: string, endTime: string) => {
     if (teacherId) {
       const updatedSchedule = { ...schedule, startTime, endTime };
-      dispatch(addSchedule(teacherId, dayOfWeek, updatedSchedule));
+      dispatch(updateSchedule(teacherId, dayOfWeek, updatedSchedule));
     }
   };
 
   const handleStudentListChange = (students: any[]) => {
     if (teacherId) {
       const updatedSchedule = { ...schedule, students };
-      dispatch(addSchedule(teacherId, dayOfWeek, updatedSchedule));
+      dispatch(updateSchedule(teacherId, dayOfWeek, updatedSchedule));
     }
   };
 
@@ -93,6 +93,8 @@ const DayTeacherSchedule: React.FC<DayTeacherScheduleProps> = ({
   if (error) {
     return <div>Error: {error}</div>;
   }
+
+  // console.log(schedule.students);
 
   return (
     <DayContainer $dayOfWeek={dayOfWeek}>

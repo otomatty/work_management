@@ -79,47 +79,101 @@ const StudentList: React.FC<StudentListProps> = ({
   };
 
   const handleAddButtonClick = () => {
-    setSelectedStudent(null);
+    setSelectedStudent({
+      studentId: "",
+      studentName: "",
+      grade: "",
+      subject: "",
+      time: 0,
+    });
     setIsModalOpen(true);
   };
 
   const handleUpdateStudent = (updatedStudent: Student) => {
     const updatedStudents = students.map((student) =>
-      student.firestoreId === updatedStudent.firestoreId
-        ? updatedStudent
-        : student
+      student.studentId === updatedStudent.studentId ? updatedStudent : student
     );
+    if (
+      !students.some(
+        (student) => student.studentId === updatedStudent.studentId
+      )
+    ) {
+      updatedStudents.push(updatedStudent);
+    }
     onStudentListChange(updatedStudents);
     setIsModalOpen(false);
   };
 
   const handleDeleteStudent = (firestoreId: string) => {
     const updatedStudents = students.filter(
-      (student) => student.firestoreId !== firestoreId
+      (student) => student.studentId !== firestoreId
     );
     onStudentListChange(updatedStudents);
     setIsModalOpen(false);
+  };
+
+  const formatGradeAndSubject = (grade: string, subject: string) => {
+    if (!grade || !subject) {
+      return "未設定";
+    }
+
+    const gradeMap: { [key: string]: string } = {
+      年少: "年少",
+      年中: "年中",
+      年長: "年長",
+      小学1年: "小1",
+      小学2年: "小2",
+      小学3年: "小3",
+      小学4年: "小4",
+      小学5年: "小5",
+      小学6年: "小6",
+      中学1年: "中1",
+      中学2年: "中2",
+      中学3年: "中3",
+      高校1年: "高1",
+      高校2年: "高2",
+      高校3年: "高3",
+      社会人: "社",
+    };
+
+    const subjectMap: { [key: string]: string } = {
+      国語: "国",
+      英語: "英",
+      数学: "数",
+      理科: "理",
+      社会: "社",
+      英会話: "会話",
+    };
+
+    return `${gradeMap[grade] || grade}${subjectMap[subject] || subject}`;
   };
 
   return (
     <>
       <ListContainer $dayOfWeek={dayOfWeek}>
         <Title>担当生徒</Title>
-        {students.map((student) => (
-          <ListItem
-            $dayOfWeek={dayOfWeek}
-            key={student.firestoreId}
-            onClick={() => handleStudentClick(student)}
-          >
-            {student.studentName} ({student.subject}) {student.time}
-          </ListItem>
-        ))}
+        {students.map((student) => {
+          const key = student.studentId;
+          return (
+            <ListItem
+              $dayOfWeek={dayOfWeek}
+              key={key}
+              onClick={() => handleStudentClick(student)}
+            >
+              {student.studentName} (
+              {formatGradeAndSubject(student.grade, student.subject)}){" "}
+              {student.time}
+            </ListItem>
+          );
+        })}
         {isModalOpen && (
           <StudentEditModal
+            key={selectedStudent ? selectedStudent.studentId : "new"}
             student={selectedStudent}
             onClose={() => setIsModalOpen(false)}
             onUpdate={handleUpdateStudent}
             onDelete={handleDeleteStudent}
+            isNewStudent={!selectedStudent?.studentId}
           />
         )}
       </ListContainer>

@@ -12,12 +12,13 @@ import {
   fetchWorkRecordsRequest,
   saveWorkRecordRequest,
 } from "../../../redux/actions";
-import { LessonInfo } from "../../../types";
+import { LessonInfo, WorkRecord } from "../../../types";
 
 interface DayEditPanelProps {
   year: number;
   month: number;
   day: number;
+  workRecords: WorkRecord[];
   style: React.CSSProperties;
   slideDirection: number;
 }
@@ -69,23 +70,18 @@ const DayEditPanel: React.FC<DayEditPanelProps> = ({
   year,
   month,
   day,
+  workRecords,
   style,
   slideDirection,
 }) => {
   const dispatch = useDispatch();
   const teacherId = useSelector((state: RootState) => state.teacher.teacherId);
-  const workRecord = useSelector(
-    (state: RootState) =>
-      state.workRecords.workRecords[`${year}-${month}-${day}`]
-  );
 
-  const [classroom, setClassroom] = useState(workRecord?.classroom || "");
-  const [startTime, setStartTime] = useState(workRecord?.startTime || "");
-  const [endTime, setEndTime] = useState(workRecord?.endTime || "");
-  const [lessonInfo, setLessonInfo] = useState(workRecord?.lessonInfo || []);
-  const [workDescription, setWorkDescription] = useState(
-    workRecord?.workDescription || ""
-  );
+  const [classroom, setClassroom] = useState("");
+  const [startTime, setStartTime] = useState("");
+  const [endTime, setEndTime] = useState("");
+  const [lessonInfo, setLessonInfo] = useState<LessonInfo[]>([]);
+  const [workDescription, setWorkDescription] = useState("");
 
   useEffect(() => {
     if (teacherId) {
@@ -94,14 +90,15 @@ const DayEditPanel: React.FC<DayEditPanelProps> = ({
   }, [dispatch, teacherId, year, month, day]);
 
   useEffect(() => {
-    if (workRecord) {
+    if (workRecords.length > 0) {
+      const workRecord = workRecords[0];
       setClassroom(workRecord.classroom);
       setStartTime(workRecord.startTime);
       setEndTime(workRecord.endTime);
       setLessonInfo(workRecord.lessonInfo);
       setWorkDescription(workRecord.workDescription);
     }
-  }, [workRecord]);
+  }, [workRecords]);
 
   const saveLessonInfo = async (
     teacherId: string,
@@ -117,15 +114,13 @@ const DayEditPanel: React.FC<DayEditPanelProps> = ({
         endTime,
         lessonInfo,
         workDescription,
-        officeHour: workRecord?.officeHour || "", // Added
-        teachHour: workRecord?.teachHour || "", // Added
+        officeHour: workRecords[0]?.officeHour || 0,
+        teachHour: workRecords[0]?.teachHour || 0,
+        date:
+          workRecords[0]?.date || new Date(year, month - 1, day).toISOString(), // Added
       };
       dispatch(
-        saveWorkRecordRequest(teacherId, year, month, day, {
-          ...updatedWorkRecord,
-          officeHour: Number(workRecord?.officeHour) || 0,
-          teachHour: Number(workRecord?.teachHour) || 0,
-        })
+        saveWorkRecordRequest(teacherId, year, month, day, updatedWorkRecord)
       );
     } catch (error) {
       console.error("Failed to save lesson info:", error);
@@ -145,15 +140,13 @@ const DayEditPanel: React.FC<DayEditPanelProps> = ({
         endTime,
         lessonInfo,
         workDescription,
-        officeHour: workRecord?.officeHour || "", // Added
-        teachHour: workRecord?.teachHour || "", // Added
+        officeHour: workRecords[0]?.officeHour || 0,
+        teachHour: workRecords[0]?.teachHour || 0,
+        date:
+          workRecords[0]?.date || new Date(year, month - 1, day).toISOString(), // Added
       };
       dispatch(
-        saveWorkRecordRequest(teacherId, year, month, day, {
-          ...updatedWorkRecord,
-          officeHour: Number(workRecord?.officeHour) || 0,
-          teachHour: Number(workRecord?.teachHour) || 0,
-        })
+        saveWorkRecordRequest(teacherId, year, month, day, updatedWorkRecord)
       );
     } catch (error) {
       console.error("Failed to save work record:", error);

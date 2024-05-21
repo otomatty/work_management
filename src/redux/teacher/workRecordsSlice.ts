@@ -1,19 +1,44 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { AppThunk, RootState } from "../store";
+import { createSlice, PayloadAction, createAsyncThunk } from "@reduxjs/toolkit";
+import { RootState } from "../store";
 import { workRecordsService } from "../../services/teachers/workRecordsService";
-import { WorkRecord } from "../../types"; // WorkRecord type imported
+import { WorkRecord } from "../../types";
 
-interface WorkRecordState {
-  workRecords: Record<string, WorkRecord | null>; // Type changed to Record<string, WorkRecord | null>
+interface FetchMonthlyWorkRecordsParams {
+  teacherId: string;
+  year: number;
+  month: number;
+}
+
+interface WorkRecordsState {
+  workRecords: Record<string, WorkRecord | {}>;
   loading: boolean;
   error: string | null;
 }
 
-const initialState: WorkRecordState = {
+const initialState: WorkRecordsState = {
   workRecords: {},
   loading: false,
   error: null,
 };
+
+export const fetchMonthlyWorkRecords = createAsyncThunk(
+  "workRecords/fetchMonthlyWorkRecords",
+  async (
+    { teacherId, year, month }: FetchMonthlyWorkRecordsParams,
+    thunkAPI
+  ) => {
+    try {
+      const response = await workRecordsService.getFullMonthlyWorkRecords(
+        teacherId,
+        year,
+        month
+      );
+      return response;
+    } catch (error: any) {
+      return thunkAPI.rejectWithValue({ error: error.message });
+    }
+  }
+);
 
 const workRecordsSlice = createSlice({
   name: "workRecords",
@@ -25,39 +50,32 @@ const workRecordsSlice = createSlice({
     },
     fetchWorkRecordsSuccess(
       state,
-      action: PayloadAction<Record<string, WorkRecord | null>>
+      action: PayloadAction<Record<string, WorkRecord | {}>>
     ) {
-      state.workRecords = {
-        ...state.workRecords,
-        ...action.payload,
-      };
+      state.workRecords = action.payload;
       state.loading = false;
     },
     fetchWorkRecordsFailure(state, action: PayloadAction<string>) {
       state.loading = false;
       state.error = action.payload;
     },
-    saveWorkRecordStart(state) {
-      state.loading = true;
-      state.error = null;
-    },
-    saveWorkRecordSuccess(
-      state,
-      action: PayloadAction<{
-        year: number;
-        month: number;
-        day: number;
-        workRecord: WorkRecord;
-      }>
-    ) {
-      const { year, month, day, workRecord } = action.payload;
-      state.workRecords[`${year}-${month}-${day}`] = workRecord;
-      state.loading = false;
-    },
-    saveWorkRecordFailure(state, action: PayloadAction<string>) {
-      state.loading = false;
-      state.error = action.payload;
-    },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchMonthlyWorkRecords.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchMonthlyWorkRecords.fulfilled, (state, action) => {
+        state.workRecords = action.payload;
+        state.loading = false;
+        // console.log("Fetched work records successfully:", action.payload);
+      })
+      .addCase(fetchMonthlyWorkRecords.rejected, (state, action) => {
+        state.loading = false;
+        state.error = (action.payload as { error: string }).error;
+        console.error("Failed to fetch work records:", action.payload);
+      });
   },
 });
 
@@ -65,35 +83,8 @@ export const {
   fetchWorkRecordsStart,
   fetchWorkRecordsSuccess,
   fetchWorkRecordsFailure,
-  saveWorkRecordStart,
-  saveWorkRecordSuccess,
-  saveWorkRecordFailure,
 } = workRecordsSlice.actions;
 
-export const fetchWorkRecords =
-  (teacherId: string, year: number, month: number, day: number): AppThunk =>
-  async (dispatch) => {
-    try {
-      dispatch(fetchWorkRecordsStart());
-      const workRecord = await workRecordsService.getWorkRecord(
-        teacherId,
-        year,
-        month,
-        day
-      );
-      dispatch(
-        fetchWorkRecordsSuccess({ [`${year}-${month}-${day}`]: workRecord })
-      );
-    } catch (error) {
-      let errorMessage = "An unknown error occurred";
-      if (error instanceof Error) {
-        errorMessage = error.message;
-      }
-      dispatch(fetchWorkRecordsFailure(errorMessage));
-    }
-  };
-
-export const selectWorkRecordsByDate = (state: RootState, date: string) =>
-  state.workRecords.workRecords[date] || {};
+export const selectWorkRecords = (state: RootState) => state.workRecords;
 
 export default workRecordsSlice.reducer;
