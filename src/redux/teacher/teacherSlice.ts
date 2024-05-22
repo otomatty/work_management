@@ -7,14 +7,14 @@ import {
 } from "../../services/teachers/teachersService";
 
 interface TeacherState {
-  teacherId: string | null;
+  teacherId: string | "";
   teachers: { id: string; name: string }[];
   loading: boolean;
   error: string | null;
 }
 
 const initialState: TeacherState = {
-  teacherId: null,
+  teacherId: "",
   teachers: [],
   loading: false,
   error: null,

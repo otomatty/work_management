@@ -31,8 +31,10 @@ export const schedulesService = {
     student: Student
   ) => {
     try {
-      await addStudent(teacherId, dayOfWeek, student);
-      console.log("Student added successfully");
+      // Firestore が自動的に一意の ID を生成する
+      const docRef = await addStudent(teacherId, dayOfWeek, student);
+      console.log("Student added successfully with ID: ", docRef.id);
+      return docRef.id; // 追加された生徒の ID を返す
     } catch (error) {
       console.error("Error adding student:", error);
       throw error;
@@ -269,10 +271,20 @@ export const schedulesService = {
     schedule: Schedule
   ): Promise<void> {
     try {
-      await updateScheduleInFirebase(teacherId, dayOfWeek, schedule);
-      console.log("Schedule updated successfully");
+      const { students, ...scheduleWithoutStudents } = schedule;
+      await updateScheduleInFirebase(
+        teacherId,
+        dayOfWeek,
+        scheduleWithoutStudents
+      );
+      if (students) {
+        for (const student of students) {
+          await updateStudent(teacherId, dayOfWeek, student.studentId, student);
+        }
+      }
+      console.log("Schedule and students updated successfully");
     } catch (error) {
-      console.error("Error updating schedule:", error);
+      console.error("Error updating schedule and students:", error);
       throw error;
     }
   },

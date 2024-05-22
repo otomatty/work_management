@@ -27,6 +27,8 @@ import {
   updateLessonInfo,
   deleteLessonInfo,
   getMonthlyWorkRecords,
+  deleteWorkRecordsByDateRange,
+  insertWorkRecordsByDateRange,
 } from "../../firebase";
 
 import { WorkRecord, LessonInfo } from "../../types"; // 型定義をインポート
@@ -502,7 +504,7 @@ export const workRecordsService = {
     }
   },
 
-  // 月毎の勤務記録を取得し、全日に対してデータを整形��る関数
+  // 月毎勤務記録を取得し、全日に対してデータを整形する関数
   getFullMonthlyWorkRecords: async (
     teacherId: string,
     year: number,
@@ -544,5 +546,41 @@ export const workRecordsService = {
       console.error("Error fetching full monthly work records:", error);
       throw error;
     }
+  },
+
+  deleteAllWorkRecordsForMonth: async (
+    teacherId: string,
+    year: number,
+    month: number
+  ): Promise<void> => {
+    const startDate = new Date(year, month, 1);
+    const endDate = new Date(year, month + 1, 0);
+
+    await deleteWorkRecordsByDateRange(
+      teacherId,
+      year,
+      month,
+      startDate,
+      endDate
+    );
+  },
+
+  insertAllWorkRecordsForMonth: async (
+    teacherId: string,
+    year: number,
+    month: number,
+    workRecords: { date: Date; workRecord: WorkRecord }[]
+  ): Promise<void> => {
+    const startDate = new Date(year, month, 1);
+    const endDate = new Date(year, month + 1, 0);
+
+    await insertWorkRecordsByDateRange(
+      teacherId,
+      year,
+      month,
+      startDate,
+      endDate,
+      workRecords
+    );
   },
 };

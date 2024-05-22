@@ -6,23 +6,28 @@ import Button from "../../../../components/atoms/Button";
 import ButtonGroup from "../../../../components/layout/ButtonGroup";
 import Dropdown from "../../../../components/molecules/Dropdown";
 import LoadingScreen from "../../../../components/atoms/LoadingScreen";
+import { useSelector } from "react-redux"; // ReduxからteacherIdを取得するためのimport
+import {
+  deleteWorkRecordsByDateRange,
+  deleteAllWorkRecordsForMonth,
+} from "../../../../firebase";
 
 interface BulkDeleteProps {
+  year: number;
+  month: number;
   isLoading: boolean;
   handleRangeDelete: (startDate: Date, endDate: Date) => void;
-  handleDeleteAll: () => void;
 }
 
-const BulkDelete: React.FC<BulkDeleteProps> = ({
-  isLoading,
-  handleRangeDelete,
-  handleDeleteAll,
-}) => {
+const BulkDelete: React.FC<BulkDeleteProps> = ({ isLoading, year, month }) => {
   const [showDeleteDropdown, setShowDeleteDropdown] = useState(false);
   const [showConfirmDeleteModal, setShowConfirmDeleteModal] = useState(false);
   const [showDateRangeModal, setShowDateRangeModal] = useState(false);
   const [selectedStartDate, setSelectedStartDate] = useState<Date | null>(null);
   const [selectedEndDate, setSelectedEndDate] = useState<Date | null>(null);
+
+  // ReduxからteacherIdを取得
+  const teacherId = useSelector((state: any) => state.teacher.teacherId); // stateの型をanyに指定
 
   const handleDateRangeSelect = (startDate: Date, endDate: Date) => {
     setSelectedStartDate(startDate);
@@ -31,9 +36,19 @@ const BulkDelete: React.FC<BulkDeleteProps> = ({
 
   const handleDelete = () => {
     if (selectedStartDate && selectedEndDate) {
-      handleRangeDelete(selectedStartDate, selectedEndDate);
+      deleteWorkRecordsByDateRange(
+        teacherId,
+        year,
+        month,
+        selectedStartDate,
+        selectedEndDate
+      );
       setShowDateRangeModal(false);
     }
+  };
+
+  const handleDeleteAllRecords = () => {
+    deleteAllWorkRecordsForMonth("teacherId", year, month); // Example with teacher ID and year/month specified
   };
 
   return (
@@ -71,7 +86,7 @@ const BulkDelete: React.FC<BulkDeleteProps> = ({
         <ButtonGroup $gap={10}>
           <Button
             label="はい"
-            onClick={handleDeleteAll}
+            onClick={handleDeleteAllRecords}
             backgroundColor="#2ecc71"
           />
           <Button

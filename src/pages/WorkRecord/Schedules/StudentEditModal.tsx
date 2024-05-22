@@ -87,6 +87,7 @@ const StudentEditModal: React.FC<StudentEditModalProps> = ({
     if (student) {
       const updatedStudent: Student = {
         ...student,
+        studentId: student.studentId, // 一意のIDを生成
         studentName,
         grade,
         subject,
@@ -97,7 +98,7 @@ const StudentEditModal: React.FC<StudentEditModalProps> = ({
   };
 
   const handleDeleteClick = () => {
-    if (student) {
+    if (student && student.studentId) {
       onDelete(student.studentId);
     }
   };
@@ -162,15 +163,7 @@ const StudentEditModal: React.FC<StudentEditModalProps> = ({
               {isNewStudent ? "追加する" : "更新する"}
             </Button>
             {!isNewStudent && (
-              <DeleteButton
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  handleDeleteClick();
-                }}
-              >
-                削除する
-              </DeleteButton>
+              <DeleteButton onClick={handleDeleteClick}>削除する</DeleteButton>
             )}
           </>
         ) : (

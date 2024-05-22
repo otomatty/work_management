@@ -1,4 +1,4 @@
-function generateInteger(includeNegatives) {
+function generateInteger(includeNegatives: boolean) {
   const range = 100;
   let number = Math.floor(Math.random() * (range + 1));
   if (includeNegatives) {
@@ -7,13 +7,13 @@ function generateInteger(includeNegatives) {
   return number;
 }
 
-function generateFraction(includeNegatives) {
+function generateFraction(includeNegatives: boolean) {
   const numerator = generateInteger(includeNegatives);
   const denominator = Math.floor(Math.random() * 8) + 2; // Avoid denominator being 1
   return `${numerator}/${denominator}`;
 }
 
-function generateDecimal(includeNegatives) {
+function generateDecimal(includeNegatives: boolean) {
   let number = (Math.random() * 10).toFixed(1);
   if (includeNegatives && Math.random() < 0.5) {
     number = "-" + number;
@@ -21,7 +21,10 @@ function generateDecimal(includeNegatives) {
   return number;
 }
 
-function generateRandomNumber(selectedFormats, includeNegatives) {
+function generateRandomNumber(
+  selectedFormats: string[],
+  includeNegatives: boolean
+) {
   const format =
     selectedFormats[Math.floor(Math.random() * selectedFormats.length)];
   switch (format) {
@@ -37,10 +40,10 @@ function generateRandomNumber(selectedFormats, includeNegatives) {
 }
 
 function generateProblem(
-  selectedTypes,
-  selectedFormats,
-  terms,
-  includeNegatives
+  selectedTypes: string[],
+  selectedFormats: string[],
+  terms: number,
+  includeNegatives: boolean
 ) {
   const type = selectedTypes[Math.floor(Math.random() * selectedTypes.length)];
 
@@ -75,11 +78,11 @@ function generateProblem(
 }
 
 function generateProblems(
-  selectedTypes,
-  selectedFormats,
-  terms,
-  count,
-  includeNegatives,
+  selectedTypes: string[],
+  selectedFormats: string[],
+  terms: number,
+  count: number,
+  includeNegatives: boolean,
   pageCount = 1 // ページ数パラメータを追加
 ) {
   const problemsPerPage = count; // 1ページあたりの問題数

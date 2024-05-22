@@ -1,4 +1,13 @@
-import { deleteField } from "firebase/firestore";
+import {
+  doc,
+  deleteField,
+  collection,
+  query,
+  where,
+  getDocs,
+  writeBatch,
+} from "firebase/firestore";
+import { db } from "../../firebase";
 import { getDocIdAndDayKey, saveData, getData } from "../../helpers";
 import { WorkRecord } from "../../../types";
 
@@ -73,4 +82,114 @@ export async function getMonthlyWorkRecords(
   }
   // console.log("Monthly Work Records:", workRecords); // 取得したデータをコンソールに表示
   return workRecords;
+}
+
+// 期間指定でworkRecords内のデータを一括削除する
+export async function deleteWorkRecordsByDateRange(
+  teacherId: string,
+  year: number,
+  month: number,
+  startDate: Date,
+  endDate: Date
+): Promise<void> {
+  try {
+    const startDay = startDate.getDate().toString().padStart(2, "0"); // 日にちを2桁の形式に変換
+    const endDay = endDate.getDate().toString().padStart(2, "0"); // 日にちを2桁の形式に変換
+
+    const { docId } = getDocIdAndDayKey(year, month, 1); // 対象の年月のドキュメントIDを取得
+    const workRecordsCollection = collection(db, "workRecords", docId);
+    const q = query(
+      workRecordsCollection,
+      where("teacherId", "==", teacherId),
+      where(
+        "date",
+        ">=",
+        `${year}-${month.toString().padStart(2, "0")}-${startDay}`
+      ),
+      where(
+        "date",
+        "<=",
+        `${year}-${month.toString().padStart(2, "0")}-${endDay}`
+      )
+    );
+
+    const querySnapshot = await getDocs(q);
+    const batch = writeBatch(db);
+
+    querySnapshot.forEach((doc) => {
+      batch.delete(doc.ref);
+    });
+
+    await batch.commit();
+    console.log("Work records deleted successfully");
+  } catch (error) {
+    console.error("Error deleting work records:", error);
+    throw error;
+  }
+}
+
+// 月全体のworkRecords内のデータを一括削除する
+export async function deleteAllWorkRecordsForMonth(
+  teacherId: string,
+  year: number,
+  month: number
+): Promise<void> {
+  const startDate = new Date(year, month, 1); // 月の最初の日を設定
+  const endDate = new Date(year, month + 1, 0); // 月の最終日を設定
+
+  await deleteWorkRecordsByDateRange(
+    teacherId,
+    year,
+    month,
+    startDate,
+    endDate
+  );
+}
+
+// 期間指定でworkRecords内にデータを一括登録する
+export async function insertWorkRecordsByDateRange(
+  teacherId: string,
+  year: number,
+  month: number,
+  startDate: Date,
+  endDate: Date,
+  workRecords: Record<string, any>[]
+): Promise<void> {
+  try {
+    const { docId } = getDocIdAndDayKey(year, month, 1); // 対象の年月のドキュメントIDを取得
+    const workRecordsCollection = collection(db, "workRecords", docId);
+    const batch = writeBatch(db);
+
+    workRecords.forEach((record) => {
+      const dayKey = record.day.toString().padStart(2, "0"); // レコードの日にちを2桁の形式に変換
+      const docRef = doc(workRecordsCollection, dayKey);
+      batch.set(docRef, record);
+    });
+
+    await batch.commit();
+    console.log("Work records inserted successfully");
+  } catch (error) {
+    console.error("Error inserting work records:", error);
+    throw error;
+  }
+}
+
+// 月全体のworkRecords内にデータを一括登録する
+export async function insertAllWorkRecordsForMonth(
+  teacherId: string,
+  year: number,
+  month: number,
+  workRecords: Record<string, any>[]
+): Promise<void> {
+  const startDate = new Date(year, month, 1); // 月の最初の日を設定
+  const endDate = new Date(year, month + 1, 0); // 月の最終日を設定
+
+  await insertWorkRecordsByDateRange(
+    teacherId,
+    year,
+    month,
+    startDate,
+    endDate,
+    workRecords
+  );
 }

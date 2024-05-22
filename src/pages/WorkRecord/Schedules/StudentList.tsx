@@ -3,6 +3,9 @@ import { motion } from "framer-motion";
 import styled from "styled-components";
 import StudentEditModal from "./StudentEditModal";
 import { Student } from "../../../types";
+import { addStudent, updateStudent, deleteStudent } from "../../../firebase";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../redux/store";
 
 const ListContainer = styled.div<{ $dayOfWeek: string }>`
   margin: 10px 8px 0 8px;
@@ -70,6 +73,7 @@ const StudentList: React.FC<StudentListProps> = ({
   students,
   onStudentListChange,
 }) => {
+  const teacherId = useSelector((state: RootState) => state.teacher.teacherId);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
 
@@ -80,7 +84,7 @@ const StudentList: React.FC<StudentListProps> = ({
 
   const handleAddButtonClick = () => {
     setSelectedStudent({
-      studentId: "",
+      studentId: "", // 新しい生徒なのでIDは空
       studentName: "",
       grade: "",
       subject: "",
@@ -89,26 +93,54 @@ const StudentList: React.FC<StudentListProps> = ({
     setIsModalOpen(true);
   };
 
-  const handleUpdateStudent = (updatedStudent: Student) => {
-    const updatedStudents = students.map((student) =>
-      student.studentId === updatedStudent.studentId ? updatedStudent : student
-    );
-    if (
-      !students.some(
-        (student) => student.studentId === updatedStudent.studentId
-      )
-    ) {
-      updatedStudents.push(updatedStudent);
+  const handleUpdateStudent = async (updatedStudent: Student) => {
+    if (!updatedStudent.studentId) {
+      // 新しい生徒を追加
+      try {
+        const newStudent = await addStudent(
+          teacherId,
+          dayOfWeek,
+          updatedStudent
+        );
+        onStudentListChange([
+          ...students,
+          { ...updatedStudent, studentId: newStudent.id },
+        ]);
+      } catch (error) {
+        console.error("Error adding new student:", error);
+      }
+    } else {
+      // 既存の生徒を更新
+      try {
+        await updateStudent(
+          teacherId,
+          dayOfWeek,
+          updatedStudent.studentId,
+          updatedStudent
+        );
+        const updatedStudents = students.map((student) =>
+          student.studentId === updatedStudent.studentId
+            ? updatedStudent
+            : student
+        );
+        onStudentListChange(updatedStudents);
+      } catch (error) {
+        console.error("Error updating student:", error);
+      }
     }
-    onStudentListChange(updatedStudents);
     setIsModalOpen(false);
   };
 
-  const handleDeleteStudent = (firestoreId: string) => {
-    const updatedStudents = students.filter(
-      (student) => student.studentId !== firestoreId
-    );
-    onStudentListChange(updatedStudents);
+  const handleDeleteStudent = async (studentId: string) => {
+    try {
+      await deleteStudent(teacherId, dayOfWeek, studentId);
+      const updatedStudents = students.filter(
+        (student) => student.studentId !== studentId
+      );
+      onStudentListChange(updatedStudents);
+    } catch (error) {
+      console.error("Error deleting student:", error);
+    }
     setIsModalOpen(false);
   };
 
@@ -133,7 +165,7 @@ const StudentList: React.FC<StudentListProps> = ({
       高校1年: "高1",
       高校2年: "高2",
       高校3年: "高3",
-      社会人: "社",
+      社会人: "Ad",
     };
 
     const subjectMap: { [key: string]: string } = {
