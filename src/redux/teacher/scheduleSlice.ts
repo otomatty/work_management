@@ -1,8 +1,8 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { AppThunk, RootState } from "../store";
-import { schedulesService } from "../../services/teachers/schedulesService"; // API呼び出し関数をインポート
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { AppThunk, RootState } from '../store';
+import { schedulesService } from '../../services/teachers/schedulesService'; // API呼び出し関数をインポート
 
-import { Schedule } from "../../types";
+import { Schedule } from '../../types';
 
 interface ScheduleState {
   schedules: Record<string, Schedule>;
@@ -17,7 +17,7 @@ const initialState: ScheduleState = {
 };
 
 const scheduleSlice = createSlice({
-  name: "schedule",
+  name: 'schedule',
   initialState,
   reducers: {
     fetchSchedulesStart(state) {
@@ -39,9 +39,12 @@ const scheduleSlice = createSlice({
       state.loading = true;
       state.error = null;
     },
-    updateScheduleSuccess(state, action: PayloadAction<Schedule>) {
-      const { dayOfWeek } = action.payload;
-      state.schedules[dayOfWeek] = action.payload;
+    updateScheduleSuccess(
+      state,
+      action: PayloadAction<{ dayOfWeek: string; schedule: Schedule }>
+    ) {
+      const { dayOfWeek, schedule } = action.payload;
+      state.schedules[dayOfWeek] = schedule;
       state.loading = false;
     },
     updateScheduleFailure(state, action: PayloadAction<string>) {
@@ -68,7 +71,7 @@ export const fetchSchedules =
       const schedules = await schedulesService.getSchedules(teacherId);
       dispatch(fetchSchedulesSuccess(schedules));
     } catch (error) {
-      let errorMessage = "An unknown error occurred";
+      let errorMessage = 'An unknown error occurred';
       if (error instanceof Error) {
         errorMessage = error.message;
       }
@@ -82,9 +85,9 @@ export const updateSchedule =
     try {
       dispatch(updateScheduleStart());
       await schedulesService.updateSchedule(teacherId, dayOfWeek, schedule);
-      dispatch(updateScheduleSuccess(schedule));
+      dispatch(updateScheduleSuccess({ dayOfWeek, schedule }));
     } catch (error) {
-      let errorMessage = "An unknown error occurred";
+      let errorMessage = 'An unknown error occurred';
       if (error instanceof Error) {
         errorMessage = error.message;
       }
@@ -98,9 +101,9 @@ export const selectSchedulesByTeacher = (
 ) => {
   const schedules = state.schedule.schedules[teacherId] || {};
   console.log(
-    "selectSchedulesByTeacher called with teacherId:",
+    'selectSchedulesByTeacher called with teacherId:',
     teacherId,
-    "resulting schedules:",
+    'resulting schedules:',
     schedules
   ); // デバッグ用ログ
   return schedules;

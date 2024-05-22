@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { WorkRecord } from '../../../../types';
 import { faKeyboard } from '@fortawesome/free-solid-svg-icons';
 import DateRangePicker from '../../../../components/molecules/DateRangePicker';
 import Modal from '../../../../components/molecules/Modal';
@@ -7,11 +8,8 @@ import ButtonGroup from '../../../../components/layout/ButtonGroup';
 import Dropdown from '../../../../components/molecules/Dropdown';
 import LoadingScreen from '../../../../components/atoms/LoadingScreen';
 import { useSelector } from 'react-redux'; // ReduxからteacherIdを取得するためのimport
-import {
-  insertWorkRecordsByDateRange,
-  insertAllWorkRecordsForMonth,
-} from '../../../../firebase';
-import { WorkRecord } from '../../../../types'; // WorkRecord型をインポート
+import { workRecordsService } from '../../../../services/teachers/workRecordsService';
+
 import { useLoadingAndReload } from '../../../../hooks/useLoadingAndReload'; // カスタムフックをインポート
 
 interface BulkInsertProps {
@@ -37,9 +35,9 @@ const BulkInsert: React.FC<BulkInsertProps> = ({ year, month }) => {
   };
 
   const handleRangeInsert = async (startDate: Date, endDate: Date) => {
-    const workRecords: WorkRecord[] = []; // WorkRecord型を指定
     startLoading(); // ローディング状態を開始
-    await insertWorkRecordsByDateRange(
+    const workRecords: WorkRecord[] = []; // 型を明示的に指定
+    await workRecordsService.insertWorkRecordsByDateRange(
       teacherId,
       year,
       month,
@@ -52,11 +50,16 @@ const BulkInsert: React.FC<BulkInsertProps> = ({ year, month }) => {
   };
 
   const handleInsertAll = async () => {
-    const workRecords: WorkRecord[] = []; // WorkRecord型を指定
-    startLoading(); // ローディング状態を開始
-    await insertAllWorkRecordsForMonth(teacherId, year, month, workRecords);
-    stopLoading(); // ローディング状態を終了
-    reloadPage(); // ページをリロード
+    // startLoading(); // ローディング状態を開始
+    const workRecords: { workRecord: WorkRecord }[] = [];
+    await workRecordsService.insertAllWorkRecordsForMonth(
+      teacherId,
+      year,
+      month,
+      workRecords
+    );
+    // stopLoading(); // ローディング状態を終了
+    // reloadPage(); // ページをリロード
   };
 
   return (

@@ -3,17 +3,17 @@ import {
   saveData,
   deleteData,
   getData,
-} from "../../helpers";
-import { getStudents } from "./students";
-import { Schedule } from "../../../types";
+} from '../../helpers';
+import { getStudents } from './students';
+import { Schedule } from '../../../types';
 
 // 講師IDに基づいてスケジュールを取得
 export async function getSchedules(
   teacherId: string
 ): Promise<Record<string, Schedule>> {
   try {
-    const schedules = await getCollectionData(teacherId, "schedules");
-    // console.log("Schedules fetched from Firestore:", schedules); // デバッグ用ログ
+    const schedules = await getCollectionData(teacherId, 'schedules');
+    // console.log('Schedules fetched from Firestore:', schedules); // デバッグ用ログを有効化
     const schedulesData: Record<string, Schedule> = {};
 
     for (const schedule of schedules) {
@@ -22,19 +22,20 @@ export async function getSchedules(
         const students = await getStudents(teacherId, dayOfWeek); // 追加
         schedulesData[dayOfWeek] = {
           dayOfWeek,
-          classroom: schedule.classroom || "",
-          startTime: schedule.startTime || "",
-          endTime: schedule.endTime || "",
+          classroom: schedule.classroom || '',
+          startTime: schedule.startTime || '',
+          endTime: schedule.endTime || '',
           students: students || [], // 追加
         } as Schedule;
       } else {
-        console.warn("Schedule without dayOfWeek found:", schedule);
+        console.warn('Schedule without dayOfWeek found:', schedule);
       }
     }
 
+    // console.log('Formatted Schedules Data:', schedulesData); // デバッグ用ログを追加
     return schedulesData;
   } catch (error) {
-    console.error("Error fetching schedules from Firestore:", error); // エラーログ
+    console.error('Error fetching schedules from Firestore:', error); // エラーログ
     throw error;
   }
 }
@@ -48,10 +49,10 @@ export async function addSchedule(
   const { students, ...scheduleWithoutStudents } = schedule; // studentsを除外
   await saveData(
     teacherId,
-    "schedules",
+    'schedules',
     dayOfWeek,
     scheduleWithoutStudents,
-    "Schedule added"
+    'Schedule added'
   );
 }
 
@@ -63,10 +64,10 @@ export async function updateSchedule(
 ): Promise<void> {
   await saveData(
     teacherId,
-    "schedules",
+    'schedules',
     dayOfWeek,
     schedule,
-    "Schedule updated"
+    'Schedule updated'
   );
 }
 
@@ -75,7 +76,7 @@ export async function deleteSchedule(
   teacherId: string,
   dayOfWeek: string
 ): Promise<void> {
-  await deleteData(teacherId, "schedules", dayOfWeek, "Schedule deleted");
+  await deleteData(teacherId, 'schedules', dayOfWeek, 'Schedule deleted');
 }
 
 // 特定の曜日のスケジュールを取得
@@ -83,6 +84,6 @@ export async function getScheduleByDay(
   teacherId: string,
   dayOfWeek: string
 ): Promise<Schedule | null> {
-  const data = await getData(teacherId, "schedules", dayOfWeek);
+  const data = await getData(teacherId, 'schedules', dayOfWeek);
   return data as Schedule | null;
 }

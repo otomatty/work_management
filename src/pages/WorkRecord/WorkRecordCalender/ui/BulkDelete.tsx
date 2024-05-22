@@ -7,10 +7,7 @@ import ButtonGroup from '../../../../components/layout/ButtonGroup';
 import Dropdown from '../../../../components/molecules/Dropdown';
 import LoadingScreen from '../../../../components/atoms/LoadingScreen';
 import { useSelector } from 'react-redux'; // ReduxからteacherIdを取得するためのimport
-import {
-  deleteWorkRecordsByDateRange,
-  deleteAllWorkRecordsForMonth,
-} from '../../../../firebase';
+import { workRecordsService } from '../../../../services/teachers/workRecordsService';
 import { useLoadingAndReload } from '../../../../hooks/useLoadingAndReload'; // カスタムフックをインポート
 
 interface BulkDeleteProps {
@@ -32,7 +29,7 @@ const BulkDelete: React.FC<BulkDeleteProps> = ({ year, month }) => {
   const teacherId = useSelector((state: any) => state.teacher.teacherId); // stateの型をanyに指定
 
   useEffect(() => {
-    console.log('BulkDelete month value:', month); // monthの値を表示
+    // console.log('BulkDelete month value:', month); // monthの値を表示
   }, [month]);
 
   const handleDateRangeSelect = (startDate: Date, endDate: Date) => {
@@ -43,7 +40,7 @@ const BulkDelete: React.FC<BulkDeleteProps> = ({ year, month }) => {
   const handleDelete = () => {
     if (selectedStartDate && selectedEndDate) {
       console.log('Deleting records for month:', month); // Added console.log to display month
-      deleteWorkRecordsByDateRange(
+      workRecordsService.deleteWorkRecordsByDateRange(
         teacherId,
         year,
         month,
@@ -55,9 +52,13 @@ const BulkDelete: React.FC<BulkDeleteProps> = ({ year, month }) => {
   };
 
   const handleDeleteAll = async () => {
-    console.log('Deleting all records for month:', month); // Added console.log to display month
+    // console.log('Deleting all records for month:', month); // Added console.log to display month
     startLoading(); // ローディング状態を開始
-    await deleteAllWorkRecordsForMonth(teacherId, year, month); // Example with teacher ID and year/month specified
+    await workRecordsService.deleteAllWorkRecordsForMonth(
+      teacherId,
+      year,
+      month
+    ); // Example with teacher ID and year/month specified
     stopLoading(); // ローディング状態を終了
     setShowConfirmDeleteModal(false);
     reloadPage(); // ページをリロード

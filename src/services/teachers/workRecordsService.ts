@@ -2,36 +2,13 @@ import {
   addWorkRecord,
   updateWorkRecord,
   deleteWorkRecord,
-  addWorkHour,
-  getWorkHour,
-  updateWorkHour,
-  deleteWorkHour,
-  addWorkRecordClassroom,
-  getWorkRecordClassroom,
-  updateWorkRecordClassroom,
-  deleteWorkRecordClassroom,
-  addWorkDescription,
-  getWorkDescription,
-  updateWorkDescription,
-  deleteWorkDescription,
-  addTeachHour,
-  getTeachHour,
-  updateTeachHour,
-  deleteTeachHour,
-  addOfficeHour,
-  getOfficeHour,
-  updateOfficeHour,
-  deleteOfficeHour,
-  addLessonInfo,
-  getLessonInfo,
-  updateLessonInfo,
-  deleteLessonInfo,
   getMonthlyWorkRecords,
-  deleteWorkRecordsByDateRange,
-  insertWorkRecordsByDateRange,
-} from "../../firebase";
+  getSchedules,
+} from '../../firebase';
 
-import { WorkRecord, LessonInfo } from "../../types"; // 型定義をインポート
+import { getData, getDocIdAndDayKey } from '../../firebase/helpers';
+
+import { WorkRecord, LessonInfo, Schedule } from '../../types'; // 型定義をインポート
 
 import {
   collection,
@@ -40,8 +17,9 @@ import {
   getDocs,
   writeBatch,
   doc,
-} from "firebase/firestore";
-import { db } from "../../firebase/firebase";
+  deleteField,
+} from 'firebase/firestore';
+import { db } from '../../firebase/firebase';
 
 export const workRecordsService = {
   // Work Record related functions
@@ -54,9 +32,9 @@ export const workRecordsService = {
   ): Promise<void> => {
     try {
       await addWorkRecord(teacherId, year, month, day, workRecord);
-      console.log("Work record added successfully");
+      console.log('Work record added successfully');
     } catch (error) {
-      console.error("Error adding work record:", error);
+      console.error('Error adding work record:', error);
       throw error;
     }
   },
@@ -70,9 +48,9 @@ export const workRecordsService = {
   ): Promise<void> => {
     try {
       await updateWorkRecord(teacherId, year, month, day, workRecord);
-      console.log("Work record updated successfully");
+      console.log('Work record updated successfully');
     } catch (error) {
-      console.error("Error updating work record:", error);
+      console.error('Error updating work record:', error);
       throw error;
     }
   },
@@ -84,365 +62,9 @@ export const workRecordsService = {
   ): Promise<void> => {
     try {
       await deleteWorkRecord(teacherId, year, month, day);
-      console.log("Work record deleted successfully");
+      console.log('Work record deleted successfully');
     } catch (error) {
-      console.error("Error deleting work record:", error);
-      throw error;
-    }
-  },
-
-  // Work Hour related functions
-  addWorkHour: async (
-    teacherId: string,
-    year: number,
-    month: number,
-    day: number,
-    startTime: string,
-    endTime: string
-  ): Promise<void> => {
-    try {
-      await addWorkHour(teacherId, year, month, day, startTime, endTime);
-      console.log("Work hour added successfully");
-    } catch (error) {
-      console.error("Error adding work hour:", error);
-      throw error;
-    }
-  },
-  getWorkHour: async (
-    teacherId: string,
-    year: number,
-    month: number,
-    day: number
-  ): Promise<any> => {
-    try {
-      return await getWorkHour(teacherId, year, month, day);
-    } catch (error) {
-      console.error("Error fetching work hour:", error);
-      throw error;
-    }
-  },
-  updateWorkHour: async (
-    teacherId: string,
-    year: number,
-    month: number,
-    day: number,
-    startTime: string,
-    endTime: string
-  ): Promise<void> => {
-    try {
-      await updateWorkHour(teacherId, year, month, day, startTime, endTime);
-      console.log("Work hour updated successfully");
-    } catch (error) {
-      console.error("Error updating work hour:", error);
-      throw error;
-    }
-  },
-  deleteWorkHour: async (
-    teacherId: string,
-    year: number,
-    month: number,
-    day: number
-  ): Promise<void> => {
-    try {
-      await deleteWorkHour(teacherId, year, month, day);
-      console.log("Work hour deleted successfully");
-    } catch (error) {
-      console.error("Error deleting work hour:", error);
-      throw error;
-    }
-  },
-
-  // Classroom related functions
-  addWorkRecordClassroom: async (
-    teacherId: string,
-    year: number,
-    month: number,
-    day: number,
-    classroom: string
-  ): Promise<void> => {
-    try {
-      await addWorkRecordClassroom(teacherId, year, month, day, classroom);
-      console.log("Classroom added successfully");
-    } catch (error) {
-      console.error("Error adding classroom:", error);
-      throw error;
-    }
-  },
-  getWorkRecordClassroom: async (
-    teacherId: string,
-    year: number,
-    month: number,
-    day: number
-  ): Promise<string | null> => {
-    try {
-      return await getWorkRecordClassroom(teacherId, year, month, day);
-    } catch (error) {
-      console.error("Error fetching classroom:", error);
-      throw error;
-    }
-  },
-  updateWorkRecordClassroom: async (
-    teacherId: string,
-    year: number,
-    month: number,
-    day: number,
-    classroom: string
-  ): Promise<void> => {
-    try {
-      await updateWorkRecordClassroom(teacherId, year, month, day, classroom);
-      console.log("Classroom updated successfully");
-    } catch (error) {
-      console.error("Error updating classroom:", error);
-      throw error;
-    }
-  },
-  deleteWorkRecordClassroom: async (
-    teacherId: string,
-    year: number,
-    month: number,
-    day: number
-  ): Promise<void> => {
-    try {
-      await deleteWorkRecordClassroom(teacherId, year, month, day);
-      console.log("Classroom deleted successfully");
-    } catch (error) {
-      console.error("Error deleting classroom:", error);
-      throw error;
-    }
-  },
-
-  // Work Description related functions
-  addWorkDescription: async (
-    teacherId: string,
-    year: number,
-    month: number,
-    day: number,
-    workDescription: string
-  ): Promise<void> => {
-    try {
-      await addWorkDescription(teacherId, year, month, day, workDescription);
-      console.log("Work description added successfully");
-    } catch (error) {
-      console.error("Error adding work description:", error);
-      throw error;
-    }
-  },
-  getWorkDescription: async (
-    teacherId: string,
-    year: number,
-    month: number,
-    day: number
-  ): Promise<string | null> => {
-    try {
-      return await getWorkDescription(teacherId, year, month, day);
-    } catch (error) {
-      console.error("Error fetching work description:", error);
-      throw error;
-    }
-  },
-  updateWorkDescription: async (
-    teacherId: string,
-    year: number,
-    month: number,
-    day: number,
-    workDescription: string
-  ): Promise<void> => {
-    try {
-      await updateWorkDescription(teacherId, year, month, day, workDescription);
-      console.log("Work description updated successfully");
-    } catch (error) {
-      console.error("Error updating work description:", error);
-      throw error;
-    }
-  },
-  deleteWorkDescription: async (
-    teacherId: string,
-    year: number,
-    month: number,
-    day: number
-  ): Promise<void> => {
-    try {
-      await deleteWorkDescription(teacherId, year, month, day);
-      console.log("Work description deleted successfully");
-    } catch (error) {
-      console.error("Error deleting work description:", error);
-      throw error;
-    }
-  },
-
-  // Teach Hour related functions
-  addTeachHour: async (
-    teacherId: string,
-    year: number,
-    month: number,
-    day: number,
-    teachHour: number
-  ): Promise<void> => {
-    try {
-      await addTeachHour(teacherId, year, month, day, teachHour);
-      console.log("Teach hour added successfully");
-    } catch (error) {
-      console.error("Error adding teach hour:", error);
-      throw error;
-    }
-  },
-  getTeachHour: async (
-    teacherId: string,
-    year: number,
-    month: number,
-    day: number
-  ): Promise<number | null> => {
-    try {
-      return await getTeachHour(teacherId, year, month, day);
-    } catch (error) {
-      console.error("Error fetching teach hour:", error);
-      throw error;
-    }
-  },
-  updateTeachHour: async (
-    teacherId: string,
-    year: number,
-    month: number,
-    day: number,
-    teachHour: number
-  ): Promise<void> => {
-    try {
-      await updateTeachHour(teacherId, year, month, day, teachHour);
-      console.log("Teach hour updated successfully");
-    } catch (error) {
-      console.error("Error updating teach hour:", error);
-      throw error;
-    }
-  },
-  deleteTeachHour: async (
-    teacherId: string,
-    year: number,
-    month: number,
-    day: number
-  ): Promise<void> => {
-    try {
-      await deleteTeachHour(teacherId, year, month, day);
-      console.log("Teach hour deleted successfully");
-    } catch (error) {
-      console.error("Error deleting teach hour:", error);
-      throw error;
-    }
-  },
-
-  // Office Hour related functions
-  addOfficeHour: async (
-    teacherId: string,
-    year: number,
-    month: number,
-    day: number,
-    officeHour: number
-  ): Promise<void> => {
-    try {
-      await addOfficeHour(teacherId, year, month, day, officeHour);
-      console.log("Office hour added successfully");
-    } catch (error) {
-      console.error("Error adding office hour:", error);
-      throw error;
-    }
-  },
-  getOfficeHour: async (
-    teacherId: string,
-    year: number,
-    month: number,
-    day: number
-  ): Promise<number | null> => {
-    try {
-      return await getOfficeHour(teacherId, year, month, day);
-    } catch (error) {
-      console.error("Error fetching office hour:", error);
-      throw error;
-    }
-  },
-  updateOfficeHour: async (
-    teacherId: string,
-    year: number,
-    month: number,
-    day: number,
-    officeHour: number
-  ): Promise<void> => {
-    try {
-      await updateOfficeHour(teacherId, year, month, day, officeHour);
-      console.log("Office hour updated successfully");
-    } catch (error) {
-      console.error("Error updating office hour:", error);
-      throw error;
-    }
-  },
-  deleteOfficeHour: async (
-    teacherId: string,
-    year: number,
-    month: number,
-    day: number
-  ): Promise<void> => {
-    try {
-      await deleteOfficeHour(teacherId, year, month, day);
-      console.log("Office hour deleted successfully");
-    } catch (error) {
-      console.error("Error deleting office hour:", error);
-      throw error;
-    }
-  },
-
-  // Lesson Info related functions
-  addLessonInfo: async (
-    teacherId: string,
-    year: number,
-    month: number,
-    day: number,
-    lessonInfo: LessonInfo[]
-  ): Promise<void> => {
-    try {
-      await addLessonInfo(teacherId, year, month, day, lessonInfo);
-      console.log("Lesson info added successfully");
-    } catch (error) {
-      console.error("Error adding lesson info:", error);
-      throw error;
-    }
-  },
-  getLessonInfo: async (
-    teacherId: string,
-    year: number,
-    month: number,
-    day: number
-  ): Promise<LessonInfo[] | null> => {
-    try {
-      return await getLessonInfo(teacherId, year, month, day);
-    } catch (error) {
-      console.error("Error fetching lesson info:", error);
-      throw error;
-    }
-  },
-  updateLessonInfo: async (
-    teacherId: string,
-    year: number,
-    month: number,
-    day: number,
-    lessonInfo: Partial<LessonInfo>[]
-  ): Promise<void> => {
-    try {
-      await updateLessonInfo(teacherId, year, month, day, lessonInfo);
-      console.log("Lesson info updated successfully");
-    } catch (error) {
-      console.error("Error updating lesson info:", error);
-      throw error;
-    }
-  },
-  deleteLessonInfo: async (
-    teacherId: string,
-    year: number,
-    month: number,
-    day: number
-  ): Promise<void> => {
-    try {
-      await deleteLessonInfo(teacherId, year, month, day);
-      console.log("Lesson info deleted successfully");
-    } catch (error) {
-      console.error("Error deleting lesson info:", error);
+      console.error('Error deleting work record:', error);
       throw error;
     }
   },
@@ -453,12 +75,12 @@ export const workRecordsService = {
     endDate: Date
   ): Promise<void> => {
     try {
-      const workRecordsCollection = collection(db, "workRecords");
+      const workRecordsCollection = collection(db, 'workRecords');
       const q = query(
         workRecordsCollection,
-        where("teacherId", "==", teacherId),
-        where("date", ">=", startDate),
-        where("date", "<=", endDate)
+        where('teacherId', '==', teacherId),
+        where('date', '>=', startDate),
+        where('date', '<=', endDate)
       );
 
       const querySnapshot = await getDocs(q);
@@ -469,9 +91,9 @@ export const workRecordsService = {
       });
 
       await batch.commit();
-      console.log("Work records deleted successfully");
+      console.log('Work records deleted successfully');
     } catch (error) {
-      console.error("Error deleting work records:", error);
+      console.error('Error deleting work records:', error);
       throw error;
     }
   },
@@ -482,7 +104,7 @@ export const workRecordsService = {
   ): Promise<void> => {
     try {
       const batch = writeBatch(db);
-      const workRecordsCollection = collection(db, "workRecords");
+      const workRecordsCollection = collection(db, 'workRecords');
 
       for (const { date, workRecord } of workRecords) {
         const docRef = doc(
@@ -497,9 +119,9 @@ export const workRecordsService = {
       }
 
       await batch.commit();
-      console.log("Work records inserted successfully");
+      console.log('Work records inserted successfully');
     } catch (error) {
-      console.error("Error inserting work records:", error);
+      console.error('Error inserting work records:', error);
       throw error;
     }
   },
@@ -519,16 +141,16 @@ export const workRecordsService = {
       ); // 月は0から始まるため、1を引く
       const fullMonthlyRecords: Record<string, WorkRecord | {}> = {};
 
-      // 全日に対して空のデータを初期化
+      // 全日して空のデータを初期化
       for (let day = 1; day <= numDays; day++) {
-        const dayKey = day.toString().padStart(2, "0");
+        const dayKey = day.toString().padStart(2, '0');
         fullMonthlyRecords[dayKey] = {
-          classroom: "",
-          startTime: "",
-          endTime: "",
+          classroom: '',
+          startTime: '',
+          endTime: '',
           teachHour: 0,
           officeHour: 0,
-          workDescription: "",
+          workDescription: '',
           lessonInfo: [] as LessonInfo[],
         }; // 空のデータで初期化
       }
@@ -543,7 +165,91 @@ export const workRecordsService = {
 
       return fullMonthlyRecords;
     } catch (error) {
-      console.error("Error fetching full monthly work records:", error);
+      console.error('Error fetching full monthly work records:', error);
+      throw error;
+    }
+  },
+
+  // 期間指定でworkRecords内のデータを一括削除する
+  deleteWorkRecordsByDateRange: async (
+    teacherId: string,
+    year: number,
+    month: number,
+    startDate: Date,
+    endDate: Date
+  ): Promise<void> => {
+    try {
+      console.log('deleteWorkRecordsByDateRange month value:', month); // monthの値を表示
+
+      const startDay = startDate.getDate().toString().padStart(2, '0'); // 日にちを2桁の形式に変換
+      const endDay = endDate.getDate().toString().padStart(2, '0'); // 日にちを2桁の形式に変換
+
+      const { docId } = getDocIdAndDayKey(year, month - 1, 1); // 対象の年月のドキュメントIDを取得
+      const docRef = doc(db, `teachers/${teacherId}/workRecords`, docId);
+      const data = (await getData(teacherId, 'workRecords', docId)) || {};
+
+      const batch = writeBatch(db);
+
+      for (let day = parseInt(startDay); day <= parseInt(endDay); day++) {
+        const dayKey = day.toString().padStart(2, '0');
+        if (data[dayKey]) {
+          batch.update(docRef, { [dayKey]: deleteField() });
+        }
+      }
+
+      await batch.commit();
+      console.log('Work records deleted successfully');
+    } catch (error) {
+      console.error('Error deleting work records:', error);
+      throw error;
+    }
+  },
+
+  // 期間指定でworkRecords内にデータを一括登録する
+  insertWorkRecordsByDateRange: async (
+    teacherId: string,
+    year: number,
+    month: number,
+    startDate: Date,
+    endDate: Date,
+    workRecords: WorkRecord[] // WorkRecord型を指定
+  ): Promise<void> => {
+    try {
+      const { docId } = getDocIdAndDayKey(year, month, 1); // 対象の年月のドキュメントIDを取得
+      const docRef = doc(db, `teachers/${teacherId}/workRecords`, docId);
+
+      const batch = writeBatch(db);
+
+      // getMonthlyScheduleを呼び出してスケジュールを取得
+      const monthlySchedule = await workRecordsService.getMonthlySchedule(
+        teacherId,
+        year,
+        month
+      );
+      console.log('Monthly Schedule:', monthlySchedule); // デバッグ用ログを追加
+
+      let recordIndex = 0;
+      for (
+        let d = new Date(startDate);
+        d <= endDate;
+        d.setDate(d.getDate() + 1)
+      ) {
+        const dayKey = d.getDate().toString().padStart(2, '0'); // 日にちを2桁の形式に変換
+        if (recordIndex < workRecords.length) {
+          const schedule = monthlySchedule[dayKey];
+          batch.set(
+            docRef,
+            { [dayKey]: { ...workRecords[recordIndex], schedule } }, // スケジュールを追加
+            { merge: true }
+          );
+          recordIndex++;
+        }
+      }
+
+      await batch.commit();
+      console.log('Work records inserted successfully');
+    } catch (error) {
+      console.error('Error inserting work records:', error);
       throw error;
     }
   },
@@ -556,7 +262,7 @@ export const workRecordsService = {
     const startDate = new Date(year, month, 1);
     const endDate = new Date(year, month + 1, 0);
 
-    await deleteWorkRecordsByDateRange(
+    await workRecordsService.deleteWorkRecordsByDateRange(
       teacherId,
       year,
       month,
@@ -569,18 +275,58 @@ export const workRecordsService = {
     teacherId: string,
     year: number,
     month: number,
-    workRecords: { date: Date; workRecord: WorkRecord }[]
+    workRecords: { workRecord: WorkRecord }[]
   ): Promise<void> => {
     const startDate = new Date(year, month, 1);
     const endDate = new Date(year, month + 1, 0);
 
-    await insertWorkRecordsByDateRange(
+    const formattedWorkRecords = workRecords.map((record) => record.workRecord);
+
+    await workRecordsService.insertWorkRecordsByDateRange(
       teacherId,
       year,
       month,
       startDate,
       endDate,
-      workRecords
+      formattedWorkRecords
     );
+  },
+
+  // 指定された月の最初の曜日を基準に週間スケジュールを並び替え、繰り返し適用する関数
+  getMonthlySchedule: async (
+    teacherId: string,
+    year: number,
+    month: number
+  ): Promise<Record<string, Schedule>> => {
+    const schedules = await getSchedules(teacherId);
+    // console.log('Schedules:', schedules); // デバッグ用ログを追加
+    const daysInMonth = new Date(year, month + 1, 0).getDate(); // 月の日数を取得
+
+    const weeklySchedule = Object.values(schedules);
+
+    const monthlySchedule: Record<string, Schedule> = {};
+
+    for (let day = 0; day < daysInMonth; day++) {
+      const schedule = weeklySchedule.find(
+        (s) =>
+          s.dayOfWeek ===
+          new Date(year, month, day + 1).toLocaleDateString('en-US', {
+            weekday: 'long',
+          })
+      );
+      if (schedule) {
+        const dayKey = (day + 1).toString().padStart(2, '0'); // 日にちを2桁の形式に変換
+        monthlySchedule[dayKey] = {
+          ...schedule,
+          dayOfWeek: new Date(year, month, day + 1).toLocaleDateString(
+            'en-US',
+            { weekday: 'long' }
+          ), // 曜日を文字列で設定
+        };
+      }
+    }
+
+    console.log('Monthly Schedule:', monthlySchedule); // デバッグ用ログを追加
+    return monthlySchedule;
   },
 };

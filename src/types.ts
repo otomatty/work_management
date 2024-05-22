@@ -23,7 +23,6 @@ export interface Schedule {
 }
 
 export interface WorkRecord {
-  date: string; // 追加
   classroom: string;
   startTime: string;
   endTime: string;

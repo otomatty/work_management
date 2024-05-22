@@ -1,18 +1,18 @@
-import React, { useEffect, useState } from "react";
-import styled from "styled-components";
-import { motion, AnimatePresence } from "framer-motion";
-import { useDispatch, useSelector } from "react-redux";
-import WorkTimeInputs from "./WorkTimeInput";
-import LessonInputList from "./LessonInputList";
-import WorkDescriptionInput from "./WorkDescriptionInput";
-import ClassroomManager from "./ClassroomManager";
-import Button from "../../../components/atoms/Button";
-import { RootState } from "../../../redux/store";
+import React, { useEffect, useState } from 'react';
+import styled from 'styled-components';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useDispatch, useSelector } from 'react-redux';
+import WorkTimeInputs from './WorkTimeInput';
+import LessonInputList from './LessonInputList';
+import WorkDescriptionInput from './WorkDescriptionInput';
+import ClassroomManager from './ClassroomManager';
+import Button from '../../../components/atoms/Button';
+import { RootState } from '../../../redux/store';
 import {
   fetchWorkRecordsRequest,
   saveWorkRecordRequest,
-} from "../../../redux/actions";
-import { LessonInfo, WorkRecord } from "../../../types";
+} from '../../../redux/actions';
+import { LessonInfo, WorkRecord } from '../../../types';
 
 interface DayEditPanelProps {
   year: number;
@@ -56,9 +56,9 @@ const containerVariants = {
   slide: (direction: number) => ({
     x: [direction * 500, 0],
     opacity: [0, 1],
-    height: "auto",
+    height: 'auto',
     transition: {
-      type: "spring",
+      type: 'spring',
       stiffness: 300,
       damping: 30,
       duration: 0.5,
@@ -77,11 +77,11 @@ const DayEditPanel: React.FC<DayEditPanelProps> = ({
   const dispatch = useDispatch();
   const teacherId = useSelector((state: RootState) => state.teacher.teacherId);
 
-  const [classroom, setClassroom] = useState("");
-  const [startTime, setStartTime] = useState("");
-  const [endTime, setEndTime] = useState("");
+  const [classroom, setClassroom] = useState('');
+  const [startTime, setStartTime] = useState('');
+  const [endTime, setEndTime] = useState('');
   const [lessonInfo, setLessonInfo] = useState<LessonInfo[]>([]);
-  const [workDescription, setWorkDescription] = useState("");
+  const [workDescription, setWorkDescription] = useState('');
 
   useEffect(() => {
     if (teacherId) {
@@ -116,21 +116,19 @@ const DayEditPanel: React.FC<DayEditPanelProps> = ({
         workDescription,
         officeHour: workRecords[0]?.officeHour || 0,
         teachHour: workRecords[0]?.teachHour || 0,
-        date:
-          workRecords[0]?.date || new Date(year, month - 1, day).toISOString(), // Added
       };
       dispatch(
         saveWorkRecordRequest(teacherId, year, month, day, updatedWorkRecord)
       );
     } catch (error) {
-      console.error("Failed to save lesson info:", error);
+      console.error('Failed to save lesson info:', error);
     }
   };
 
   const onSave = async (e?: React.MouseEvent<HTMLButtonElement>) => {
     e?.preventDefault();
     if (!teacherId) {
-      console.error("Teacher ID is null");
+      console.error('Teacher ID is null');
       return;
     }
     try {
@@ -142,14 +140,12 @@ const DayEditPanel: React.FC<DayEditPanelProps> = ({
         workDescription,
         officeHour: workRecords[0]?.officeHour || 0,
         teachHour: workRecords[0]?.teachHour || 0,
-        date:
-          workRecords[0]?.date || new Date(year, month - 1, day).toISOString(), // Added
       };
       dispatch(
         saveWorkRecordRequest(teacherId, year, month, day, updatedWorkRecord)
       );
     } catch (error) {
-      console.error("Failed to save work record:", error);
+      console.error('Failed to save work record:', error);
     }
   };
 
@@ -159,7 +155,7 @@ const DayEditPanel: React.FC<DayEditPanelProps> = ({
         style={style}
         variants={containerVariants}
         initial="hidden"
-        animate={slideDirection !== 0 ? "slide" : "visible"}
+        animate={slideDirection !== 0 ? 'slide' : 'visible'}
         exit="exit"
         custom={slideDirection}
         layout
