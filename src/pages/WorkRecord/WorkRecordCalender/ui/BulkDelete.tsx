@@ -1,33 +1,39 @@
-import React, { useState } from "react";
-import { faTrash } from "@fortawesome/free-solid-svg-icons";
-import DateRangePicker from "../../../../components/molecules/DateRangePicker";
-import Modal from "../../../../components/molecules/Modal";
-import Button from "../../../../components/atoms/Button";
-import ButtonGroup from "../../../../components/layout/ButtonGroup";
-import Dropdown from "../../../../components/molecules/Dropdown";
-import LoadingScreen from "../../../../components/atoms/LoadingScreen";
-import { useSelector } from "react-redux"; // ReduxからteacherIdを取得するためのimport
+import React, { useState, useEffect } from 'react';
+import { faTrash } from '@fortawesome/free-solid-svg-icons';
+import DateRangePicker from '../../../../components/molecules/DateRangePicker';
+import Modal from '../../../../components/molecules/Modal';
+import Button from '../../../../components/atoms/Button';
+import ButtonGroup from '../../../../components/layout/ButtonGroup';
+import Dropdown from '../../../../components/molecules/Dropdown';
+import LoadingScreen from '../../../../components/atoms/LoadingScreen';
+import { useSelector } from 'react-redux'; // ReduxからteacherIdを取得するためのimport
 import {
   deleteWorkRecordsByDateRange,
   deleteAllWorkRecordsForMonth,
-} from "../../../../firebase";
+} from '../../../../firebase';
+import { useLoadingAndReload } from '../../../../hooks/useLoadingAndReload'; // カスタムフックをインポート
 
 interface BulkDeleteProps {
   year: number;
   month: number;
-  isLoading: boolean;
-  handleRangeDelete: (startDate: Date, endDate: Date) => void;
 }
 
-const BulkDelete: React.FC<BulkDeleteProps> = ({ isLoading, year, month }) => {
+const BulkDelete: React.FC<BulkDeleteProps> = ({ year, month }) => {
   const [showDeleteDropdown, setShowDeleteDropdown] = useState(false);
   const [showConfirmDeleteModal, setShowConfirmDeleteModal] = useState(false);
   const [showDateRangeModal, setShowDateRangeModal] = useState(false);
   const [selectedStartDate, setSelectedStartDate] = useState<Date | null>(null);
   const [selectedEndDate, setSelectedEndDate] = useState<Date | null>(null);
 
+  const { isLoading, startLoading, stopLoading, reloadPage } =
+    useLoadingAndReload(); // カスタムフックを使用
+
   // ReduxからteacherIdを取得
   const teacherId = useSelector((state: any) => state.teacher.teacherId); // stateの型をanyに指定
+
+  useEffect(() => {
+    console.log('BulkDelete month value:', month); // monthの値を表示
+  }, [month]);
 
   const handleDateRangeSelect = (startDate: Date, endDate: Date) => {
     setSelectedStartDate(startDate);
@@ -36,6 +42,7 @@ const BulkDelete: React.FC<BulkDeleteProps> = ({ isLoading, year, month }) => {
 
   const handleDelete = () => {
     if (selectedStartDate && selectedEndDate) {
+      console.log('Deleting records for month:', month); // Added console.log to display month
       deleteWorkRecordsByDateRange(
         teacherId,
         year,
@@ -47,30 +54,35 @@ const BulkDelete: React.FC<BulkDeleteProps> = ({ isLoading, year, month }) => {
     }
   };
 
-  const handleDeleteAllRecords = () => {
-    deleteAllWorkRecordsForMonth("teacherId", year, month); // Example with teacher ID and year/month specified
+  const handleDeleteAll = async () => {
+    console.log('Deleting all records for month:', month); // Added console.log to display month
+    startLoading(); // ローディング状態を開始
+    await deleteAllWorkRecordsForMonth(teacherId, year, month); // Example with teacher ID and year/month specified
+    stopLoading(); // ローディング状態を終了
+    setShowConfirmDeleteModal(false);
+    reloadPage(); // ページをリロード
   };
 
   return (
     <div>
-      {isLoading && <LoadingScreen />}
+      {isLoading && <LoadingScreen />} {/* ローディング画面を表示 */}
       <Button
         onClick={() => {
           setShowDeleteDropdown(!showDeleteDropdown);
         }}
         label="一括削除"
-        disabled={isLoading}
+        disabled={isLoading} // ローディング中はボタンを無効化
         icon={faTrash}
       />
       {showDeleteDropdown && (
         <Dropdown
           items={[
             {
-              label: "全日削除",
+              label: '全日削除',
               onClick: () => setShowConfirmDeleteModal(true),
             },
             {
-              label: "期間指定削除",
+              label: '期間指定削除',
               onClick: () => setShowDateRangeModal(true),
             },
           ]}
@@ -86,7 +98,7 @@ const BulkDelete: React.FC<BulkDeleteProps> = ({ isLoading, year, month }) => {
         <ButtonGroup $gap={10}>
           <Button
             label="はい"
-            onClick={handleDeleteAllRecords}
+            onClick={handleDeleteAll}
             backgroundColor="#2ecc71"
           />
           <Button

@@ -1,14 +1,14 @@
-import React, { useState, useEffect } from "react";
-import styled from "styled-components";
-import { AnimatePresence } from "framer-motion";
-import DayCell from "./DayCell";
-import DayEditPanel from "./DayEditPanel";
-import Toolbar from "./Toolbar";
-import { useSelector } from "react-redux";
-import { useAppDispatch } from "../../../hook";
-import { RootState } from "../../../redux/store";
-import { fetchMonthlyWorkRecords } from "../../../redux/teacher/workRecordsSlice";
-import { WorkRecord } from "../../../types";
+import React, { useState, useEffect } from 'react';
+import styled from 'styled-components';
+import { AnimatePresence } from 'framer-motion';
+import DayCell from './DayCell';
+import DayEditPanel from './DayEditPanel';
+import Toolbar from './Toolbar';
+import { useSelector } from 'react-redux';
+import { useAppDispatch } from '../../../hook';
+import { RootState } from '../../../redux/store';
+import { fetchMonthlyWorkRecords } from '../../../redux/teacher/workRecordsSlice';
+import { WorkRecord } from '../../../types';
 
 interface DaysGridProps {
   year: number;
@@ -94,7 +94,7 @@ const DaysGrid: React.FC<DaysGridProps> = ({ year, month }) => {
 
       const element = document.querySelector(`#day-${day}`);
       if (element) {
-        element.scrollIntoView({ behavior: "smooth", block: "start" });
+        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
         await new Promise<void>((resolve) => {
           const observer = new IntersectionObserver((entries) => {
             if (entries[0].isIntersecting) {
@@ -122,7 +122,7 @@ const DaysGrid: React.FC<DaysGridProps> = ({ year, month }) => {
       </TitleContainer>
       <Toolbar year={year} month={month} />
       <DayOfWeekHeader>
-        {["日", "月", "火", "水", "木", "金", "土"].map((day, index) => (
+        {['日', '月', '火', '水', '木', '金', '土'].map((day, index) => (
           <DayOfWeek key={index}>{day}</DayOfWeek>
         ))}
       </DayOfWeekHeader>
@@ -135,14 +135,14 @@ const DaysGrid: React.FC<DaysGridProps> = ({ year, month }) => {
           const dayOfWeek = date.getDay();
           const isEditDay = editDay === day;
           const workRecordsForDay = (workRecords[
-            day.toString().padStart(2, "0")
+            day.toString().padStart(2, '0')
           ] as WorkRecord) || {
-            classroom: "",
-            startTime: "",
-            endTime: "",
+            classroom: '',
+            startTime: '',
+            endTime: '',
             teachHour: 0,
             officeHour: 0,
-            workDescription: "",
+            workDescription: '',
             lessonInfo: [],
           };
           return (

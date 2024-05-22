@@ -1,58 +1,81 @@
-import React, { useState } from "react";
-import { faKeyboard } from "@fortawesome/free-solid-svg-icons";
-import DateRangePicker from "../../../../components/molecules/DateRangePicker";
-import Modal from "../../../../components/molecules/Modal";
-import Button from "../../../../components/atoms/Button";
-import ButtonGroup from "../../../../components/layout/ButtonGroup";
-import Dropdown from "../../../../components/molecules/Dropdown";
-import LoadingScreen from "../../../../components/atoms/LoadingScreen";
+import React, { useState } from 'react';
+import { faKeyboard } from '@fortawesome/free-solid-svg-icons';
+import DateRangePicker from '../../../../components/molecules/DateRangePicker';
+import Modal from '../../../../components/molecules/Modal';
+import Button from '../../../../components/atoms/Button';
+import ButtonGroup from '../../../../components/layout/ButtonGroup';
+import Dropdown from '../../../../components/molecules/Dropdown';
+import LoadingScreen from '../../../../components/atoms/LoadingScreen';
+import { useSelector } from 'react-redux'; // ReduxからteacherIdを取得するためのimport
+import {
+  insertWorkRecordsByDateRange,
+  insertAllWorkRecordsForMonth,
+} from '../../../../firebase';
+import { WorkRecord } from '../../../../types'; // WorkRecord型をインポート
+import { useLoadingAndReload } from '../../../../hooks/useLoadingAndReload'; // カスタムフックをインポート
 
 interface BulkInsertProps {
-  isLoading: boolean;
-  handleRangeInsert: (startDate: Date, endDate: Date) => void;
-  handleInsertAll: () => void;
+  year: number;
+  month: number;
 }
 
-const BulkInsert: React.FC<BulkInsertProps> = ({
-  isLoading,
-  handleRangeInsert,
-  handleInsertAll,
-}) => {
+const BulkInsert: React.FC<BulkInsertProps> = ({ year, month }) => {
   const [showInsertDropdown, setShowInsertDropdown] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [showDateRangeModal, setShowDateRangeModal] = useState(false);
   const [selectedStartDate, setSelectedStartDate] = useState<Date | null>(null);
   const [selectedEndDate, setSelectedEndDate] = useState<Date | null>(null);
 
+  const { isLoading, startLoading, stopLoading, reloadPage } =
+    useLoadingAndReload(); // カスタムフックを使用
+
+  const teacherId = useSelector((state: any) => state.teacher.teacherId); // stateの型をanyに指定
+
   const handleDateRangeSelect = (startDate: Date, endDate: Date) => {
     setSelectedStartDate(startDate);
     setSelectedEndDate(endDate);
   };
 
-  const handleRegister = () => {
-    if (selectedStartDate && selectedEndDate) {
-      handleRangeInsert(selectedStartDate, selectedEndDate);
-      setShowDateRangeModal(false);
-    }
+  const handleRangeInsert = async (startDate: Date, endDate: Date) => {
+    const workRecords: WorkRecord[] = []; // WorkRecord型を指定
+    startLoading(); // ローディング状態を開始
+    await insertWorkRecordsByDateRange(
+      teacherId,
+      year,
+      month,
+      startDate,
+      endDate,
+      workRecords
+    );
+    stopLoading(); // ローディング状態を終了
+    reloadPage(); // ページをリロード
+  };
+
+  const handleInsertAll = async () => {
+    const workRecords: WorkRecord[] = []; // WorkRecord型を指定
+    startLoading(); // ローディング状態を開始
+    await insertAllWorkRecordsForMonth(teacherId, year, month, workRecords);
+    stopLoading(); // ローディング状態を終了
+    reloadPage(); // ページをリロード
   };
 
   return (
     <div>
-      {isLoading && <LoadingScreen />}
+      {isLoading && <LoadingScreen />} {/* ローディング画面を表示 */}
       <Button
         onClick={() => {
           setShowInsertDropdown(!showInsertDropdown);
         }}
         label="一括入力"
-        disabled={isLoading}
+        disabled={isLoading} // ローディング中はボタンを無効化
         icon={faKeyboard}
       />
       {showInsertDropdown && (
         <Dropdown
           items={[
-            { label: "全日登録", onClick: () => setShowConfirmModal(true) },
+            { label: '全日登録', onClick: () => setShowConfirmModal(true) },
             {
-              label: "期間指定登録",
+              label: '期間指定登録',
               onClick: () => setShowDateRangeModal(true),
             },
           ]}
@@ -88,7 +111,9 @@ const BulkInsert: React.FC<BulkInsertProps> = ({
         <ButtonGroup $gap={10}>
           <Button
             label="登録"
-            onClick={handleRegister}
+            onClick={() =>
+              handleRangeInsert(selectedStartDate!, selectedEndDate!)
+            }
             backgroundColor="#2ecc71"
           />
           <Button

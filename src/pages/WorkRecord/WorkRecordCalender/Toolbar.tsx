@@ -1,8 +1,7 @@
-import React, { useState } from "react";
-import styled from "styled-components";
-import BulkInsert from "./ui/BulkInsert";
-import BulkDelete from "./ui/BulkDelete";
-import LoadingScreen from "../../../components/atoms/LoadingScreen";
+import React from 'react';
+import styled from 'styled-components';
+import BulkInsert from './ui/BulkInsert';
+import BulkDelete from './ui/BulkDelete';
 
 const ToolbarContainer = styled.div`
   display: flex;
@@ -19,13 +18,10 @@ interface ToolbarProps {
 }
 
 const Toolbar: React.FC<ToolbarProps> = ({ year, month }) => {
-  const [isLoading, setIsLoading] = useState(false);
-
   return (
     <ToolbarContainer>
-      {isLoading && <LoadingScreen />}
-      <BulkInsert isLoading={isLoading} year={year} month={month} />
-      <BulkDelete isLoading={isLoading} year={year} month={month} />
+      <BulkInsert year={year} month={month} />
+      <BulkDelete year={year} month={month} />
     </ToolbarContainer>
   );
 };
