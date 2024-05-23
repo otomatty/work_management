@@ -1,16 +1,16 @@
-import React, { useState } from "react";
-import { WorkRecord } from "../../../../types";
-import { faKeyboard } from "@fortawesome/free-solid-svg-icons";
-import DateRangePicker from "../../../../components/molecules/DateRangePicker";
-import Modal from "../../../../components/molecules/Modal";
-import Button from "../../../../components/atoms/Button";
-import ButtonGroup from "../../../../components/layout/ButtonGroup";
-import Dropdown from "../../../../components/molecules/Dropdown";
-import LoadingScreen from "../../../../components/atoms/LoadingScreen";
-import { useSelector } from "react-redux"; // ReduxからteacherIdを取得するためのimport
-import { workRecordsService } from "../../../../services/teachers/workRecordsService";
+import React, { useState } from 'react';
+import { WorkRecord } from '../../../../types';
+import { faKeyboard } from '@fortawesome/free-solid-svg-icons';
+import DateRangePicker from '../../../../components/molecules/DateRangePicker';
+import Modal from '../../../../components/molecules/Modal';
+import Button from '../../../../components/atoms/Button';
+import ButtonGroup from '../../../../components/layout/ButtonGroup';
+import Dropdown from '../../../../components/molecules/Dropdown';
+import LoadingScreen from '../../../../components/atoms/LoadingScreen';
+import { useSelector } from 'react-redux'; // ReduxからteacherIdを取得するためのimport
+import { workRecordsService } from '../../../../services/teachers/workRecordsService';
 
-import { useLoadingAndReload } from "../../../../hooks/useLoadingAndReload"; // カスタムフックをインポート
+import { useLoadingAndReload } from '../../../../hooks/useLoadingAndReload'; // カスタムフックをインポート
 
 interface BulkInsertProps {
   year: number;
@@ -50,7 +50,7 @@ const BulkInsert: React.FC<BulkInsertProps> = ({ year, month }) => {
   };
 
   const handleInsertAll = async () => {
-    startLoading(); // ローディング状態を開始
+    // startLoading(); // ローディング状態を開始
     const workRecords: { workRecord: WorkRecord }[] = [];
     await workRecordsService.insertAllWorkRecordsForMonth(
       teacherId,
@@ -58,8 +58,8 @@ const BulkInsert: React.FC<BulkInsertProps> = ({ year, month }) => {
       month,
       workRecords
     );
-    stopLoading(); // ローディング状態を終了
-    reloadPage(); // ページをリロード
+    // stopLoading(); // ローディング状態を終了
+    // reloadPage(); // ページをリロード
   };
 
   return (
@@ -76,9 +76,9 @@ const BulkInsert: React.FC<BulkInsertProps> = ({ year, month }) => {
       {showInsertDropdown && (
         <Dropdown
           items={[
-            { label: "全日登録", onClick: () => setShowConfirmModal(true) },
+            { label: '全日登録', onClick: () => setShowConfirmModal(true) },
             {
-              label: "期間指定登録",
+              label: '期間指定登録',
               onClick: () => setShowDateRangeModal(true),
             },
           ]}

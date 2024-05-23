@@ -215,7 +215,7 @@ export const workRecordsService = {
     workRecords: WorkRecord[] // WorkRecord型を指定
   ): Promise<void> => {
     try {
-      const { docId } = getDocIdAndDayKey(year, month - 1, 1); // 対象の年月のドキュメントIDを取得
+      const { docId } = getDocIdAndDayKey(year, month, 1); // 対象の年月のドキュメントIDを取得
       const docRef = doc(db, `teachers/${teacherId}/workRecords`, docId);
 
       const batch = writeBatch(db);
@@ -228,6 +228,7 @@ export const workRecordsService = {
       );
       console.log("Monthly Schedule:", monthlySchedule); // デバッグ用ログを追加
 
+      let recordIndex = 0;
       for (
         let d = new Date(startDate);
         d <= endDate;
@@ -240,6 +241,7 @@ export const workRecordsService = {
           { [dayKey]: schedule }, // スケジュールを追加
           { merge: true }
         );
+        recordIndex++;
       }
 
       await batch.commit();
