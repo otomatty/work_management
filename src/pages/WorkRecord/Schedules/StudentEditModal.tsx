@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from "react";
-import styled from "styled-components";
-import { motion } from "framer-motion";
-import { Student } from "../../../types";
-import Modal from "../../../components/molecules/Modal";
-import GradeSelector from "../../../components/molecules/GradeSelector";
+import React, { useState, useEffect } from 'react';
+import styled from 'styled-components';
+import { motion } from 'framer-motion';
+import { Student } from '../../../types';
+import Modal from '../../../components/molecules/Modal';
+import GradeSelector from '../../../components/molecules/GradeSelector';
 
 const Form = styled(motion.form)`
   display: flex;
@@ -67,10 +67,10 @@ const StudentEditModal: React.FC<StudentEditModalProps> = ({
   onDelete,
   isNewStudent,
 }) => {
-  const [studentName, setStudentName] = useState("");
-  const [grade, setGrade] = useState("");
-  const [subject, setSubject] = useState("");
-  const [time, setTime] = useState<string | number>("");
+  const [studentName, setStudentName] = useState('');
+  const [grade, setGrade] = useState('');
+  const [subject, setSubject] = useState('');
+  const [time, setTime] = useState<string | number>('');
   const [isGradeSelectorOpen, setIsGradeSelectorOpen] = useState(false);
   const [showCloseButton, setShowCloseButton] = useState(true);
 
@@ -97,7 +97,9 @@ const StudentEditModal: React.FC<StudentEditModalProps> = ({
     }
   };
 
-  const handleDeleteClick = () => {
+  const handleDeleteClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
     if (student && student.studentId) {
       onDelete(student.studentId);
     }
@@ -127,7 +129,7 @@ const StudentEditModal: React.FC<StudentEditModalProps> = ({
                 setShowCloseButton(false);
               }}
             >
-              {grade || "学年を選択"}
+              {grade || '学年を選択'}
             </GradeSelect>
             <Select
               value={subject}
@@ -160,7 +162,7 @@ const StudentEditModal: React.FC<StudentEditModalProps> = ({
                 handleUpdateClick();
               }}
             >
-              {isNewStudent ? "追加する" : "更新する"}
+              {isNewStudent ? '追加する' : '更新する'}
             </Button>
             {!isNewStudent && (
               <DeleteButton onClick={handleDeleteClick}>削除する</DeleteButton>

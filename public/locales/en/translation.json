@@ -1,11 +1,10 @@
 {
-  "welcome": "Welcome to React",
   "close": "Close",
   "login": "Login",
   "emailAddress": "Email Address",
   "password": "Password",
   "loginWithGoogle": "Login with Google",
-  "schoolName": "Sato English Conversation & Gogaku juku",
+
   "logoAlt": "Logo",
   "workRecordIcon": "Work Record Icon",
   "workRecord": "Work Record",

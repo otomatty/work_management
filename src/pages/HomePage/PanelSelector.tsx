@@ -1,21 +1,26 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import styled from "styled-components";
-import { useTranslation } from "react-i18next"; // i18nextのフックをインポート
-import calender from "../../assets/images/calender.svg";
-import website from "../../assets/images/website.svg";
-import calc from "../../assets/images/calc.svg";
-import book from "../../assets/images/book.svg";
-import CellComponent from "../../components/atoms/AnimatedCell/AnimatedCell";
-import Modal from "../../components/molecules/Modal";
-import TeacherSelection from "./TeacherSelection/TeacherSelection";
-import ComingSoonOverlay from "./ComingSoonOverlay";
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import styled from 'styled-components';
+import { useTranslation } from 'react-i18next'; // i18nextのフックをインポート
+import calender from '../../assets/images/calender.svg';
+import website from '../../assets/images/website.svg';
+import calc from '../../assets/images/calc.svg';
+import book from '../../assets/images/book.svg';
+import CellComponent from '../../components/atoms/AnimatedCell/AnimatedCell';
+import Modal from '../../components/molecules/Modal';
+import TeacherSelection from './TeacherSelection/TeacherSelection';
+import ComingSoonOverlay from './ComingSoonOverlay';
 
 const PanelContainer = styled.div`
+  display: grid;
+  margin: 20px;
+  gap: 20px;
+`;
+
+const PanelWrapper = styled.div`
   display: flex;
   justify-content: space-around;
   align-items: stretch; // 子要素を等高にする
-  margin: 20px 0;
   gap: 20px;
 `;
 
@@ -53,7 +58,7 @@ const Icon = styled.img`
 const PanelSelector: React.FC = () => {
   const navigate = useNavigate();
   const [isModalOpen, setModalOpen] = useState(false);
-  const { t } = useTranslation(); // 翻訳関数の取得
+  const { t } = useTranslation('homePage'); // 翻訳関数の取得
 
   const handleNavigate = (path: string) => {
     navigate(path);
@@ -69,32 +74,50 @@ const PanelSelector: React.FC = () => {
 
   return (
     <PanelContainer>
-      <CellComponent>
-        <Panel onClick={openModal}>
-          <Icon src={calender} alt={t("workRecordIcon")} />
-          <h2>{t("workRecord")}</h2>
-        </Panel>
-      </CellComponent>
-      <CellComponent>
-        <Panel>
-          <Icon src={website} alt={t("homeManagementIcon")} />
-          <h2>{t("homePage")}</h2>
-          <ComingSoonOverlay />
-        </Panel>
-      </CellComponent>
-      <CellComponent>
-        <Panel>
-          <Icon src={book} alt={t("termQuizGeneratorIcon")} />
-          <h2>{t("englishVocabularyProblems")}</h2>
-          <ComingSoonOverlay />
-        </Panel>
-      </CellComponent>
-      <CellComponent>
-        <Panel onClick={() => handleNavigate("/calculation-generator")}>
-          <Icon src={calc} alt={t("calculationGeneratorIcon")} />
-          <h2>{t("calculationProblems")}</h2>
-        </Panel>
-      </CellComponent>
+      <PanelWrapper>
+        <CellComponent>
+          <Panel onClick={openModal}>
+            <Icon src={calender} alt={t('workRecordIcon')} />
+            <h2>{t('workRecord', { ns: 'homePage' })}</h2>
+          </Panel>
+        </CellComponent>
+        <CellComponent>
+          <Panel>
+            <Icon src={website} alt={t('homeManagementIcon')} />
+            <h2>{t('studentManagement')}</h2>
+            <ComingSoonOverlay />
+          </Panel>
+        </CellComponent>
+        <CellComponent>
+          <Panel>
+            <Icon src={website} alt={t('homeManagementIcon')} />
+            <h2>{t('homePage')}</h2>
+            <ComingSoonOverlay />
+          </Panel>
+        </CellComponent>
+      </PanelWrapper>
+      <PanelWrapper>
+        <CellComponent>
+          <Panel onClick={() => handleNavigate('/calculation-generator')}>
+            <Icon src={calc} alt={t('calculationGeneratorIcon')} />
+            <h2>{t('calculationProblems')}</h2>
+          </Panel>
+        </CellComponent>
+        <CellComponent>
+          <Panel>
+            <Icon src={book} alt={t('termQuizGeneratorIcon')} />
+            <h2>{t('englishVocabularyProblems')}</h2>
+            <ComingSoonOverlay />
+          </Panel>
+        </CellComponent>
+        <CellComponent>
+          <Panel>
+            <Icon src={book} alt={t('termQuizGeneratorIcon')} />
+            <h2>{t('threeSubjectsProblems')}</h2>
+            <ComingSoonOverlay />
+          </Panel>
+        </CellComponent>
+      </PanelWrapper>
 
       <Modal isOpen={isModalOpen} onClose={closeModal}>
         <TeacherSelection />

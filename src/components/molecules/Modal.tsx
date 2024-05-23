@@ -1,7 +1,8 @@
-import React, { ReactNode } from "react";
-import styled from "styled-components";
-import { useTranslation } from "react-i18next";
-import { motion } from "framer-motion";
+import React, { ReactNode } from 'react';
+import styled from 'styled-components';
+import { useTranslation } from 'react-i18next';
+import { motion } from 'framer-motion';
+import Button from '../atoms/Button'; // Added this line
 
 interface ModalProps {
   isOpen: boolean;
@@ -30,10 +31,13 @@ const ModalOverlay = styled(motion.div)<ModalOverlayProps>`
   justify-content: center;
   align-items: center;
   z-index: 1000;
-  visibility: ${({ $isOpen }) => ($isOpen ? "visible" : "hidden")};
+  visibility: ${({ $isOpen }) => ($isOpen ? 'visible' : 'hidden')};
 `;
 
 const ModalContent = styled(motion.div)`
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
   align-self: center;
   min-width: 40%;
   border-radius: 8px;
@@ -45,20 +49,8 @@ const ModalContent = styled(motion.div)`
   text-align: center;
 `;
 
-const CloseButton = styled.button`
-  background-color: #3498db;
-  color: white;
-  font-size: 16px;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 5px;
-  margin-top: 20px;
-  cursor: pointer;
-  transition: background-color 0.2s;
-
-  &:hover {
-    background-color: #2980b9;
-  }
+const ButtonContainer = styled.div`
+  margin: 0 auto;
 `;
 
 const Modal: React.FC<ModalProps> = ({
@@ -84,18 +76,24 @@ const Modal: React.FC<ModalProps> = ({
     <ModalOverlay
       $isOpen={isOpen}
       initial="hidden"
-      animate={isOpen ? "visible" : "hidden"}
+      animate={isOpen ? 'visible' : 'hidden'}
       variants={overlayVariants}
     >
       <ModalContent
         initial="hidden"
-        animate={isOpen ? "visible" : "hidden"}
+        animate={isOpen ? 'visible' : 'hidden'}
         variants={contentVariants}
       >
         {message && <p>{message}</p>}
         {children}
         {showCloseButton && (
-          <CloseButton onClick={onClose}>{t("close")}</CloseButton>
+          <ButtonContainer>
+            <Button
+              label={t('close')}
+              onClick={onClose}
+              backgroundColor="#3498db"
+            />
+          </ButtonContainer>
         )}
       </ModalContent>
     </ModalOverlay>

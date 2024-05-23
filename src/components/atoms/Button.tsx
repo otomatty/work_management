@@ -1,8 +1,8 @@
-import React from "react";
-import styled from "styled-components";
-import { motion } from "framer-motion";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { IconDefinition } from "@fortawesome/fontawesome-svg-core";
+import React from 'react';
+import styled from 'styled-components';
+import { motion } from 'framer-motion';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 
 interface ButtonProps {
   label: string;
@@ -17,7 +17,7 @@ const StyledButton = styled(motion.button)<{ style: React.CSSProperties }>`
   align-items: center;
   justify-content: center;
   gap: 10px;
-  background-color: ${(props) => props.style.backgroundColor || "#007bff"};
+  background-color: ${(props) => props.style.backgroundColor || '#007bff'};
   color: white;
   border-radius: 8px;
   font-size: 13px;
@@ -36,7 +36,7 @@ const buttonVariants = {
     scale: 1.05,
     transition: {
       duration: 0.3,
-      type: "spring",
+      type: 'spring',
       stiffness: 300,
     },
   },
@@ -48,7 +48,7 @@ const buttonVariants = {
 const Button: React.FC<ButtonProps> = ({
   label,
   onClick,
-  backgroundColor = "blue",
+  backgroundColor = 'blue',
   disabled,
   icon,
 }) => {

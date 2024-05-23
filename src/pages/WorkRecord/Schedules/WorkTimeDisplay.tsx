@@ -1,18 +1,19 @@
-import React, { useState, useEffect } from "react";
-import styled from "styled-components";
-import Modal from "../../../components/molecules/Modal";
-import TimeInput from "../../../components/atoms/TimeInput";
-import CellComponent from "../../../components/atoms/AnimatedCell/AnimatedCell";
+import React, { useState, useEffect } from 'react';
+import styled from 'styled-components';
+import Modal from '../../../components/molecules/Modal';
+import TimeInput from '../../../components/atoms/TimeInput';
+import CellComponent from '../../../components/atoms/AnimatedCell/AnimatedCell';
+import Button from '../../../components/atoms/Button'; // Added
 
 const Container = styled.div<{ $dayOfWeek: string }>`
   padding-bottom: 8px;
   margin: 8px;
   border-bottom: ${({ $dayOfWeek }) =>
-    $dayOfWeek === "Saturday"
-      ? "2px solid #bbebfa"
-      : $dayOfWeek === "Sunday"
-        ? "2px solid #ffd9df"
-        : "2px solid #f0f0f0"};
+    $dayOfWeek === 'Saturday'
+      ? '2px solid #bbebfa'
+      : $dayOfWeek === 'Sunday'
+        ? '2px solid #ffd9df'
+        : '2px solid #f0f0f0'};
 `;
 
 const TimeContainer = styled.div<{ $dayOfWeek: string }>`
@@ -77,9 +78,9 @@ const WorkTimeDisplay: React.FC<WorkTimeDisplayProps> = ({
       <CellComponent>
         <TimeContainer $dayOfWeek={dayOfWeek} onClick={openModal}>
           <Title>出勤時間</Title>
-          <Time>{startTime || ""}</Time>
+          <Time>{startTime || ''}</Time>
           <Title>退勤時間</Title>
-          <Time>{endTime || ""}</Time>
+          <Time>{endTime || ''}</Time>
         </TimeContainer>
       </CellComponent>
       {isModalOpen && (
@@ -101,7 +102,11 @@ const WorkTimeDisplay: React.FC<WorkTimeDisplayProps> = ({
               }}
               placeholder="HH:MM"
             />
-            <button onClick={handleSave}>保存</button>
+            <Button
+              label="保存"
+              onClick={handleSave}
+              backgroundColor="#4caf50"
+            />
           </TimeModalContent>
         </Modal>
       )}
