@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from "react";
-import styled from "styled-components";
-import ClassroomSelectBox from "../../../components/molecules/ClassroomSelectBox";
+import React, { useState, useEffect } from 'react';
+import styled from 'styled-components';
+import ClassroomSelectBox from '../../../components/molecules/ClassroomSelectBox';
+import ModalSubTitle from '../../../components/atoms/ModalSubTitle';
 
 interface ClassroomManagerProps {
   classroom: string;
@@ -29,6 +30,7 @@ const ClassroomManager: React.FC<ClassroomManagerProps> = ({
 
   return (
     <Container>
+      <ModalSubTitle>勤務場所</ModalSubTitle>
       <ClassroomSelectBox
         value={selectedClassroom}
         onChange={handleSelectClassroom}

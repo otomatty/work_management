@@ -1,6 +1,6 @@
-import React from "react";
-import { generateProblems } from "../../utils/problemGenerator";
-import Button from "../atoms/Button";
+import React from 'react';
+import { generateProblems } from '../../utils/problemGenerator';
+import Button from '../atoms/Button';
 
 const CreateProblemButton = ({
   selectedTypes,
@@ -10,7 +10,6 @@ const CreateProblemButton = ({
   includeNegatives,
   onCreateProblems, // コールバック関数をプロパティとして受け取る
 }) => {
-  // console.log(selectedTypes); // 受け取った selectedTypes を確認
   const handleCreateProblem = () => {
     // 問題の種類や形式が適切に選択されているかチェック
     if (selectedTypes.length === 0 || selectedFormats.length === 0) {

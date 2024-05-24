@@ -1,14 +1,14 @@
-import React, { useState, useEffect } from "react";
-import { faTrash } from "@fortawesome/free-solid-svg-icons";
-import DateRangePicker from "../../../../components/molecules/DateRangePicker";
-import Modal from "../../../../components/molecules/Modal";
-import Button from "../../../../components/atoms/Button";
-import ButtonGroup from "../../../../components/layout/ButtonGroup";
-import Dropdown from "../../../../components/molecules/Dropdown";
-import LoadingScreen from "../../../../components/atoms/LoadingScreen";
-import { useSelector } from "react-redux"; // ReduxからteacherIdを取得するためのimport
-import { workRecordsService } from "../../../../services/teachers/workRecordsService";
-import { useLoadingAndReload } from "../../../../hooks/useLoadingAndReload"; // カスタムフックをインポート
+import React, { useState, useEffect } from 'react';
+import { faTrash } from '@fortawesome/free-solid-svg-icons';
+import DateRangePicker from '../../../../components/molecules/DateRangePicker';
+import Modal from '../../../../components/molecules/Modal';
+import Button from '../../../../components/atoms/Button';
+import ButtonGroup from '../../../../components/layout/ButtonGroup';
+import Dropdown from '../../../../components/molecules/Dropdown';
+import LoadingScreen from '../../../../components/atoms/LoadingScreen';
+import { useSelector } from 'react-redux'; // ReduxからteacherIdを取得するためのimport
+import { workRecordsService } from '../../../../services/teachers/workRecordsService';
+import { useLoadingAndReload } from '../../../../hooks/useLoadingAndReload'; // カスタムフックをインポート
 
 interface BulkDeleteProps {
   year: number;
@@ -37,26 +37,22 @@ const BulkDelete: React.FC<BulkDeleteProps> = ({ year, month }) => {
     setSelectedEndDate(endDate);
   };
 
-  const handleDelete = () => {
-    if (selectedStartDate && selectedEndDate) {
-      startLoading(); // ローディング状態を開始
+  const handleRangeDelete = async (startDate: Date, endDate: Date) => {
+    startLoading(); // ローディング状態を開始
 
-      console.log("Deleting records for month:", month); // Added console.log to display month
-      workRecordsService.deleteWorkRecordsByDateRange(
-        teacherId,
-        year,
-        month,
-        selectedStartDate,
-        selectedEndDate
-      );
-      stopLoading(); // ローディング状態を終了
-      setShowConfirmDeleteModal(false);
-      reloadPage(); // ページをリロード
-    }
+    console.log('Deleting records for month:', month); // Added console.log to display month
+    await workRecordsService.deleteWorkRecordsByDateRange(
+      teacherId,
+      year,
+      month,
+      startDate,
+      endDate
+    );
+    stopLoading(); // ローディング状態を終了
+    reloadPage(); // ページをリロード
   };
 
   const handleDeleteAll = async () => {
-    // console.log('Deleting all records for month:', month); // Added console.log to display month
     startLoading(); // ローディング状態を開始
     await workRecordsService.deleteAllWorkRecordsForMonth(
       teacherId,
@@ -83,11 +79,11 @@ const BulkDelete: React.FC<BulkDeleteProps> = ({ year, month }) => {
         <Dropdown
           items={[
             {
-              label: "全日削除",
+              label: '全日削除',
               onClick: () => setShowConfirmDeleteModal(true),
             },
             {
-              label: "期間指定削除",
+              label: '期間指定削除',
               onClick: () => setShowDateRangeModal(true),
             },
           ]}
@@ -123,7 +119,9 @@ const BulkDelete: React.FC<BulkDeleteProps> = ({ year, month }) => {
         <ButtonGroup $gap={10}>
           <Button
             label="削除"
-            onClick={handleDelete}
+            onClick={() =>
+              handleRangeDelete(selectedStartDate!, selectedEndDate!)
+            }
             backgroundColor="#e74c3c"
           />
           <Button

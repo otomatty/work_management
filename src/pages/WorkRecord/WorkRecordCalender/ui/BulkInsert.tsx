@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { WorkRecord } from '../../../../types';
 import { faKeyboard } from '@fortawesome/free-solid-svg-icons';
 import DateRangePicker from '../../../../components/molecules/DateRangePicker';
 import Modal from '../../../../components/molecules/Modal';

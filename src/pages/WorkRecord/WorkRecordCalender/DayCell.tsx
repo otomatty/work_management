@@ -1,26 +1,26 @@
-import React, { useEffect, useRef } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import styled from "styled-components";
-import CellComponent from "../../../components/atoms/AnimatedCell/AnimatedCell";
-import WorkDescriptionDisplay from "./WorkDescriptionDisplay";
-import ClassroomDisplay from "./ClassroomDisplay";
-import WorkTimesDisplay from "./WorkTimesDisplay";
-import { WorkRecord } from "../../../types";
-import { RootState } from "../../../redux/store";
-import { fetchWorkRecordsRequest } from "../../../redux/actions";
+import React, { useEffect, useRef } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import styled from 'styled-components';
+import CellComponent from '../../../components/atoms/AnimatedCell/AnimatedCell';
+import WorkDescriptionDisplay from './WorkDescriptionDisplay';
+import ClassroomDisplay from './ClassroomDisplay';
+import WorkTimesDisplay from './WorkTimesDisplay';
+import { WorkRecord } from '../../../types';
+import { RootState } from '../../../redux/store';
+import { fetchWorkRecordsRequest } from '../../../redux/actions';
 
 const Wrapper = styled.div<{ $isSaturday: boolean; $isSunday: boolean }>`
   border-radius: 8px;
   border: 2px solid
     ${(props) =>
-      props.$isSaturday ? "#c3f0ff" : props.$isSunday ? "#ffd8df" : "#f0f0f0"};
+      props.$isSaturday ? '#c3f0ff' : props.$isSunday ? '#ffd8df' : '#f0f0f0'};
   height: 100%;
   box-sizing: border-box;
 `;
 
 const Daybox = styled.div<{ $isSaturday: boolean; $isSunday: boolean }>`
   background-color: ${(props) =>
-    props.$isSaturday ? "#c3f0ff" : props.$isSunday ? "#ffd8df" : "#f0f0f0"};
+    props.$isSaturday ? '#c3f0ff' : props.$isSunday ? '#ffd8df' : '#f0f0f0'};
   padding: 4px;
   margin-bottom: 10px;
 `;
@@ -54,11 +54,11 @@ const Tr = styled.tr`
 const Td = styled.td<{ $status: string }>`
   padding: 4px;
   color: ${(props) =>
-    props.$status === "MU"
-      ? "red"
-      : props.$status === "休み"
-        ? "blue"
-        : "black"};
+    props.$status === 'MU'
+      ? 'red'
+      : props.$status === '休み'
+        ? 'blue'
+        : 'black'};
 `;
 
 interface DayCellProps {
@@ -92,7 +92,7 @@ const DayCell: React.FC<DayCellProps> = ({
 
   const handleClick = () => {
     if (cellRef.current) {
-      cellRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+      cellRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
       onEdit();
     }
   };
@@ -105,7 +105,7 @@ const DayCell: React.FC<DayCellProps> = ({
             <Day>{day}</Day>
           </Daybox>
           <InfoBox>
-            <ClassroomDisplay classroom={workRecords?.classroom || ""} />
+            <ClassroomDisplay classroom={workRecords?.classroom || ''} />
             <WorkTimesDisplay
               teachTime={workRecords?.teachTime || 0}
               officeTime={workRecords?.officeTime || 0}
@@ -119,15 +119,15 @@ const DayCell: React.FC<DayCellProps> = ({
                       <Td $status={lessonInfo.status}>
                         {lessonInfo.studentName}
                       </Td>
-                      <Td $status={lessonInfo.status}>{lessonInfo.status}</Td>
                       <Td $status={lessonInfo.status}>{lessonInfo.time}</Td>
+                      <Td $status={lessonInfo.status}>{lessonInfo.status}</Td>
                     </Tr>
                   ))}
                 </tbody>
               </Table>
             </div>
             <WorkDescriptionDisplay
-              description={workRecords?.workDescription || ""}
+              description={workRecords?.workDescription || ''}
             />
           </InfoBox>
         </Wrapper>
