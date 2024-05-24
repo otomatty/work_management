@@ -2,10 +2,14 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { useTranslation } from 'react-i18next'; // i18nextのフックをインポート
-import calender from '../../assets/images/calender.svg';
-import website from '../../assets/images/website.svg';
-import calc from '../../assets/images/calc.svg';
-import book from '../../assets/images/book.svg';
+import {
+  calender,
+  website,
+  calc,
+  book,
+  filebox,
+  printer,
+} from '../../assets/images';
 import CellComponent from '../../components/atoms/AnimatedCell/AnimatedCell';
 import Modal from '../../components/molecules/Modal';
 import TeacherSelection from './TeacherSelection/TeacherSelection';
@@ -83,7 +87,7 @@ const PanelSelector: React.FC = () => {
         </CellComponent>
         <CellComponent>
           <Panel>
-            <Icon src={website} alt={t('homeManagementIcon')} />
+            <Icon src={filebox} alt={t('studentManagementIcon')} />
             <h2>{t('studentManagement')}</h2>
             <ComingSoonOverlay />
           </Panel>
@@ -112,7 +116,7 @@ const PanelSelector: React.FC = () => {
         </CellComponent>
         <CellComponent>
           <Panel>
-            <Icon src={book} alt={t('termQuizGeneratorIcon')} />
+            <Icon src={printer} alt={t('threeSubjectsProblemsIcon')} />
             <h2>{t('threeSubjectsProblems')}</h2>
             <ComingSoonOverlay />
           </Panel>

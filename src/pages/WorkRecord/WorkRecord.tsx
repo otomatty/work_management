@@ -7,7 +7,7 @@ import { setTeacherId } from '../../redux/teacher/teacherSlice';
 import Calendar from './Calendar';
 import Header from '../../components/organisms/Header';
 import MonthNavigation from './MonthNavigation';
-import MonthlySummary from '../../components/organisms/MonthlySummary'; // New component imported
+import MonthlySummary from './MonthlySummary'; // New component imported
 
 interface WorkRecordProps {
   selectedTeacherId: string;

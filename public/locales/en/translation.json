@@ -1,11 +1,6 @@
 {
   "close": "Close",
-  "login": "Login",
-  "emailAddress": "Email Address",
-  "password": "Password",
-  "loginWithGoogle": "Login with Google",
 
-  "logoAlt": "Logo",
   "workRecordIcon": "Work Record Icon",
   "workRecord": "Work Record",
   "homeManagementIcon": "Home Management Icon",

@@ -1,10 +1,10 @@
-import React from "react";
-import styled from "styled-components";
-import { Link } from "react-router-dom";
-import { useTranslation } from "react-i18next"; // i18nextのフックをインポート
-import { motion } from "framer-motion";
-import LanguageSwitcher from "../molecules/LanguageSwitcher";
-import logo from "../../logo.webp";
+import React from 'react';
+import styled from 'styled-components';
+import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next'; // i18nextのフックをインポート
+import { motion } from 'framer-motion';
+import LanguageSwitcher from '../molecules/LanguageSwitcher';
+import logo from '../../logo.webp';
 
 const HeaderContainer = styled.header`
   display: flex;
@@ -47,7 +47,7 @@ interface HeaderProps {
 }
 
 const Header: React.FC<HeaderProps> = ({ disableLink = false }) => {
-  const { t } = useTranslation(); // 翻訳関数の取得
+  const { t } = useTranslation('layout'); // 翻訳関数の取得
 
   const imageVariants = {
     hover: { scale: 1.1 },
@@ -61,23 +61,23 @@ const Header: React.FC<HeaderProps> = ({ disableLink = false }) => {
           <StyledDiv>
             <StyledImg
               src={logo}
-              alt={t("logoAlt")}
+              alt={t('logoAlt')}
               variants={imageVariants}
               whileHover="hover"
               whileTap="tap"
             />
-            {t("schoolName")}
+            {t('schoolName')}
           </StyledDiv>
         ) : (
           <StyledLink to="/">
             <StyledImg
               src={logo}
-              alt={t("logoAlt")}
+              alt={t('logoAlt')}
               variants={imageVariants}
               whileHover="hover"
               whileTap="tap"
             />
-            {t("schoolName")}
+            {t('schoolName')}
           </StyledLink>
         )}
       </Title>
