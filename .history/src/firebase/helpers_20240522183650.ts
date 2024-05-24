@@ -1,4 +1,4 @@
-import { db } from "./firebase";
+import { db } from './firebase';
 import {
   doc,
   getDoc,
@@ -7,7 +7,7 @@ import {
   getDocs,
   setDoc,
   deleteDoc,
-} from "firebase/firestore";
+} from 'firebase/firestore';
 
 // エラーハンドリングを共通化するヘルパー関数
 export const handleFirestoreError = (e: any, action: string) => {
@@ -17,8 +17,8 @@ export const handleFirestoreError = (e: any, action: string) => {
 
 // workRecordsにおいてドキュメントIDと日付キーを生成するヘルパー関数
 export const getDocIdAndDayKey = (year: number, month: number, day: number) => {
-  const docId = `${year}-${(month + 2).toString().padStart(2, "0")}`; // 月を2桁にフォーマット
-  const dayKey = day.toString().padStart(2, "0");
+  const docId = `${year}-${(month + 2).toString().padStart(2, '0')}`; // 月を2桁にフォーマット
+  const dayKey = day.toString().padStart(2, '0');
   return { docId, dayKey };
 };
 
@@ -28,7 +28,7 @@ export const getDocRef = (
   collectionName: string,
   docId: string
 ) => {
-  return doc(db, "teachers", teacherId, collectionName, docId);
+  return doc(db, 'teachers', teacherId, collectionName, docId);
 };
 
 // データを保存する汎用ヘルパー関数
@@ -42,9 +42,8 @@ export const saveData = async (
   const docRef = getDocRef(teacherId, collectionName, docId);
 
   try {
-    console.log(`Saving data to Firestore:`, { docRef, data }); // 追加
     await setDoc(docRef, data, { merge: true });
-    console.log(`${action} successfully for:`, docId);
+    // console.log(`${action} successfully for:`, docId);
   } catch (e) {
     handleFirestoreError(e, action);
   }
@@ -95,7 +94,7 @@ export async function getCollectionData(
   collectionName: string
 ) {
   try {
-    const collectionRef = collection(db, "teachers", teacherId, collectionName);
+    const collectionRef = collection(db, 'teachers', teacherId, collectionName);
     const querySnapshot = await getDocs(collectionRef);
     const data = querySnapshot.docs.map((doc) => {
       const docData = doc.data();
@@ -119,7 +118,7 @@ export const addCollectionData = async (
   data: Record<string, any>,
   action: string
 ) => {
-  const collectionRef = collection(db, "teachers", teacherId, collectionName);
+  const collectionRef = collection(db, 'teachers', teacherId, collectionName);
 
   try {
     const docRef = await addDoc(collectionRef, data);

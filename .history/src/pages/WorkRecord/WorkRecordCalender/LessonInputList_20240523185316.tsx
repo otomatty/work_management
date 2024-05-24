@@ -1,10 +1,10 @@
-import React, { useState } from "react";
-import styled from "styled-components";
-import ModalSubTitle from "../../../components/atoms/ModalSubTitle";
-import Section from "../../../components/layout/SectionComponent";
-import GradeSelector from "../../../components/molecules/GradeSelector";
-import Modal from "../../../components/molecules/Modal"; // Modalをインポート
-import { LessonInfo } from "../../../types";
+import React, { useState } from 'react';
+import styled from 'styled-components';
+import ModalSubTitle from '../../../components/atoms/ModalSubTitle';
+import Section from '../../../components/layout/SectionComponent';
+import GradeSelector from '../../../components/molecules/GradeSelector';
+import Modal from '../../../components/molecules/Modal'; // Modalをインポート
+import { LessonInfo } from '../../../types';
 
 const Table = styled.table`
   width: 100%;
@@ -102,6 +102,13 @@ const ButtonAsInput = styled.button`
 interface LessonInputListProps {
   lessonInfo: LessonInfo[];
   setLessonInfo: (lessonInfo: LessonInfo[]) => void;
+  saveLessonInfo: (
+    teacherId: string,
+    year: number,
+    month: number,
+    day: number,
+    lessonInfo: LessonInfo[]
+  ) => Promise<void>;
 }
 
 const LessonInputList: React.FC<LessonInputListProps> = ({
@@ -121,17 +128,17 @@ const LessonInputList: React.FC<LessonInputListProps> = ({
     const updatedLessons = [...lessonInfo];
     updatedLessons[index] = {
       ...updatedLessons[index],
-      [field]: field === "time" ? Number(value) : value,
+      [field]: field === 'time' ? Number(value) : value,
     };
     setLessonInfo(updatedLessons);
   };
 
   const handleAddLesson = async () => {
     const newLesson: LessonInfo = {
-      studentName: "",
-      grade: "",
-      subject: "",
-      status: "",
+      studentName: '',
+      grade: '',
+      subject: '',
+      status: '',
       time: 0, // 初期値を number 型に変更
     };
     const newLessonInfo = [...lessonInfo, newLesson];
@@ -150,7 +157,7 @@ const LessonInputList: React.FC<LessonInputListProps> = ({
 
   const handleGradeChange = (grade: string) => {
     if (currentGradeIndex !== null) {
-      handleInputChange(currentGradeIndex, "grade", grade);
+      handleInputChange(currentGradeIndex, 'grade', grade);
       setIsGradeSelectorOpen(false);
       setCurrentGradeIndex(null);
     }
@@ -178,7 +185,7 @@ const LessonInputList: React.FC<LessonInputListProps> = ({
                   type="text"
                   value={lesson.studentName}
                   onChange={(e) =>
-                    handleInputChange(index, "studentName", e.target.value)
+                    handleInputChange(index, 'studentName', e.target.value)
                   }
                   placeholder="生徒名"
                 />
@@ -190,14 +197,14 @@ const LessonInputList: React.FC<LessonInputListProps> = ({
                     handleGradeSelect(index);
                   }}
                 >
-                  {lesson.grade || "学年を選択"}
+                  {lesson.grade || '学年を選択'}
                 </ButtonAsInput>
               </Td>
               <Td>
                 <Select
                   value={lesson.subject}
                   onChange={(e) =>
-                    handleInputChange(index, "subject", e.target.value)
+                    handleInputChange(index, 'subject', e.target.value)
                   }
                 >
                   <option value="">教科を選択</option>
@@ -213,7 +220,7 @@ const LessonInputList: React.FC<LessonInputListProps> = ({
                 <Select
                   value={lesson.status}
                   onChange={(e) =>
-                    handleInputChange(index, "status", e.target.value)
+                    handleInputChange(index, 'status', e.target.value)
                   }
                 >
                   <option value="">カテゴリーを選択</option>
@@ -227,7 +234,7 @@ const LessonInputList: React.FC<LessonInputListProps> = ({
                   type="number"
                   value={lesson.time}
                   onChange={(e) =>
-                    handleInputChange(index, "time", e.target.value)
+                    handleInputChange(index, 'time', e.target.value)
                   }
                   placeholder="時間 (10分単位)"
                   min="0"
@@ -252,7 +259,7 @@ const LessonInputList: React.FC<LessonInputListProps> = ({
         onClose={() => setIsGradeSelectorOpen(false)}
       >
         <GradeSelector
-          grade={lessonInfo[currentGradeIndex!]?.grade || ""}
+          grade={lessonInfo[currentGradeIndex!]?.grade || ''}
           setGrade={handleGradeChange}
         />
       </Modal>

@@ -26,8 +26,8 @@ export interface WorkRecord {
   classroom: string;
   startTime: string;
   endTime: string;
-  officeTime: number;
-  teachTime: number;
+  officeHour: number;
+  teachHour: number;
   lessonInfo: LessonInfo[];
   workDescription: string;
 }

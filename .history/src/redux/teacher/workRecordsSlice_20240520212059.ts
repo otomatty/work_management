@@ -59,13 +59,6 @@ const workRecordsSlice = createSlice({
       state.loading = false;
       state.error = action.payload;
     },
-    updateWorkRecord(
-      state,
-      action: PayloadAction<{ day: string; workRecord: WorkRecord }>
-    ) {
-      const { day, workRecord } = action.payload;
-      state.workRecords[day] = workRecord;
-    },
   },
   extraReducers: (builder) => {
     builder
@@ -90,7 +83,6 @@ export const {
   fetchWorkRecordsStart,
   fetchWorkRecordsSuccess,
   fetchWorkRecordsFailure,
-  updateWorkRecord,
 } = workRecordsSlice.actions;
 
 export const selectWorkRecords = (state: RootState) => state.workRecords;

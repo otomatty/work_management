@@ -28,13 +28,7 @@ export async function updateWorkRecord(
   day: number,
   workRecord: Partial<WorkRecord>
 ): Promise<void> {
-  const { docId, dayKey } = getDocIdAndDayKey(year, month - 1, day);
-  console.log("Updating work record with data:", {
-    teacherId,
-    docId,
-    dayKey,
-    workRecord,
-  }); // 追加
+  const { docId, dayKey } = getDocIdAndDayKey(year, month, day);
   await saveData(
     teacherId,
     "workRecords",

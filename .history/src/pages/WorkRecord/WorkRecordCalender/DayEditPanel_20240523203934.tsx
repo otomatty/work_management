@@ -113,8 +113,8 @@ const DayEditPanel: React.FC<DayEditPanelProps> = ({
         endTime,
         lessonInfo,
         workDescription,
-        officeTime: workRecords[0]?.officeTime || 0,
-        teachTime: workRecords[0]?.teachTime || 0,
+        officeHour: workRecords[0]?.officeHour || 0,
+        teachHour: workRecords[0]?.teachHour || 0,
       };
       console.log("保存するデータ:", updatedWorkRecord);
       await updateWorkRecordInFirestore(

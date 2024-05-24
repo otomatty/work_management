@@ -8,10 +8,11 @@ import WorkDescriptionInput from "./WorkDescriptionInput";
 import ClassroomManager from "./ClassroomManager";
 import Button from "../../../components/atoms/Button";
 import { RootState } from "../../../redux/store";
-import { fetchWorkRecordsRequest } from "../../../redux/actions";
+import {
+  fetchWorkRecordsRequest,
+  saveWorkRecordRequest,
+} from "../../../redux/actions";
 import { LessonInfo, WorkRecord } from "../../../types";
-import { updateWorkRecord as updateWorkRecordInFirestore } from "../../../firebase/teachers/workRecords/workRecords"; // 名前変更
-import { updateWorkRecord } from "../../../redux/teacher/workRecordsSlice"; // 追加
 
 interface DayEditPanelProps {
   year: number;
@@ -99,9 +100,34 @@ const DayEditPanel: React.FC<DayEditPanelProps> = ({
     }
   }, [workRecords]);
 
+  const saveLessonInfo = async (
+    teacherId: string,
+    year: number,
+    month: number,
+    day: number,
+    lessonInfo: LessonInfo[]
+  ) => {
+    try {
+      const updatedWorkRecord = {
+        classroom,
+        startTime,
+        endTime,
+        lessonInfo,
+        workDescription,
+        officeHour: workRecords[0]?.officeHour || 0,
+        teachHour: workRecords[0]?.teachHour || 0,
+      };
+      dispatch(
+        saveWorkRecordRequest(teacherId, year, month, day, updatedWorkRecord)
+      );
+    } catch (error) {
+      console.error("Failed to save lesson info:", error);
+    }
+  };
+
   const onSave = async (e?: React.MouseEvent<HTMLButtonElement>) => {
     e?.preventDefault();
-    console.log("保存ボタンが押されました");
+    console.log("保存ボタンが押されました"); // 追加
     if (!teacherId) {
       console.error("Teacher ID is null");
       return;
@@ -113,22 +139,12 @@ const DayEditPanel: React.FC<DayEditPanelProps> = ({
         endTime,
         lessonInfo,
         workDescription,
-        officeTime: workRecords[0]?.officeTime || 0,
-        teachTime: workRecords[0]?.teachTime || 0,
+        officeHour: workRecords[0]?.officeHour || 0,
+        teachHour: workRecords[0]?.teachHour || 0,
       };
-      console.log("保存するデータ:", updatedWorkRecord);
-      await updateWorkRecordInFirestore(
-        teacherId,
-        year,
-        month,
-        day,
-        updatedWorkRecord
-      );
+      console.log("保存するデータ:", updatedWorkRecord); // 追加
       dispatch(
-        updateWorkRecord({
-          day: day.toString().padStart(2, "0"),
-          workRecord: updatedWorkRecord,
-        })
+        saveWorkRecordRequest(teacherId, year, month, day, updatedWorkRecord)
       );
     } catch (error) {
       console.error("Failed to save work record:", error);
@@ -160,6 +176,7 @@ const DayEditPanel: React.FC<DayEditPanelProps> = ({
           <LessonInputList
             lessonInfo={lessonInfo}
             setLessonInfo={setLessonInfo}
+            saveLessonInfo={saveLessonInfo}
           />
           <WorkDescriptionInput
             value={workDescription}

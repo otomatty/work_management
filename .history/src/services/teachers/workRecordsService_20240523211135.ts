@@ -211,7 +211,8 @@ export const workRecordsService = {
     year: number,
     month: number,
     startDate: Date,
-    endDate: Date
+    endDate: Date,
+    workRecords: WorkRecord[] // WorkRecord型を指定
   ): Promise<void> => {
     try {
       const { docId } = getDocIdAndDayKey(year, month - 1, 1); // 対象の年月のドキュメントIDを取得
@@ -233,28 +234,10 @@ export const workRecordsService = {
         d.setDate(d.getDate() + 1)
       ) {
         const dayKey = d.getDate().toString().padStart(2, "0"); // 日にちを2桁の形式に変換
-        const { dayOfWeek, students, ...scheduleWithoutDayOfWeek } =
-          monthlySchedule[dayKey]; // dayOfWeekフィールドを除外
-
-        // studentsフィールドをlessonInfoフィールドに変更し、各レッスン情報にstatusを追加
-        const lessonInfo = students
-          ? students.map((student) => ({ ...student, status: "通常" }))
-          : [{ status: "通常" }];
-
-        // teachTimeを計算
-        const teachTime = students
-          ? students.reduce((total, student) => total + student.time, 0)
-          : 0;
-
+        const schedule = monthlySchedule[dayKey];
         batch.set(
           docRef,
-          {
-            [dayKey]: {
-              ...scheduleWithoutDayOfWeek,
-              lessonInfo,
-              teachTime, // teachTimeを追加
-            },
-          },
+          { [dayKey]: schedule }, // スケジュールを追加
           { merge: true }
         );
       }
@@ -287,21 +270,25 @@ export const workRecordsService = {
   insertAllWorkRecordsForMonth: async (
     teacherId: string,
     year: number,
-    month: number
+    month: number,
+    workRecords: { workRecord: WorkRecord }[]
   ): Promise<void> => {
     const startDate = new Date(year, month, 1);
     const endDate = new Date(year, month + 1, 0);
+
+    const formattedWorkRecords = workRecords.map((record) => record.workRecord);
 
     await workRecordsService.insertWorkRecordsByDateRange(
       teacherId,
       year,
       month,
       startDate,
-      endDate
+      endDate,
+      formattedWorkRecords
     );
   },
 
-  // 指定された月の最初の曜日を基準に週間スケジュールを並び替え、り返し適用する関数
+  // 指定された月の最初の曜日を基準に週間スケジュールを並び替え、繰り返し適用する関数
   getMonthlySchedule: async (
     teacherId: string,
     year: number,

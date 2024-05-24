@@ -1,17 +1,18 @@
-import React, { useEffect, useState } from "react";
-import styled from "styled-components";
-import { motion, AnimatePresence } from "framer-motion";
-import { useDispatch, useSelector } from "react-redux";
-import WorkTimeInputs from "./WorkTimeInput";
-import LessonInputList from "./LessonInputList";
-import WorkDescriptionInput from "./WorkDescriptionInput";
-import ClassroomManager from "./ClassroomManager";
-import Button from "../../../components/atoms/Button";
-import { RootState } from "../../../redux/store";
-import { fetchWorkRecordsRequest } from "../../../redux/actions";
-import { LessonInfo, WorkRecord } from "../../../types";
-import { updateWorkRecord as updateWorkRecordInFirestore } from "../../../firebase/teachers/workRecords/workRecords"; // 名前変更
-import { updateWorkRecord } from "../../../redux/teacher/workRecordsSlice"; // 追加
+import React, { useEffect, useState } from 'react';
+import styled from 'styled-components';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useDispatch, useSelector } from 'react-redux';
+import WorkTimeInputs from './WorkTimeInput';
+import LessonInputList from './LessonInputList';
+import WorkDescriptionInput from './WorkDescriptionInput';
+import ClassroomManager from './ClassroomManager';
+import Button from '../../../components/atoms/Button';
+import { RootState } from '../../../redux/store';
+import {
+  fetchWorkRecordsRequest,
+  saveWorkRecordRequest,
+} from '../../../redux/actions';
+import { LessonInfo, WorkRecord } from '../../../types';
 
 interface DayEditPanelProps {
   year: number;
@@ -55,9 +56,9 @@ const containerVariants = {
   slide: (direction: number) => ({
     x: [direction * 500, 0],
     opacity: [0, 1],
-    height: "auto",
+    height: 'auto',
     transition: {
-      type: "spring",
+      type: 'spring',
       stiffness: 300,
       damping: 30,
       duration: 0.5,
@@ -76,11 +77,11 @@ const DayEditPanel: React.FC<DayEditPanelProps> = ({
   const dispatch = useDispatch();
   const teacherId = useSelector((state: RootState) => state.teacher.teacherId);
 
-  const [classroom, setClassroom] = useState("");
-  const [startTime, setStartTime] = useState("");
-  const [endTime, setEndTime] = useState("");
+  const [classroom, setClassroom] = useState('');
+  const [startTime, setStartTime] = useState('');
+  const [endTime, setEndTime] = useState('');
   const [lessonInfo, setLessonInfo] = useState<LessonInfo[]>([]);
-  const [workDescription, setWorkDescription] = useState("");
+  const [workDescription, setWorkDescription] = useState('');
 
   useEffect(() => {
     if (teacherId) {
@@ -99,11 +100,35 @@ const DayEditPanel: React.FC<DayEditPanelProps> = ({
     }
   }, [workRecords]);
 
+  const saveLessonInfo = async (
+    teacherId: string,
+    year: number,
+    month: number,
+    day: number,
+    lessonInfo: LessonInfo[]
+  ) => {
+    try {
+      const updatedWorkRecord = {
+        classroom,
+        startTime,
+        endTime,
+        lessonInfo,
+        workDescription,
+        officeHour: workRecords[0]?.officeHour || 0,
+        teachHour: workRecords[0]?.teachHour || 0,
+      };
+      dispatch(
+        saveWorkRecordRequest(teacherId, year, month, day, updatedWorkRecord)
+      );
+    } catch (error) {
+      console.error('Failed to save lesson info:', error);
+    }
+  };
+
   const onSave = async (e?: React.MouseEvent<HTMLButtonElement>) => {
     e?.preventDefault();
-    console.log("保存ボタンが押されました");
     if (!teacherId) {
-      console.error("Teacher ID is null");
+      console.error('Teacher ID is null');
       return;
     }
     try {
@@ -113,25 +138,14 @@ const DayEditPanel: React.FC<DayEditPanelProps> = ({
         endTime,
         lessonInfo,
         workDescription,
-        officeTime: workRecords[0]?.officeTime || 0,
-        teachTime: workRecords[0]?.teachTime || 0,
+        officeHour: workRecords[0]?.officeHour || 0,
+        teachHour: workRecords[0]?.teachHour || 0,
       };
-      console.log("保存するデータ:", updatedWorkRecord);
-      await updateWorkRecordInFirestore(
-        teacherId,
-        year,
-        month,
-        day,
-        updatedWorkRecord
-      );
       dispatch(
-        updateWorkRecord({
-          day: day.toString().padStart(2, "0"),
-          workRecord: updatedWorkRecord,
-        })
+        saveWorkRecordRequest(teacherId, year, month, day, updatedWorkRecord)
       );
     } catch (error) {
-      console.error("Failed to save work record:", error);
+      console.error('Failed to save work record:', error);
     }
   };
 
@@ -141,7 +155,7 @@ const DayEditPanel: React.FC<DayEditPanelProps> = ({
         style={style}
         variants={containerVariants}
         initial="hidden"
-        animate={slideDirection !== 0 ? "slide" : "visible"}
+        animate={slideDirection !== 0 ? 'slide' : 'visible'}
         exit="exit"
         custom={slideDirection}
         layout
@@ -160,6 +174,7 @@ const DayEditPanel: React.FC<DayEditPanelProps> = ({
           <LessonInputList
             lessonInfo={lessonInfo}
             setLessonInfo={setLessonInfo}
+            saveLessonInfo={saveLessonInfo}
           />
           <WorkDescriptionInput
             value={workDescription}

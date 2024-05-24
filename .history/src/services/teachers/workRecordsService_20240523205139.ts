@@ -219,7 +219,7 @@ export const workRecordsService = {
 
       const batch = writeBatch(db);
 
-      // getMonthlyScheduleを呼び出してスケジュールを取得
+      // getMonthlyScheduleを呼���出してスケジュールを取得
       const monthlySchedule = await workRecordsService.getMonthlySchedule(
         teacherId,
         year,
@@ -241,20 +241,9 @@ export const workRecordsService = {
           ? students.map((student) => ({ ...student, status: "通常" }))
           : [{ status: "通常" }];
 
-        // teachTimeを計算
-        const teachTime = students
-          ? students.reduce((total, student) => total + student.time, 0)
-          : 0;
-
         batch.set(
           docRef,
-          {
-            [dayKey]: {
-              ...scheduleWithoutDayOfWeek,
-              lessonInfo,
-              teachTime, // teachTimeを追加
-            },
-          },
+          { [dayKey]: { ...scheduleWithoutDayOfWeek, lessonInfo } }, // スケジュールを追加
           { merge: true }
         );
       }
@@ -301,7 +290,7 @@ export const workRecordsService = {
     );
   },
 
-  // 指定された月の最初の曜日を基準に週間スケジュールを並び替え、り返し適用する関数
+  // 指定された月の最初の曜日を基準に週間スケジュールを並び替え、��り返し適用する関数
   getMonthlySchedule: async (
     teacherId: string,
     year: number,

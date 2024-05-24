@@ -4,7 +4,7 @@ import styled from "styled-components";
 import CellComponent from "../../../components/atoms/AnimatedCell/AnimatedCell";
 import WorkDescriptionDisplay from "./WorkDescriptionDisplay";
 import ClassroomDisplay from "./ClassroomDisplay";
-import WorkTimesDisplay from "./WorkTimesDisplay";
+import WorkHoursDisplay from "./WorkHoursDisplay";
 import { WorkRecord } from "../../../types";
 import { RootState } from "../../../redux/store";
 import { fetchWorkRecordsRequest } from "../../../redux/actions";
@@ -106,9 +106,9 @@ const DayCell: React.FC<DayCellProps> = ({
           </Daybox>
           <InfoBox>
             <ClassroomDisplay classroom={workRecords?.classroom || ""} />
-            <WorkTimesDisplay
-              teachTime={workRecords?.teachTime || 0}
-              officeTime={workRecords?.officeTime || 0}
+            <WorkHoursDisplay
+              teachHour={workRecords?.teachHour || 0}
+              officeHour={workRecords?.officeHour || 0}
             />
             <div>
               <Title>レッスン内容</Title>
