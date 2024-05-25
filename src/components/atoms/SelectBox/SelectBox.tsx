@@ -1,6 +1,6 @@
-import React from "react";
-import styled from "styled-components";
-import { FaCaretDown } from "react-icons/fa"; // ドロップダウンアイコン用
+import React from 'react';
+import styled from 'styled-components';
+import { FaCaretDown } from 'react-icons/fa'; // ドロップダウンアイコン用
 
 // スタイル定義
 const SelectContainer = styled.div`
@@ -38,13 +38,13 @@ const Icon = styled(FaCaretDown)`
 const Option = styled.option``;
 
 // 型定義
-interface Option {
+interface SelectOption {
   value: string;
   label: string;
 }
 
 interface SelectBoxProps {
-  options: Option[];
+  options: SelectOption[];
   defaultValue: string;
   onChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
 }
