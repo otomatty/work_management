@@ -1,0 +1,20 @@
+{
+  "workRecordIcon": "Work Record Icon",
+  "workRecord": "Work Record",
+  "homeManagementIcon": "Home Management Icon",
+  "homePage": "Home Page",
+  "workManagement": "Work Management",
+  "problemGenerator": "Problem Generator",
+  "termQuizGeneratorIcon": "Term Quiz Generator Icon",
+  "englishVocabularyProblems": "English Vocabulary Problems",
+  "calculationGeneratorIcon": "Calculation Generator Icon",
+  "calculationProblems": "Calculation Problems",
+  "studentInfo": "Student Infomation",
+  "studentInfoIcon": "Student Infomation Icon",
+  "threeSubjectsProblems": "3 Subjects Problems",
+  "threeSubjectsProblemsIcon": "3 Subjects Problems Generator Icon",
+  "comingSoon": "Coming Soon",
+  "checkCurrentWorkRecord": "Check Current Work Record",
+  "selectName": "Select a Name",
+  "adminDashboard": "Admin Dashboard"
+}
