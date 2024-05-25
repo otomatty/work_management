@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { motion, AnimatePresence } from "framer-motion";
 import DayTeacherSchedule from "./DayTeacherSchedule";
 import AnimatedCaret from "../../../components/atoms/AnimatedCaret/AnimatedCaret";
-import Tooltip from "../../../components/atoms/Tooltip/Tooltip";
+import Tooltip from "../../../components/atoms/Tooltip";
 
 const dayOfWeekMap: Record<string, string> = {
   Monday: "月曜日",
