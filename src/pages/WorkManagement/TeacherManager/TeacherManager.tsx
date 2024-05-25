@@ -1,17 +1,19 @@
-import React, { useState, useEffect } from "react";
-import styled from "styled-components";
-import { useDispatch, useSelector } from "react-redux";
-import { ThunkDispatch } from "redux-thunk";
-import { Action } from "redux";
-import { RootState } from "../../../redux/store";
+import React, { useState, useEffect, startTransition } from 'react';
+import styled from 'styled-components';
+import { useDispatch, useSelector } from 'react-redux';
+import { ThunkDispatch } from 'redux-thunk';
+import { Action } from 'redux';
+import { RootState } from '../../../redux/store';
 import {
   fetchTeachers,
   addNewTeacher,
   removeTeacher,
-} from "../../../redux/teacher/teacherSlice";
-import TeacherTable from "./TeacherTable";
-import DeleteModeToggle from "./DeleteModeToggle";
-import TimeFormatToggle from "../../../components/atoms/TimeFormatToggle/TimeFormatToggle";
+  updateTeacherName,
+} from '../../../redux/teacher/teacherSlice';
+import TeacherTable from './TeacherTable';
+import DeleteModeToggle from './DeleteModeToggle';
+import EditModeToggle from './EditModeToggle';
+import TimeFormatToggle from '../../../components/atoms/TimeFormatToggle/TimeFormatToggle';
 
 const Toolbar = styled.div`
   display: flex;
@@ -44,6 +46,7 @@ const TeacherManager: React.FC = () => {
   );
   const [adding, setAdding] = useState(false);
   const [deleteMode, setDeleteMode] = useState(false);
+  const [editMode, setEditMode] = useState(false);
   const [isTimeFormat, setIsTimeFormat] = useState(true);
 
   const handleToggle = () => {
@@ -55,12 +58,22 @@ const TeacherManager: React.FC = () => {
   }, [dispatch]);
 
   const handleAddTeacher = (name: string) => {
-    dispatch(addNewTeacher(name));
-    setAdding(false);
+    startTransition(() => {
+      dispatch(addNewTeacher(name));
+      setAdding(false);
+    });
   };
 
   const handleDeleteTeacher = (id: string) => {
-    dispatch(removeTeacher(id));
+    startTransition(() => {
+      dispatch(removeTeacher(id));
+    });
+  };
+
+  const handleUpdateTeacherName = (id: string, newName: string) => {
+    startTransition(() => {
+      dispatch(updateTeacherName({ id, newName }));
+    });
   };
 
   return (
@@ -75,6 +88,10 @@ const TeacherManager: React.FC = () => {
             deleteMode={deleteMode}
             onToggle={() => setDeleteMode(!deleteMode)}
           />
+          <EditModeToggle
+            editMode={editMode}
+            onToggle={() => setEditMode(!editMode)}
+          />
         </div>
         <TimeFormatToggle isChecked={isTimeFormat} onToggle={handleToggle} />
       </Toolbar>
@@ -82,7 +99,9 @@ const TeacherManager: React.FC = () => {
       <TeacherTable
         teachers={teachers}
         deleteMode={deleteMode}
+        editMode={editMode}
         onDelete={handleDeleteTeacher}
+        onUpdate={handleUpdateTeacherName}
         adding={adding}
         onAdd={handleAddTeacher}
         onCancel={() => setAdding(false)}

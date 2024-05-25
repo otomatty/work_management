@@ -1,11 +1,12 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { AppThunk } from "../store";
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { AppThunk } from '../store';
 import {
   getTeachers,
   addTeacher,
   deleteTeacher,
-} from "../../services/teachers/teachersService";
-import { Teacher } from "../../types";
+  updateTeacher, // Added for updating teacher name
+} from '../../services/teachers/teachersService';
+import { Teacher } from '../../types';
 
 interface TeacherState {
   teacherId: string;
@@ -15,14 +16,14 @@ interface TeacherState {
 }
 
 const initialState: TeacherState = {
-  teacherId: "",
+  teacherId: '',
   teachers: [],
   loading: false,
   error: null,
 };
 
 const teacherSlice = createSlice({
-  name: "teacher",
+  name: 'teacher',
   initialState,
   reducers: {
     fetchTeachersStart(state) {
@@ -48,6 +49,16 @@ const teacherSlice = createSlice({
     setTeacherId(state, action: PayloadAction<string>) {
       state.teacherId = action.payload;
     },
+    updateTeacherNameSuccess(
+      state,
+      action: PayloadAction<{ id: string; newName: string }>
+    ) {
+      const { id, newName } = action.payload;
+      const teacher = state.teachers.find((teacher) => teacher.id === id);
+      if (teacher) {
+        teacher.name = newName;
+      }
+    },
   },
 });
 
@@ -58,6 +69,7 @@ export const {
   addTeacherSuccess,
   deleteTeacherSuccess,
   setTeacherId,
+  updateTeacherNameSuccess,
 } = teacherSlice.actions;
 
 export const fetchTeachers = (): AppThunk => async (dispatch) => {
@@ -66,7 +78,7 @@ export const fetchTeachers = (): AppThunk => async (dispatch) => {
     const teachers = await getTeachers();
     dispatch(fetchTeachersSuccess(teachers));
   } catch (error) {
-    let errorMessage = "An unknown error occurred";
+    let errorMessage = 'An unknown error occurred';
     if (error instanceof Error) {
       errorMessage = error.message;
     }
@@ -81,7 +93,7 @@ export const addNewTeacher =
       const newTeacher = await addTeacher(name);
       dispatch(addTeacherSuccess(newTeacher));
     } catch (error) {
-      let errorMessage = "An unknown error occurred";
+      let errorMessage = 'An unknown error occurred';
       if (error instanceof Error) {
         errorMessage = error.message;
       }
@@ -96,7 +108,22 @@ export const removeTeacher =
       await deleteTeacher(id);
       dispatch(deleteTeacherSuccess(id));
     } catch (error) {
-      let errorMessage = "An unknown error occurred";
+      let errorMessage = 'An unknown error occurred';
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+      dispatch(fetchTeachersFailure(errorMessage));
+    }
+  };
+
+export const updateTeacherName =
+  ({ id, newName }: { id: string; newName: string }): AppThunk =>
+  async (dispatch) => {
+    try {
+      await updateTeacher(id, newName); // Call the updateTeacher service
+      dispatch(updateTeacherNameSuccess({ id, newName }));
+    } catch (error) {
+      let errorMessage = 'An unknown error occurred';
       if (error instanceof Error) {
         errorMessage = error.message;
       }

@@ -1,11 +1,13 @@
-import React, { useState, useEffect } from "react";
-import styled from "styled-components";
-import AddTeacherForm from "./AddTeacherForm";
-import Modal from "../../../components/molecules/Modal";
-import Button from "../../../components/atoms/Button/Button"; // Buttonコンポーネントをインポート
-import ButtonGroup from "../../../components/layout/ButtonGroup";
-import { getTotalTimes } from "../../../firebase/teachers/monthlySummaries/monthlySummaries"; // 追加
-import { useNavigate } from "react-router-dom"; // 追加
+import React, { useState, useEffect } from 'react';
+import styled from 'styled-components';
+import AddTeacherForm from './AddTeacherForm';
+import Modal from '../../../components/molecules/Modal';
+import Button from '../../../components/atoms/Button/Button'; // Buttonコンポーネントをインポート
+import ButtonGroup from '../../../components/layout/ButtonGroup';
+import { getTotalTimes } from '../../../firebase/teachers/monthlySummaries/monthlySummaries'; // 追加
+import { useNavigate } from 'react-router-dom'; // 追加
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'; // FontAwesomeをインポート
+import { faTrash, faEdit } from '@fortawesome/free-solid-svg-icons'; // 必要なアイコンをインポート
 
 const Table = styled.table`
   width: 100%;
@@ -26,8 +28,14 @@ const Td = styled.td`
   text-align: left;
 `;
 
-const DeleteIcon = styled.span`
+const DeleteIcon = styled(FontAwesomeIcon)`
   color: #dc3545;
+  cursor: pointer;
+  margin-left: 10px;
+`;
+
+const EditIcon = styled(FontAwesomeIcon)`
+  color: #007bff;
   cursor: pointer;
   margin-left: 10px;
 `;
@@ -47,7 +55,9 @@ interface Teacher {
 interface Props {
   teachers: Teacher[];
   deleteMode: boolean;
+  editMode: boolean; // 追加
   onDelete: (id: string) => void;
+  onUpdate: (id: string, newName: string) => void; // 追加
   adding: boolean;
   onAdd: (name: string) => void;
   onCancel: () => void;
@@ -57,7 +67,9 @@ interface Props {
 const TeacherTable: React.FC<Props> = ({
   teachers,
   deleteMode,
+  editMode, // 追加
   onDelete,
+  onUpdate, // 追加
   adding,
   onAdd,
   onCancel,
@@ -67,7 +79,7 @@ const TeacherTable: React.FC<Props> = ({
   const [selectedTeacherId, setSelectedTeacherId] = useState<string | null>(
     null
   );
-  const [inputTeacherName, setInputTeacherName] = useState<string>("");
+  const [inputTeacherName, setInputTeacherName] = useState<string>('');
   const [monthlyTimes, setMonthlyTimes] = useState<{
     [key: string]: { totalTeachTime: number; totalOfficeTime: number };
   }>({});
@@ -119,20 +131,27 @@ const TeacherTable: React.FC<Props> = ({
       onDelete(selectedTeacherId!);
       setIsModalOpen(false);
       setSelectedTeacherId(null);
-      setInputTeacherName("");
+      setInputTeacherName('');
     } else {
-      alert("講師名が一致しません。");
+      alert('講師名が一致しません。');
     }
   };
 
   const handleCancelDelete = () => {
     setIsModalOpen(false);
     setSelectedTeacherId(null);
-    setInputTeacherName("");
+    setInputTeacherName('');
   };
 
   const handleTeacherClick = (id: string) => {
     navigate(`/work-record/${id}`, { replace: true });
+  };
+
+  const handleEditClick = (id: string) => {
+    const newName = prompt('新しい講師名を入力してください:');
+    if (newName) {
+      onUpdate(id, newName);
+    }
   };
 
   return (
@@ -150,18 +169,26 @@ const TeacherTable: React.FC<Props> = ({
             <tr key={teacher.id}>
               <Td
                 onClick={() => handleTeacherClick(teacher.id)}
-                style={{ cursor: "pointer" }}
+                style={{ cursor: 'pointer' }}
               >
                 {teacher.name}
                 {deleteMode && (
                   <DeleteIcon
+                    icon={faTrash}
                     onClick={(e) => {
                       e.stopPropagation();
                       handleDeleteClick(teacher.id);
                     }}
-                  >
-                    ✕
-                  </DeleteIcon>
+                  />
+                )}
+                {editMode && (
+                  <EditIcon
+                    icon={faEdit}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleEditClick(teacher.id);
+                    }}
+                  />
                 )}
               </Td>
               <Td>
@@ -174,7 +201,7 @@ const TeacherTable: React.FC<Props> = ({
           ))}
           {adding && (
             <tr>
-              <Td colSpan={deleteMode ? 4 : 3}>
+              <Td colSpan={deleteMode || editMode ? 4 : 3}>
                 <AddTeacherForm onAdd={onAdd} onCancel={onCancel} />
               </Td>
             </tr>
