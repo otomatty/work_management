@@ -1,7 +1,7 @@
-import React from "react";
-import styled from "styled-components";
-import TimeInput from "../../../components/atoms/TimeInput";
-import ModalSubTitle from "../../../components/atoms/ModalSubTitle/ModalSubTitle";
+import React from 'react';
+import styled from 'styled-components';
+import TimeInput from '../../../components/atoms/TimeInput/TimeInput';
+import ModalSubTitle from '../../../components/atoms/ModalSubTitle/ModalSubTitle';
 
 const Container = styled.div``;
 
