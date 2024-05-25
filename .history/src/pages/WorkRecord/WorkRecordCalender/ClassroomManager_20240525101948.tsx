@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
-import styled from "styled-components";
-import ClassroomSelectBox from "../../../components/molecules/ClassroomSelectBox";
-import ModalSubTitle from "../../../components/atoms/ModalSubTitle/ModalSubTitle";
+import React, { useState, useEffect } from 'react';
+import styled from 'styled-components';
+import ClassroomSelectBox from '../../../components/molecules/ClassroomSelectBox';
+import ModalSubTitle from '../../../components/atoms/ModalSubTitle';
 
 interface ClassroomManagerProps {
   classroom: string;

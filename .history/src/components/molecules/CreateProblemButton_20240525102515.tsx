@@ -1,6 +1,12 @@
+<<<<<<< HEAD:src/components/molecules/CreateProblemButton.tsx
 import React from "react";
 import { generateProblems } from "../../utils/problemGenerator";
 import Button from "../atoms/Button/Button";
+=======
+import React from 'react';
+import { generateProblems } from '../../utils/problemGenerator';
+import Button from '../atoms/Button';
+>>>>>>> develop:src/components/molecules/CreateProblemButton.jsx
 
 // プロパティの型を定義
 interface CreateProblemButtonProps {

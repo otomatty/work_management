@@ -1,7 +1,21 @@
-import React from "react";
+<<<<<<< HEAD
+import React, { useState } from "react";
 import styled from "styled-components";
 import BulkInsert from "./ui/BulkInsert";
 import BulkDelete from "./ui/BulkDelete";
+import Modal from "../../../components/molecules/Modal";
+import LoadingScreen from "../../../components/atoms/LodingScreen/LoadingScreen";
+import { useDispatch } from "react-redux";
+import {
+  deleteWorkRecordsRequest,
+  insertWorkRecordsRequest,
+} from "../../../redux/actions";
+=======
+import React from 'react';
+import styled from 'styled-components';
+import BulkInsert from './ui/BulkInsert';
+import BulkDelete from './ui/BulkDelete';
+>>>>>>> develop
 
 const ToolbarContainer = styled.div`
   display: flex;
