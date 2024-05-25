@@ -1,7 +1,7 @@
 import React from "react";
 import Container from "../../../components/layout/Container";
 import Wrapper from "../../../components/layout/Wrapper";
-import Stepper from "../../../components/atoms/Stepper/Stepper"; // Stepper コンポーネントをインポート
+import Stepper from "../../../components/atoms/Stepper"; // Stepper コンポーネントをインポート
 import Description from "../../../components/atoms/Description/Description";
 
 interface PageCountSelectorProps {
