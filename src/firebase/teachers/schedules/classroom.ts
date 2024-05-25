@@ -1,4 +1,4 @@
-import { saveData, deleteData, getData } from "../../helpers";
+import { saveData, deleteData, getData } from '../../helpers';
 
 // スケジュールの教室情報を追加
 export async function addScheduleClassroom(
@@ -8,10 +8,10 @@ export async function addScheduleClassroom(
 ): Promise<void> {
   await saveData(
     teacherId,
-    "schedules",
+    'schedules',
     dayOfWeek,
     { classroom },
-    "Classroom added"
+    'Classroom added'
   );
 }
 
@@ -20,11 +20,11 @@ export async function getScheduleClassroom(
   teacherId: string,
   dayOfWeek: string
 ): Promise<string | null> {
-  const data = await getData(teacherId, "schedules", dayOfWeek);
+  const data = await getData(teacherId, 'schedules', dayOfWeek);
   if (data && data.classroom) {
     return data.classroom;
   } else {
-    console.log("No such classroom!");
+    console.log('No such classroom!');
     return null;
   }
 }
@@ -37,10 +37,10 @@ export async function updateScheduleClassroom(
 ): Promise<void> {
   await saveData(
     teacherId,
-    "schedules",
+    'schedules',
     dayOfWeek,
     { classroom },
-    "Classroom updated"
+    'Classroom updated'
   );
 }
 
@@ -49,5 +49,5 @@ export async function deleteScheduleClassroom(
   teacherId: string,
   dayOfWeek: string
 ): Promise<void> {
-  await deleteData(teacherId, "schedules", dayOfWeek, "Classroom deleted");
+  await deleteData(teacherId, 'schedules', dayOfWeek, 'Classroom deleted');
 }

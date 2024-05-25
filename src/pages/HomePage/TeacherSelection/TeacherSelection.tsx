@@ -17,7 +17,7 @@ const TeacherSelection: React.FC = () => {
     null
   );
   const navigate = useNavigate();
-  const { t } = useTranslation(); // 翻訳関数の取得
+  const { t } = useTranslation("homePage"); // 翻訳関数の取得
 
   const handleTeacherSelect = (id: string) => {
     setSelectedTeacherId(id);

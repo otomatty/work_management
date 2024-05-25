@@ -18,9 +18,15 @@ const HiddenRadio = styled.input.attrs({ type: "radio" })`
   height: 0;
 `;
 
+<<<<<<< HEAD:src/components/atoms/RadioButton/RadioButton.tsx
 const StyledRadio = styled(motion.div)<{ checked: boolean }>`
   width: 24px;
   height: 24px;
+=======
+const StyledRadio = styled(motion.div)`
+  width: 16px;
+  height: 16px;
+>>>>>>> develop:src/components/atoms/RadioButton.jsx
   border-radius: 50%;
   border: 2px solid #007bff;
   display: flex;
@@ -52,11 +58,12 @@ const StyledRadio = styled(motion.div)<{ checked: boolean }>`
 `;
 
 const Label = styled.span`
-  font-size: 16px;
+  font-size: 14px;
   color: #333;
   margin-left: 8px;
 `;
 
+<<<<<<< HEAD:src/components/atoms/RadioButton/RadioButton.tsx
 interface RadioButtonProps {
   label: string;
   name: string;
@@ -73,6 +80,10 @@ const RadioButton = ({
   onChange,
 }: RadioButtonProps) => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+=======
+const RadioButton = ({ label, name, value, checked, onChange }) => {
+  const handleChange = (e) => {
+>>>>>>> develop:src/components/atoms/RadioButton.jsx
     if (onChange) {
       onChange(e);
     }

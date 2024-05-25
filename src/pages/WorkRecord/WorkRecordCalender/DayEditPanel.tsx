@@ -7,17 +7,18 @@ import LessonInputList from "./LessonInputList";
 import WorkDescriptionInput from "./WorkDescriptionInput";
 import ClassroomManager from "./ClassroomManager";
 import Button from "../../../components/atoms/Button/Button";
+import Snackbar from "../../../components/atoms/Snackbar/Snackbar"; // スナックバーのインポート
 import { RootState } from "../../../redux/store";
-import {
-  fetchWorkRecordsRequest,
-  saveWorkRecordRequest,
-} from "../../../redux/actions";
-import { LessonInfo } from "../../../types";
+import { fetchWorkRecordsRequest } from "../../../redux/actions";
+import { LessonInfo, WorkRecord } from "../../../types";
+import { updateWorkRecord as updateWorkRecordInFirestore } from "../../../firebase/teachers/workRecords/workRecords"; // 名前変更
+import { updateWorkRecord } from "../../../redux/teacher/workRecordsSlice"; // 追加
 
 interface DayEditPanelProps {
   year: number;
   month: number;
   day: number;
+  workRecords: WorkRecord[];
   style: React.CSSProperties;
   slideDirection: number;
 }
@@ -27,7 +28,6 @@ const EditPanelContainer = styled(motion.div)<{ style: React.CSSProperties }>`
   box-sizing: border-box;
   padding: 20px;
   border-radius: 10px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   grid-column: ${(props) => props.style.gridColumn};
   grid-row: ${(props) => props.style.gridRow};
   overflow: hidden;
@@ -70,23 +70,19 @@ const DayEditPanel: React.FC<DayEditPanelProps> = ({
   year,
   month,
   day,
+  workRecords,
   style,
   slideDirection,
 }) => {
   const dispatch = useDispatch();
   const teacherId = useSelector((state: RootState) => state.teacher.teacherId);
-  const workRecord = useSelector(
-    (state: RootState) =>
-      state.workRecords.workRecords[`${year}-${month}-${day}`]
-  );
 
-  const [classroom, setClassroom] = useState(workRecord?.classroom || "");
-  const [startTime, setStartTime] = useState(workRecord?.startTime || "");
-  const [endTime, setEndTime] = useState(workRecord?.endTime || "");
-  const [lessonInfo, setLessonInfo] = useState(workRecord?.lessonInfo || []);
-  const [workDescription, setWorkDescription] = useState(
-    workRecord?.workDescription || ""
-  );
+  const [classroom, setClassroom] = useState("");
+  const [startTime, setStartTime] = useState("");
+  const [endTime, setEndTime] = useState("");
+  const [lessonInfo, setLessonInfo] = useState<LessonInfo[]>([]);
+  const [workDescription, setWorkDescription] = useState("");
+  const [isSnackbarVisible, setSnackbarVisible] = useState(false); // スナックバーの表示状態を管理するステート
 
   useEffect(() => {
     if (teacherId) {
@@ -95,59 +91,111 @@ const DayEditPanel: React.FC<DayEditPanelProps> = ({
   }, [dispatch, teacherId, year, month, day]);
 
   useEffect(() => {
-    if (workRecord) {
+    if (workRecords.length > 0) {
+      const workRecord = workRecords[0];
       setClassroom(workRecord.classroom);
       setStartTime(workRecord.startTime);
       setEndTime(workRecord.endTime);
       setLessonInfo(workRecord.lessonInfo);
       setWorkDescription(workRecord.workDescription);
     }
-  }, [workRecord]);
+  }, [workRecords]);
 
-  const saveLessonInfo = async (
-    teacherId: string,
-    year: number,
-    month: number,
-    day: number,
-    lessonInfo: LessonInfo[]
-  ) => {
-    try {
-      const updatedWorkRecord = {
-        classroom,
-        startTime,
-        endTime,
-        lessonInfo,
-        workDescription,
-      };
-      dispatch(
-        saveWorkRecordRequest(teacherId, year, month, day, updatedWorkRecord)
-      );
-    } catch (error) {
-      console.error("Failed to save lesson info:", error);
-    }
+  const getDayOfWeek = (year: number, month: number, day: number): string => {
+    const date = new Date(year, month, day); // 月は0から始まるため、1を引く
+    const daysOfWeek = ["日", "月", "火", "水", "木", "金", "土"];
+    return daysOfWeek[date.getDay()];
   };
 
   const onSave = async (e?: React.MouseEvent<HTMLButtonElement>) => {
     e?.preventDefault();
+    if (!teacherId) {
+      console.error("Teacher ID is null");
+      return;
+    }
     try {
+      // lessonInfoからtimeを合計してteachTimeを計算
+      const teachTime = lessonInfo.reduce((total, lesson) => {
+        if (lesson.status === "通常" || lesson.status === "MU") {
+          return total + lesson.time;
+        } else if (lesson.status === "休み") {
+          return total - lesson.time;
+        }
+        return total;
+      }, 0);
+
+      // startTimeとendTimeからofficeTimeを計算
+      const [startHour, startMinute] = startTime.split(":").map(Number);
+      const [endHour, endMinute] = endTime.split(":").map(Number);
+      const totalOfficeTime =
+        endHour * 60 + endMinute - (startHour * 60 + startMinute); // 分に変換
+      const officeTime = totalOfficeTime - teachTime; // teachTimeを引く
+
       const updatedWorkRecord = {
         classroom,
         startTime,
         endTime,
         lessonInfo,
         workDescription,
+        officeTime,
+        teachTime,
       };
-      dispatch(
-        saveWorkRecordRequest(teacherId, year, month, day, updatedWorkRecord)
+      await updateWorkRecordInFirestore(
+        teacherId,
+        year,
+        month,
+        day,
+        updatedWorkRecord
       );
+      dispatch(
+        updateWorkRecord({
+          day: day.toString().padStart(2, "0"),
+          workRecord: updatedWorkRecord,
+        })
+      );
+      setSnackbarVisible(false); // 保存後にスナックバーを非表示にする
     } catch (error) {
       console.error("Failed to save work record:", error);
     }
   };
 
+  // 各入力フィールドの変更時にスナックバーを表示するロジック
+  const handleClassroomChange = (newClassroom: string) => {
+    setClassroom(newClassroom);
+    setSnackbarVisible(true);
+  };
+
+  const handleStartTimeChange = (newStartTime: string) => {
+    setStartTime(newStartTime);
+    setSnackbarVisible(true);
+  };
+
+  const handleEndTimeChange = (newEndTime: string) => {
+    setEndTime(newEndTime);
+    setSnackbarVisible(true);
+  };
+
+  const handleLessonInfoChange = (newLessonInfo: LessonInfo[]) => {
+    setLessonInfo(newLessonInfo);
+    setSnackbarVisible(true);
+  };
+
+  const handleWorkDescriptionChange = (
+    e: React.ChangeEvent<HTMLTextAreaElement>
+  ) => {
+    setWorkDescription(e.target.value);
+    setSnackbarVisible(true);
+  };
+
+  const handleSave = () => {
+    onSave();
+    setSnackbarVisible(false);
+  };
+
   return (
     <AnimatePresence>
       <EditPanelContainer
+        key={`${year}-${month}-${day}`} // 一意のキーを追加
         style={style}
         variants={containerVariants}
         initial="hidden"
@@ -156,29 +204,38 @@ const DayEditPanel: React.FC<DayEditPanelProps> = ({
         custom={slideDirection}
         layout
       >
-        <h3>{day}日</h3>
+        <h3>
+          {day}日 ({getDayOfWeek(year, month, day)})
+        </h3>
 
         <InputArea>
-          <ClassroomManager classroom={classroom} setClassroom={setClassroom} />
+          <ClassroomManager
+            classroom={classroom}
+            setClassroom={handleClassroomChange}
+          />
           <WorkTimeInputs
             startTime={startTime}
-            setStartTime={setStartTime}
+            setStartTime={handleStartTimeChange} // 修正
             endTime={endTime}
-            setEndTime={setEndTime}
+            setEndTime={handleEndTimeChange} // 修正
           />
 
           <LessonInputList
             lessonInfo={lessonInfo}
-            setLessonInfo={setLessonInfo}
-            saveLessonInfo={saveLessonInfo}
+            setLessonInfo={handleLessonInfoChange}
           />
           <WorkDescriptionInput
             value={workDescription}
-            onChange={(e) => setWorkDescription(e.target.value)}
+            onChange={handleWorkDescriptionChange}
           />
-          <Button label="保存" onClick={onSave} />
+          <Button label="保存" onClick={handleSave} />
         </InputArea>
       </EditPanelContainer>
+      <Snackbar
+        message="保存してください"
+        isVisible={isSnackbarVisible}
+        onClose={() => setSnackbarVisible(false)}
+      />
     </AnimatePresence>
   );
 };

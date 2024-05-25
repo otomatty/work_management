@@ -1,15 +1,15 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 import {
   signInWithEmailAndPassword,
   GoogleAuthProvider,
   signInWithPopup,
-} from "firebase/auth";
-import { auth } from "../../firebase/firebase";
-import styled from "styled-components";
-import { useNavigate } from "react-router-dom";
-import { FcGoogle } from "react-icons/fc";
-import { useTranslation } from "react-i18next"; // i18nextのフックをインポート
-import Header from "../../components/organisms/Header";
+} from 'firebase/auth';
+import { auth } from '../../firebase/firebase';
+import styled from 'styled-components';
+import { useNavigate } from 'react-router-dom';
+import { FcGoogle } from 'react-icons/fc';
+import { useTranslation } from 'react-i18next'; // i18nextのフックをインポート
+import Header from '../../components/organisms/Header';
 
 const LoginContainer = styled.div`
   display: flex;
@@ -63,19 +63,19 @@ const Icon = styled.span`
 `;
 
 const LoginPage: React.FC = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const navigate = useNavigate();
-  const { t } = useTranslation(); // 翻訳関数の取得
+  const { t } = useTranslation('login'); // 翻訳関数の取得
 
   const handleLogin = async (event: React.FormEvent) => {
     event.preventDefault();
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      navigate("/");
+      navigate('/');
     } catch (error) {
-      console.error("ログインエラー:", error);
-      alert("ログインに失敗しました: " + (error as Error).message);
+      console.error('ログインエラー:', error);
+      alert('ログインに失敗しました: ' + (error as Error).message);
     }
   };
 
@@ -84,10 +84,10 @@ const LoginPage: React.FC = () => {
     try {
       const result = await signInWithPopup(auth, provider);
       console.log(result.user);
-      navigate("/");
+      navigate('/');
     } catch (error) {
-      console.error("ログインエラー:", error);
-      alert("ログインに失敗しました: " + (error as Error).message);
+      console.error('ログインエラー:', error);
+      alert('ログインに失敗しました: ' + (error as Error).message);
     }
   };
 
@@ -97,22 +97,22 @@ const LoginPage: React.FC = () => {
       <LoginForm onSubmit={handleLogin}>
         <Input
           type="email"
-          placeholder={t("emailAddress")} // プレースホルダーを翻訳
+          placeholder={t('emailAddress')} // プレースホルダーを翻訳
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
         <Input
           type="password"
-          placeholder={t("password")} // プレースホルダーを翻訳
+          placeholder={t('password')} // プレースホルダーを翻訳
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
-        <Button type="submit">{t("login")}</Button>
+        <Button type="submit">{t('login')}</Button>
         <Button onClick={googleLogin}>
           <Icon>
             <FcGoogle />
           </Icon>
-          {t("loginWithGoogle")}
+          {t('loginWithGoogle')}
         </Button>
       </LoginForm>
     </LoginContainer>

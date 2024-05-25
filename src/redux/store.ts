@@ -1,27 +1,21 @@
 import { configureStore, ThunkAction, Action } from "@reduxjs/toolkit";
-import createSagaMiddleware from "redux-saga";
 import rootReducer from "./reducers";
-import rootSaga from "./sagas";
-import dateNavigationReducer from "./teacher/dateNavigationSlice"; // 新しいスライスをインポート
-import scheduleReducer from "./teacher/scheduleSlice"; // Added scheduleReducer
-import teacherReducer from "./teacher/teacherSlice"; // Added teacherReducer
-import workRecordsReducer from "./teacher/workRecordsSlice"; // Added workRecordsReducer
-
-const sagaMiddleware = createSagaMiddleware();
+import dateNavigationReducer from "./teacher/dateNavigationSlice";
+import scheduleReducer from "./teacher/scheduleSlice";
+import teacherReducer from "./teacher/teacherSlice";
+import workRecordsReducer from "./teacher/workRecordsSlice";
 
 const store = configureStore({
   reducer: {
     ...rootReducer,
-    dateNavigation: dateNavigationReducer, // 新しいスライスを追加
-    schedule: scheduleReducer, // Added schedule slice
-    teacher: teacherReducer, // Added teacher slice
-    workRecords: workRecordsReducer, // Added workRecords slice
+    dateNavigation: dateNavigationReducer,
+    schedule: scheduleReducer,
+    teacher: teacherReducer,
+    workRecords: workRecordsReducer,
   },
-  middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(sagaMiddleware),
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware(),
+  devTools: process.env.NODE_ENV !== "production",
 });
-
-sagaMiddleware.run(rootSaga);
 
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;

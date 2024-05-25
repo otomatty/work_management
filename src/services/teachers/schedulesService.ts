@@ -15,11 +15,13 @@ import {
   updateEndTime,
   deleteStartTime,
   deleteEndTime,
-  getSchedules,
-  addSchedule, // Existing function imported
+  getSchedules as fetchSchedulesFromFirebase,
+  addSchedule as addScheduleToFirebase,
 } from "../../firebase";
 
 import { Student, Schedule } from "../../types";
+
+import { updateSchedule as updateScheduleInFirebase } from "../../firebase/teachers/schedules/schedules";
 
 export const schedulesService = {
   // Student related functions
@@ -29,8 +31,10 @@ export const schedulesService = {
     student: Student
   ) => {
     try {
-      await addStudent(teacherId, dayOfWeek, student);
-      console.log("Student added successfully");
+      // Firestore が自動的に一意の ID を生成する
+      const docRef = await addStudent(teacherId, dayOfWeek, student);
+      console.log("Student added successfully with ID: ", docRef.id);
+      return docRef.id; // 追加された生徒の ID を返す
     } catch (error) {
       console.error("Error adding student:", error);
       throw error;
@@ -205,7 +209,12 @@ export const schedulesService = {
     teacherId: string
   ): Promise<Record<string, Schedule>> => {
     try {
-      return await getSchedules(teacherId);
+      const schedules = await fetchSchedulesFromFirebase(teacherId);
+      for (const dayOfWeek in schedules) {
+        const students = await getStudents(teacherId, dayOfWeek);
+        schedules[dayOfWeek].students = students;
+      }
+      return schedules;
     } catch (error) {
       console.error("Error fetching schedules:", error);
       throw error;
@@ -219,20 +228,33 @@ export const schedulesService = {
   }) => {
     try {
       // API呼び出し処理を実装
-      const schedules = await getSchedules(params.teacherId);
+      const schedules = await schedulesService.getSchedules(params.teacherId);
       return schedules;
     } catch (error) {
       console.error("Error fetching schedules from API:", error);
       throw error;
     }
   },
-  // addScheduleメソッドの追加
-  addSchedule: async (teacherId: string, dayOfWeek: string, schedule: any) => {
+  // addScheduleメソッドの修正
+  addSchedule: async (
+    teacherId: string,
+    dayOfWeek: string,
+    schedule: Schedule
+  ) => {
     try {
-      await addSchedule(teacherId, dayOfWeek, schedule);
-      console.log("Schedule added successfully");
+      // スケジュールを追加
+      await addScheduleToFirebase(teacherId, dayOfWeek, schedule);
+
+      // スケジュールの学生をサブコレクションに追加または更新
+      if (schedule.students) {
+        for (const student of schedule.students) {
+          await updateStudent(teacherId, dayOfWeek, student.studentId, student);
+        }
+      }
+
+      console.log("Schedule and students added/updated successfully");
     } catch (error) {
-      console.error("Error adding schedule:", error);
+      console.error("Error adding/updating schedule and students:", error);
       throw error;
     }
   },
@@ -242,5 +264,28 @@ export const schedulesService = {
       throw new Error("Failed to fetch schedules");
     }
     return await response.json();
+  },
+  async updateSchedule(
+    teacherId: string,
+    dayOfWeek: string,
+    schedule: Schedule
+  ): Promise<void> {
+    try {
+      const { students, ...scheduleWithoutStudents } = schedule;
+      await updateScheduleInFirebase(
+        teacherId,
+        dayOfWeek,
+        scheduleWithoutStudents
+      );
+      if (students) {
+        for (const student of students) {
+          await updateStudent(teacherId, dayOfWeek, student.studentId, student);
+        }
+      }
+      console.log("Schedule and students updated successfully");
+    } catch (error) {
+      console.error("Error updating schedule and students:", error);
+      throw error;
+    }
   },
 };

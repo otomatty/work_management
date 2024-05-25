@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction } from "react";
+import React from "react";
 import styled from "styled-components";
 import TimeInput from "../../../components/atoms/TimeInput";
 import ModalSubTitle from "../../../components/atoms/ModalSubTitle/ModalSubTitle";
@@ -7,9 +7,9 @@ const Container = styled.div``;
 
 interface WorkTimeInputsProps {
   startTime: string;
-  setStartTime: Dispatch<SetStateAction<string>>;
+  setStartTime: (value: string) => void; // 型を修正
   endTime: string;
-  setEndTime: Dispatch<SetStateAction<string>>;
+  setEndTime: (value: string) => void; // 型を修正
 }
 
 const WorkTimeInputs: React.FC<WorkTimeInputsProps> = ({

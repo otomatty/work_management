@@ -53,14 +53,9 @@ const Title = styled.h3`
 
 const WeekTeacherSchedule: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedDay, setSelectedDay] = useState<string | null>(null);
 
   const toggleAccordion = () => {
     setIsOpen(!isOpen);
-  };
-
-  const handleDayClick = (day: string) => {
-    setSelectedDay(day);
   };
 
   return (
@@ -78,19 +73,13 @@ const WeekTeacherSchedule: React.FC = () => {
             exit={{ opacity: 0, height: 0 }}
           >
             {daysOfWeek.map((day) => (
-              <DayContainer key={day} onClick={() => handleDayClick(day)}>
-                {dayOfWeekMap[day]}
+              <DayContainer key={day}>
+                <DayTeacherSchedule day={dayOfWeekMap[day]} dayOfWeek={day} />
               </DayContainer>
             ))}
           </WeekContainer>
         )}
       </AnimatePresence>
-      {selectedDay && (
-        <DayTeacherSchedule
-          day={dayOfWeekMap[selectedDay]}
-          dayOfWeek={selectedDay}
-        />
-      )}
     </Container>
   );
 };

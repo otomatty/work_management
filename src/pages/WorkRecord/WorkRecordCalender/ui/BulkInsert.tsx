@@ -6,45 +6,66 @@ import Button from "../../../../components/atoms/Button/Button";
 import ButtonGroup from "../../../../components/layout/ButtonGroup";
 import Dropdown from "../../../../components/molecules/Dropdown";
 import LoadingScreen from "../../../../components/atoms/LodingScreen/LoadingScreen";
+import { useSelector } from "react-redux"; // ReduxからteacherIdを取得するためのimport
+import { workRecordsService } from "../../../../services/teachers/workRecordsService";
+
+import { useLoadingAndReload } from "../../../../hooks/useLoadingAndReload"; // カスタムフックをインポート
 
 interface BulkInsertProps {
-  isLoading: boolean;
-  handleRangeInsert: (startDate: Date, endDate: Date) => void;
-  handleInsertAll: () => void;
+  year: number;
+  month: number;
 }
 
-const BulkInsert: React.FC<BulkInsertProps> = ({
-  isLoading,
-  handleRangeInsert,
-  handleInsertAll,
-}) => {
+const BulkInsert: React.FC<BulkInsertProps> = ({ year, month }) => {
   const [showInsertDropdown, setShowInsertDropdown] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [showDateRangeModal, setShowDateRangeModal] = useState(false);
   const [selectedStartDate, setSelectedStartDate] = useState<Date | null>(null);
   const [selectedEndDate, setSelectedEndDate] = useState<Date | null>(null);
 
+  const { isLoading, startLoading, stopLoading, reloadPage } =
+    useLoadingAndReload(); // カスタムフックを使用
+
+  const teacherId = useSelector((state: any) => state.teacher.teacherId); // stateの型をanyに指定
+
   const handleDateRangeSelect = (startDate: Date, endDate: Date) => {
     setSelectedStartDate(startDate);
     setSelectedEndDate(endDate);
   };
 
-  const handleRegister = () => {
-    if (selectedStartDate && selectedEndDate) {
-      handleRangeInsert(selectedStartDate, selectedEndDate);
-      setShowDateRangeModal(false);
-    }
+  const handleRangeInsert = async (startDate: Date, endDate: Date) => {
+    startLoading(); // ローディング状態を開始
+    await workRecordsService.insertWorkRecordsByDateRange(
+      teacherId,
+      year,
+      month,
+      startDate,
+      endDate
+    );
+    stopLoading(); // ローディング状態を終了
+    reloadPage(); // ページをリロード
+  };
+
+  const handleInsertAll = async () => {
+    startLoading(); // ローディング状態を開始
+    await workRecordsService.insertAllWorkRecordsForMonth(
+      teacherId,
+      year,
+      month
+    );
+    stopLoading(); // ローディング状態を終了
+    reloadPage(); // ページをリロード
   };
 
   return (
     <div>
-      {isLoading && <LoadingScreen />}
+      {isLoading && <LoadingScreen />} {/* ローディング画面を表示 */}
       <Button
         onClick={() => {
           setShowInsertDropdown(!showInsertDropdown);
         }}
         label="一括入力"
-        disabled={isLoading}
+        disabled={isLoading} // ローディング中はボタンを無効化
         icon={faKeyboard}
       />
       {showInsertDropdown && (
@@ -88,7 +109,9 @@ const BulkInsert: React.FC<BulkInsertProps> = ({
         <ButtonGroup $gap={10}>
           <Button
             label="登録"
-            onClick={handleRegister}
+            onClick={() =>
+              handleRangeInsert(selectedStartDate!, selectedEndDate!)
+            }
             backgroundColor="#2ecc71"
           />
           <Button

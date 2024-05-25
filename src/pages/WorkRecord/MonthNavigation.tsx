@@ -1,19 +1,20 @@
-import React from "react";
-import styled, { css } from "styled-components";
-import { useDispatch, useSelector } from "react-redux";
-import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
-import StyledButton from "../../components/atoms/StyledButton";
-import { RootState } from "../../redux/store"; // RootStateをインポート
+import React from 'react';
+import styled, { css } from 'styled-components';
+import { useDispatch, useSelector } from 'react-redux';
+import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
+import StyledButton from '../../components/atoms/StyledButton';
+import { RootState } from '../../redux/store'; // RootStateをインポート
 import {
   setDirection,
   decrementMonth,
   incrementMonth,
-} from "../../redux/teacher/dateNavigationSlice"; // 必要なアクションをインポート
+} from '../../redux/teacher/dateNavigationSlice'; // 必要なアクションをインポート
 
 const Container = styled.div`
   display: flex;
   align-items: center;
   gap: 10px;
+  margin-bottom: 20px;
 `;
 
 const YearMonth = styled.h2`
@@ -43,18 +44,18 @@ const MonthNavigation: React.FC = () => {
   const currentMonthIsThisMonth = currentMonth === today.getMonth();
 
   const monthNames = [
-    "1月",
-    "2月",
-    "3月",
-    "4月",
-    "5月",
-    "6月",
-    "7月",
-    "8月",
-    "9月",
-    "10月",
-    "11月",
-    "12月",
+    '12月',
+    '1月',
+    '2月',
+    '3月',
+    '4月',
+    '5月',
+    '6月',
+    '7月',
+    '8月',
+    '9月',
+    '10月',
+    '11月',
   ];
 
   const handlePreviousMonth = () => {
@@ -72,7 +73,7 @@ const MonthNavigation: React.FC = () => {
   return (
     <Container>
       <YearMonth>
-        {currentYear}年 {monthNames[currentMonth]}
+        {currentYear}年 {monthNames[(currentMonth + 1) % 12]}
       </YearMonth>
       <StyledButton
         label={

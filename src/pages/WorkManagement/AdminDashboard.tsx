@@ -1,23 +1,44 @@
 import React from "react";
-import { useNavigate } from "react-router-dom"; // useNavigate フックをインポート
-import TeacherManager from "./TeacherManager"; // TeacherManager コンポーネントのインポート
-import Button from "../../components/atoms/Button/Button"; // Button コンポーネントのインポート
+import { useNavigate } from "react-router-dom";
+import TeacherManager from "./TeacherManager/TeacherManager";
+import Button from "../../components/atoms/Button/Button";
+import styled from "styled-components";
+
+const Container = styled.div`
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+`;
+
+const Header = styled.h1`
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 2.5em;
+  color: #333;
+`;
+
+const ButtonContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+`;
 
 const AdminDashboard: React.FC = () => {
-  const navigate = useNavigate(); // useNavigate フックを使用
+  const navigate = useNavigate();
 
-  // ホーム画面に戻るための関数
   const handleBackToHome = () => {
-    navigate("/"); // ホーム画面へリダイレクト
+    navigate("/");
   };
 
   return (
-    <div>
-      <h1>管理者ダッシュボード</h1>
-      <Button label="ホームに戻る" onClick={handleBackToHome} />
-      <TeacherManager /> {/* 講師管理コンポーネントの表示 */}
+    <Container>
+      <Header>管理者ダッシュボード</Header>
+      <ButtonContainer>
+        <Button label="ホームに戻る" onClick={handleBackToHome} />
+      </ButtonContainer>
+      <TeacherManager />
       {/* 他の管理機能があればここに追加 */}
-    </div>
+    </Container>
   );
 };
 

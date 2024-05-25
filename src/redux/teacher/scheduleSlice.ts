@@ -1,36 +1,33 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { AppThunk, RootState } from "../store";
-import { schedulesService } from "../../services/teachers/schedulesService"; // API呼び出し関数をインポート
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { AppThunk, RootState } from '../store';
+import { schedulesService } from '../../services/teachers/schedulesService'; // API呼び出し関数をインポート
+
+import { Schedule } from '../../types';
 
 interface ScheduleState {
-  schedules: Record<string, any>;
+  schedules: Record<string, Schedule>;
   loading: boolean;
   error: string | null;
-  classroom: string; // classroom プロパティを追加
-  startTime: string;
-  endTime: string;
-  students: [];
 }
 
 const initialState: ScheduleState = {
   schedules: {},
   loading: false,
   error: null,
-  classroom: "", // 初期値を設定
-  startTime: "",
-  endTime: "",
-  students: [],
 };
 
 const scheduleSlice = createSlice({
-  name: "schedule",
+  name: 'schedule',
   initialState,
   reducers: {
     fetchSchedulesStart(state) {
       state.loading = true;
       state.error = null;
     },
-    fetchSchedulesSuccess(state, action: PayloadAction<Record<string, any>>) {
+    fetchSchedulesSuccess(
+      state,
+      action: PayloadAction<Record<string, Schedule>>
+    ) {
       state.schedules = action.payload;
       state.loading = false;
     },
@@ -38,8 +35,21 @@ const scheduleSlice = createSlice({
       state.loading = false;
       state.error = action.payload;
     },
-    setClassroom(state, action: PayloadAction<string>) {
-      state.classroom = action.payload;
+    updateScheduleStart(state) {
+      state.loading = true;
+      state.error = null;
+    },
+    updateScheduleSuccess(
+      state,
+      action: PayloadAction<{ dayOfWeek: string; schedule: Schedule }>
+    ) {
+      const { dayOfWeek, schedule } = action.payload;
+      state.schedules[dayOfWeek] = schedule;
+      state.loading = false;
+    },
+    updateScheduleFailure(state, action: PayloadAction<string>) {
+      state.loading = false;
+      state.error = action.payload;
     },
   },
 });
@@ -48,22 +58,20 @@ export const {
   fetchSchedulesStart,
   fetchSchedulesSuccess,
   fetchSchedulesFailure,
-  setClassroom, // 新しいアクションをエクスポート
+  updateScheduleStart,
+  updateScheduleSuccess,
+  updateScheduleFailure,
 } = scheduleSlice.actions;
 
 export const fetchSchedules =
-  (params: {
-    teacherId: string;
-    currentYear: number;
-    currentMonth: number;
-  }): AppThunk =>
+  (teacherId: string): AppThunk =>
   async (dispatch) => {
     try {
       dispatch(fetchSchedulesStart());
-      const schedules = await schedulesService.fetchSchedulesFromAPI(params);
+      const schedules = await schedulesService.getSchedules(teacherId);
       dispatch(fetchSchedulesSuccess(schedules));
     } catch (error) {
-      let errorMessage = "An unknown error occurred";
+      let errorMessage = 'An unknown error occurred';
       if (error instanceof Error) {
         errorMessage = error.message;
       }
@@ -71,7 +79,34 @@ export const fetchSchedules =
     }
   };
 
-export const selectSchedulesByTeacher = (state: RootState, teacherId: string) =>
-  state.schedule.schedules[teacherId] || {};
+export const updateSchedule =
+  (teacherId: string, dayOfWeek: string, schedule: Schedule): AppThunk =>
+  async (dispatch) => {
+    try {
+      dispatch(updateScheduleStart());
+      await schedulesService.updateSchedule(teacherId, dayOfWeek, schedule);
+      dispatch(updateScheduleSuccess({ dayOfWeek, schedule }));
+    } catch (error) {
+      let errorMessage = 'An unknown error occurred';
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+      dispatch(updateScheduleFailure(errorMessage));
+    }
+  };
+
+export const selectSchedulesByTeacher = (
+  state: RootState,
+  teacherId: string
+) => {
+  const schedules = state.schedule.schedules[teacherId] || {};
+  console.log(
+    'selectSchedulesByTeacher called with teacherId:',
+    teacherId,
+    'resulting schedules:',
+    schedules
+  ); // デバッグ用ログ
+  return schedules;
+};
 
 export default scheduleSlice.reducer;

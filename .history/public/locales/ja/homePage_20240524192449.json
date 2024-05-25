@@ -1,0 +1,14 @@
+{
+  "workRecordIcon": "勤務記録アイコン",
+  "workRecord": "勤務記録",
+  "homeManagementIcon": "ホームページ管理アイコン",
+  "homePage": "ホームページ",
+  "termQuizGeneratorIcon": "英単語問題生成アイコン",
+  "englishVocabularyProblems": "英単語問題",
+  "calculationGeneratorIcon": "計算問題生成アイコン",
+  "calculationProblems": "計算問題",
+  "comingSoon": "近日公開",
+  "checkCurrentWorkRecord": "今月の勤務記録表を確認する",
+  "selectName": "名前を選択する",
+  "studentManagement": "生徒管理"
+}

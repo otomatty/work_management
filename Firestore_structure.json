@@ -1,0 +1,160 @@
+{
+  "teachers": {
+    "PaioOoslNdgm0CccQNLY": {
+      "name": "佐藤太郎",
+      "schedules": {
+        "Monday": {
+          "classroom": "101",
+          "startTime": "09:00",
+          "endTime": "17:00",
+          "students": {
+            "BFBEZ63OzAAzfHe1qDAE": {
+              "studentId": "BFBEZ63OzAAzfHe1qDAE",
+              "studentName": "山田花子",
+              "grade": "3",
+              "subject": "英語",
+              "time": 60
+            },
+            "LZnIC3ifEVPLor0RMUj8": {
+              "studentId": "LZnIC3ifEVPLor0RMUj8",
+              "studentName": "山田花子",
+              "grade": "3",
+              "subject": "英語",
+              "time": 60
+            }
+          }
+        },
+        "Tuesday": {
+          "classroom": "101",
+          "startTime": "09:00",
+          "endTime": "17:00",
+          "students": {
+            "student1": {
+              "studentId": "student1",
+              "studentName": "山田花子",
+              "grade": "3",
+              "subject": "英語",
+              "time": 60
+            }
+          }
+        }
+      },
+      "workRecords": {
+        "2024-05": {
+          "01": {
+            "classroom": "101",
+            "startTime": "09:00",
+            "endTime": "17:00",
+            "officeHour": 8,
+            "teachHour": 6,
+            "lessonInfo": [
+              {
+                "studentName": "山田花子",
+                "grade": "3",
+                "subject": "英語",
+                "status": "完了",
+                "time": 60
+              }
+            ],
+            "workDescription": "授業準備と授業"
+          },
+          "02": {
+            "classroom": "101",
+            "startTime": "09:00",
+            "endTime": "17:00",
+            "officeHour": 8,
+            "teachHour": 6,
+            "lessonInfo": [
+              {
+                "studentName": "山田花子",
+                "grade": "3",
+                "subject": "英語",
+                "status": "完了",
+                "time": 60
+              }
+            ],
+            "workDescription": "授業準備と授業"
+          }
+        }
+      }
+    },
+    "8PNXSfW7N0we55UQosL6": {
+      "name": "佐藤太郎",
+      "schedules": {
+        "Monday": {
+          "classroom": "101",
+          "startTime": "09:00",
+          "endTime": "17:00",
+          "students": {
+            "BFBEZ63OzAAzfHe1qDAE": {
+              "studentId": "BFBEZ63OzAAzfHe1qDAE",
+              "studentName": "山田花子",
+              "grade": "3",
+              "subject": "英語",
+              "time": 60
+            },
+            "LZnIC3ifEVPLor0RMUj8": {
+              "studentId": "LZnIC3ifEVPLor0RMUj8",
+              "studentName": "山田花子",
+              "grade": "3",
+              "subject": "英語",
+              "time": 60
+            }
+          }
+        },
+        "Tuesday": {
+          "classroom": "101",
+          "startTime": "09:00",
+          "endTime": "17:00",
+          "students": {
+            "student1": {
+              "studentId": "student1",
+              "studentName": "山田花子",
+              "grade": "3",
+              "subject": "英語",
+              "time": 60
+            }
+          }
+        }
+      },
+      "workRecords": {
+        "2024-05": {
+          "01": {
+            "classroom": "101",
+            "startTime": "09:00",
+            "endTime": "17:00",
+            "officeHour": 8,
+            "teachHour": 6,
+            "lessonInfo": [
+              {
+                "studentName": "山田花子",
+                "grade": "3",
+                "subject": "英語",
+                "status": "完了",
+                "time": 60
+              }
+            ],
+            "workDescription": "授業準備と授業"
+          },
+          "02": {
+            "classroom": "101",
+            "startTime": "09:00",
+            "endTime": "17:00",
+            "officeHour": 8,
+            "teachHour": 6,
+            "lessonInfo": [
+              {
+                "studentName": "山田花子",
+                "grade": "3",
+                "subject": "英語",
+                "status": "完了",
+                "time": 60
+              }
+            ],
+            "workDescription": "授業準備と授業"
+          }
+        }
+      }
+    }
+  }
+}

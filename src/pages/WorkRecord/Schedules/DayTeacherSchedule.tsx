@@ -1,13 +1,14 @@
 import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
+import { useAppDispatch } from "../../../hook";
 import styled from "styled-components";
 import ClassroomSelect from "./ClassroomSelect";
 import WorkTimeDisplay from "./WorkTimeDisplay";
 import StudentList from "./StudentList";
 import {
-  fetchScheduleRequest,
-  addScheduleRequest,
-} from "../../../redux/actions";
+  fetchSchedules,
+  updateSchedule,
+} from "../../../redux/teacher/scheduleSlice";
 import { RootState } from "../../../redux/store";
 
 interface DayTeacherScheduleProps {
@@ -41,54 +42,77 @@ const DayTeacherSchedule: React.FC<DayTeacherScheduleProps> = ({
   day,
   dayOfWeek,
 }) => {
-  const dispatch = useDispatch();
-  const schedule = useSelector((state: RootState) => state.schedule);
+  const dispatch = useAppDispatch();
+  const schedule = useSelector(
+    (state: RootState) => state.schedule.schedules[dayOfWeek]
+  );
+  // console.log("Schedule from useSelector:", schedule); // Added for debugging
   const teacherId = useSelector((state: RootState) => state.teacher.teacherId);
+  const loading = useSelector((state: RootState) => state.schedule.loading);
+  const error = useSelector((state: RootState) => state.schedule.error);
 
   useEffect(() => {
     if (teacherId) {
-      dispatch(fetchScheduleRequest(teacherId, dayOfWeek));
+      dispatch(fetchSchedules(teacherId));
     }
-  }, [dispatch, dayOfWeek, teacherId]);
+  }, [dispatch, teacherId]);
 
   const handleClassroomChange = (classroom: string) => {
     if (teacherId) {
       const updatedSchedule = { ...schedule, classroom };
-      dispatch(addScheduleRequest(teacherId, dayOfWeek, updatedSchedule));
+      dispatch(updateSchedule(teacherId, dayOfWeek, updatedSchedule));
     }
   };
 
   const handleWorkTimeChange = (startTime: string, endTime: string) => {
     if (teacherId) {
       const updatedSchedule = { ...schedule, startTime, endTime };
-      dispatch(addScheduleRequest(teacherId, dayOfWeek, updatedSchedule));
+      dispatch(updateSchedule(teacherId, dayOfWeek, updatedSchedule));
     }
   };
 
   const handleStudentListChange = (students: any[]) => {
     if (teacherId) {
       const updatedSchedule = { ...schedule, students };
-      dispatch(addScheduleRequest(teacherId, dayOfWeek, updatedSchedule));
+      dispatch(updateSchedule(teacherId, dayOfWeek, updatedSchedule));
     }
   };
+
+  // デフォルト値を設定
+  const defaultSchedule = {
+    classroom: "",
+    startTime: "",
+    endTime: "",
+    students: [],
+  };
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
+
+  // console.log(schedule.students);
 
   return (
     <DayContainer $dayOfWeek={dayOfWeek}>
       <Title $dayOfWeek={dayOfWeek}>{day}</Title>
       <ClassroomSelect
         dayOfWeek={dayOfWeek}
-        classroom={schedule.classroom}
+        classroom={schedule?.classroom || defaultSchedule.classroom}
         onClassroomChange={handleClassroomChange}
       />
       <WorkTimeDisplay
         dayOfWeek={dayOfWeek}
-        startTime={schedule?.startTime}
-        endTime={schedule?.endTime}
+        startTime={schedule?.startTime || defaultSchedule.startTime}
+        endTime={schedule?.endTime || defaultSchedule.endTime}
         onWorkTimeChange={handleWorkTimeChange}
       />
       <StudentList
         dayOfWeek={dayOfWeek}
-        students={schedule?.students}
+        students={schedule?.students || defaultSchedule.students}
         onStudentListChange={handleStudentListChange}
       />
     </DayContainer>

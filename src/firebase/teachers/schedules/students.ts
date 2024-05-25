@@ -26,6 +26,7 @@ export async function addStudent(
   try {
     const docRef = await addDoc(studentsRef, student);
     console.log("Student added successfully with ID: ", docRef.id);
+    return docRef; // 追加されたドキュメントの参照を返す
   } catch (e) {
     console.error("Error adding student: ", e);
     throw new Error("Failed to add student");
@@ -53,6 +54,7 @@ export async function getStudents(
       const studentData = doc.data() as Student;
       students.push({
         ...studentData,
+        studentId: doc.id, // ドキュメントIDを追加
       });
     });
     return students;

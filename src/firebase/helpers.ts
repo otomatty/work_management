@@ -1,4 +1,4 @@
-import { db } from "./firebase";
+import { db } from './firebase';
 import {
   doc,
   getDoc,
@@ -7,7 +7,7 @@ import {
   getDocs,
   setDoc,
   deleteDoc,
-} from "firebase/firestore";
+} from 'firebase/firestore';
 
 // エラーハンドリングを共通化するヘルパー関数
 export const handleFirestoreError = (e: any, action: string) => {
@@ -17,8 +17,8 @@ export const handleFirestoreError = (e: any, action: string) => {
 
 // workRecordsにおいてドキュメントIDと日付キーを生成するヘルパー関数
 export const getDocIdAndDayKey = (year: number, month: number, day: number) => {
-  const docId = `${year}-${month + 1}`;
-  const dayKey = day.toString().padStart(2, "0");
+  const docId = `${year}-${month.toString().padStart(2, '0')}`; // 月を2桁にフォーマット
+  const dayKey = day.toString().padStart(2, '0');
   return { docId, dayKey };
 };
 
@@ -28,7 +28,7 @@ export const getDocRef = (
   collectionName: string,
   docId: string
 ) => {
-  return doc(db, "teachers", teacherId, collectionName, docId);
+  return doc(db, 'teachers', teacherId, collectionName, docId);
 };
 
 // データを保存する汎用ヘルパー関数
@@ -43,7 +43,6 @@ export const saveData = async (
 
   try {
     await setDoc(docRef, data, { merge: true });
-    console.log(`${action} successfully for:`, docId);
   } catch (e) {
     handleFirestoreError(e, action);
   }
@@ -60,7 +59,6 @@ export const deleteData = async (
 
   try {
     await deleteDoc(docRef);
-    console.log(`${action} successfully for:`, docId);
   } catch (e) {
     handleFirestoreError(e, action);
   }
@@ -89,24 +87,27 @@ export const getData = async (
 };
 
 // コレクションを取得する汎用ヘルパー関数
-export const getCollectionData = async (
+export async function getCollectionData(
   teacherId: string,
   collectionName: string
-) => {
-  const collectionRef = collection(db, "teachers", teacherId, collectionName);
-  const data: any[] = [];
-
+) {
   try {
+    const collectionRef = collection(db, 'teachers', teacherId, collectionName);
     const querySnapshot = await getDocs(collectionRef);
-    querySnapshot.forEach((doc) => {
-      data.push({ id: doc.id, ...doc.data() });
+    const data = querySnapshot.docs.map((doc) => {
+      const docData = doc.data();
+      docData.id = doc.id; // ドキュメント名を id プロパティとして追加
+      return docData;
     });
     return data;
-  } catch (e) {
-    console.error(`Error fetching collection ${collectionName}:`, e);
-    return [];
+  } catch (error) {
+    console.error(
+      `Error fetching data from ${collectionName} collection:`,
+      error
+    ); // エラーログ
+    throw error;
   }
-};
+}
 
 // コレクションにドキュメントを追加する汎用ヘルパー関数
 export const addCollectionData = async (
@@ -115,7 +116,7 @@ export const addCollectionData = async (
   data: Record<string, any>,
   action: string
 ) => {
-  const collectionRef = collection(db, "teachers", teacherId, collectionName);
+  const collectionRef = collection(db, 'teachers', teacherId, collectionName);
 
   try {
     const docRef = await addDoc(collectionRef, data);

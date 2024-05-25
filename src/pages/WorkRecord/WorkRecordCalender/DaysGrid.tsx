@@ -1,9 +1,14 @@
-import React, { useState } from "react";
-import styled from "styled-components";
-import { AnimatePresence } from "framer-motion";
-import DayCell from "./DayCell";
-import DayEditPanel from "./DayEditPanel";
-import Toolbar from "./Toolbar";
+import React, { useState, useEffect } from 'react';
+import styled from 'styled-components';
+import { AnimatePresence } from 'framer-motion';
+import DayCell from './DayCell';
+import DayEditPanel from './DayEditPanel';
+import Toolbar from './Toolbar';
+import { useSelector } from 'react-redux';
+import { useAppDispatch } from '../../../hook';
+import { RootState } from '../../../redux/store';
+import { fetchMonthlyWorkRecords } from '../../../redux/teacher/workRecordsSlice';
+import { WorkRecord } from '../../../types';
 
 interface DaysGridProps {
   year: number;
@@ -56,6 +61,19 @@ const DaysGrid: React.FC<DaysGridProps> = ({ year, month }) => {
   const [editDay, setEditDay] = useState<number | null>(null);
   const [slideDirection, setSlideDirection] = useState(0);
 
+  const dispatch = useAppDispatch();
+  const workRecords = useSelector(
+    (state: RootState) => state.workRecords.workRecords
+  );
+  const teacherId = useSelector((state: RootState) => state.teacher.teacherId);
+
+  useEffect(() => {
+    if (teacherId) {
+      // console.log("Dispatching fetchMonthlyWorkRecords");
+      dispatch(fetchMonthlyWorkRecords({ teacherId, year, month }));
+    }
+  }, [dispatch, teacherId, year, month]);
+
   const handleEditDay = async (day: number) => {
     const firstDayOfMonth = new Date(year, month, 1).getDay();
     const currentRow =
@@ -76,7 +94,7 @@ const DaysGrid: React.FC<DaysGridProps> = ({ year, month }) => {
 
       const element = document.querySelector(`#day-${day}`);
       if (element) {
-        element.scrollIntoView({ behavior: "smooth", block: "start" });
+        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
         await new Promise<void>((resolve) => {
           const observer = new IntersectionObserver((entries) => {
             if (entries[0].isIntersecting) {
@@ -95,7 +113,6 @@ const DaysGrid: React.FC<DaysGridProps> = ({ year, month }) => {
 
   const daysInMonth = new Date(year, month + 1, 0).getDate();
   const firstDayOfMonth = new Date(year, month, 1).getDay();
-  const calendarDays = Array.from({ length: daysInMonth }, (_, i) => i + 1);
   const leadingEmptyDays = Array.from({ length: firstDayOfMonth }, () => null);
 
   return (
@@ -105,7 +122,7 @@ const DaysGrid: React.FC<DaysGridProps> = ({ year, month }) => {
       </TitleContainer>
       <Toolbar year={year} month={month} />
       <DayOfWeekHeader>
-        {["日", "月", "火", "水", "木", "金", "土"].map((day, index) => (
+        {['日', '月', '火', '水', '木', '金', '土'].map((day, index) => (
           <DayOfWeek key={index}>{day}</DayOfWeek>
         ))}
       </DayOfWeekHeader>
@@ -113,18 +130,30 @@ const DaysGrid: React.FC<DaysGridProps> = ({ year, month }) => {
         {leadingEmptyDays.map((_, index) => (
           <div key={`empty-${index}`} />
         ))}
-        {calendarDays.map((day, index) => {
+        {Array.from({ length: daysInMonth }, (_, i) => i + 1).map((day) => {
           const date = new Date(year, month, day);
           const dayOfWeek = date.getDay();
           const isEditDay = editDay === day;
+          const workRecordsForDay = (workRecords[
+            day.toString().padStart(2, '0')
+          ] as WorkRecord) || {
+            classroom: '',
+            startTime: '',
+            endTime: '',
+            teachHour: 0,
+            officeHour: 0,
+            workDescription: '',
+            lessonInfo: [],
+          };
           return (
-            <React.Fragment key={index}>
+            <React.Fragment key={day}>
               <DayCell
                 day={day}
                 isSaturday={dayOfWeek === 6}
                 isSunday={dayOfWeek === 0}
                 year={year}
                 month={month}
+                workRecords={workRecordsForDay}
                 onEdit={() => handleEditDay(day)}
               />
               <AnimatePresence>
@@ -134,6 +163,7 @@ const DaysGrid: React.FC<DaysGridProps> = ({ year, month }) => {
                     month={month}
                     key={editDay}
                     day={editDay}
+                    workRecords={[workRecordsForDay]} // WorkRecord[] 型に変換
                     style={{
                       gridColumn: `1 / -1`,
                       gridRow: calculateRowForEditDay(editDay, year, month),

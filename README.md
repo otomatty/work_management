@@ -1,10 +1,11 @@
-
-# プロジェクトのタイトル
+# 株式会社エデュケーショナル様　業務管理アプリケーション
 
 ## 概要
+
 このプロジェクトは、学習塾向けの業務管理アプリケーションになります。
 
 ## 目次
+
 1. [概要](#概要)
 2. [インストール手順](#インストール手順)
 3. [使い方](#使い方)
@@ -15,48 +16,51 @@
 8. [謝辞](#謝辞)
 
 ## インストール手順
+
 1. リポジトリをクローンします：
-   \\```bash
-   git clone https://github.com/yourusername/yourproject.git
-   \\```
+   ```
+   git clone https://github.com/otomatty/work_management.git
+   ```
 2. ディレクトリに移動し、依存関係をインストールします：
-   \\```bash
-   cd yourproject
+   ```
+   cd work_management
    npm install
-   \\```
+   ```
 
 ## 使い方
+
 1. アプリケーションを起動します：
-   \\```bash
+   ```
    npm start
-   \\```
+   ```
 2. ブラウザで`http://localhost:3000`にアクセスします。
 
 ## 設定
+
 カスタマイズ方法や設定ファイルの説明。
 
 ## 貢献
+
 1. このリポジトリをフォークします。
 2. 新しいブランチを作成します：
-   \\```bash
-   git checkout -b feature/AmazingFeature
-   \\```
+   `git checkout -b feature/{任意のブランチ名}`
 3. 変更をコミットします：
-   \\```bash
-   git commit -m 'Add some AmazingFeature'
-   \\```
+   `bash
+git commit -m 'add:{修正内容など}'
+`
 4. プッシュします：
-   \\```bash
-   git push origin feature/AmazingFeature
-   \\```
+   `git push origin feature/{任意のブランチ名}`
 5. プルリクエストを作成します。
 
 ## ライセンス
+
 このプロジェクトは[MITライセンス](LICENSE.txt)のもとで公開されています。
 
 ## 連絡先
-あなたの名前 - [スガイアキマサ](mailto:akms0929ama@gmail.com)
+
+[スガイアキマサ](mailto:akms0929ama@gmail.com)
 
 ## 謝辞
-- [ライブラリやツール](https://github.com/somelibrary)を提供してくれた開発者。
-- その他、プロジェクトに貢献した人々。
+
+- 貴重なご意見をくださった佐藤英会話・五學塾の方々
+- アシスタントの方々

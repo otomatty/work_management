@@ -1,6 +1,6 @@
-import React from "react";
-import styled from "styled-components";
-import { useTranslation } from "react-i18next"; // i18nextのフックをインポート
+import React from 'react';
+import styled from 'styled-components';
+import { useTranslation } from 'react-i18next'; // i18nextのフックをインポート
 
 const MonthYearContainer = styled.div`
   text-align: center;
@@ -12,14 +12,14 @@ const MonthYearContainer = styled.div`
 `;
 
 const MonthYearDisplay: React.FC = () => {
-  const { i18n } = useTranslation(); // 翻訳コンテキストからi18nオブジェクトを取得
+  const { i18n } = useTranslation('homePage'); // 翻訳コンテキストからi18nオブジェクトを取得
   const currentDate = new Date();
   const locale = i18n.language; // 現在の言語設定を取得
-  const month = currentDate.toLocaleString(locale, { month: "long" }); // ロケールに基づいた月の表示
+  const month = currentDate.toLocaleString(locale, { month: 'long' }); // ロケールに基づいた月の表示
   const year = currentDate.getFullYear();
 
   // 言語に応じた年月のフォーマット
-  const formattedDate = locale.startsWith("ja")
+  const formattedDate = locale.startsWith('ja')
     ? `${year}年 ${month}`
     : `${month} ${year}`;
 
