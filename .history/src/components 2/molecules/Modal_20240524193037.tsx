@@ -2,7 +2,7 @@ import React, { ReactNode } from "react";
 import styled from "styled-components";
 import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
-import Button from "../atoms/Button/Button"; // Added this line
+import Button from "../atoms/Button"; // Added this line
 
 interface ModalProps {
   isOpen: boolean;

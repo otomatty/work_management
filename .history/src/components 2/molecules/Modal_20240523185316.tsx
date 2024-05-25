@@ -1,8 +1,8 @@
-import React, { ReactNode } from "react";
-import styled from "styled-components";
-import { useTranslation } from "react-i18next";
-import { motion } from "framer-motion";
-import Button from "../atoms/Button/Button"; // Added this line
+import React, { ReactNode } from 'react';
+import styled from 'styled-components';
+import { useTranslation } from 'react-i18next';
+import { motion } from 'framer-motion';
+import Button from '../atoms/Button'; // Added this line
 
 interface ModalProps {
   isOpen: boolean;
@@ -31,7 +31,7 @@ const ModalOverlay = styled(motion.div)<ModalOverlayProps>`
   justify-content: center;
   align-items: center;
   z-index: 1000;
-  visibility: ${({ $isOpen }) => ($isOpen ? "visible" : "hidden")};
+  visibility: ${({ $isOpen }) => ($isOpen ? 'visible' : 'hidden')};
 `;
 
 const ModalContent = styled(motion.div)`
@@ -60,7 +60,7 @@ const Modal: React.FC<ModalProps> = ({
   children,
   showCloseButton = true,
 }) => {
-  const { t } = useTranslation("components");
+  const { t } = useTranslation();
 
   const overlayVariants = {
     hidden: { opacity: 0 },
@@ -76,12 +76,12 @@ const Modal: React.FC<ModalProps> = ({
     <ModalOverlay
       $isOpen={isOpen}
       initial="hidden"
-      animate={isOpen ? "visible" : "hidden"}
+      animate={isOpen ? 'visible' : 'hidden'}
       variants={overlayVariants}
     >
       <ModalContent
         initial="hidden"
-        animate={isOpen ? "visible" : "hidden"}
+        animate={isOpen ? 'visible' : 'hidden'}
         variants={contentVariants}
       >
         {message && <p>{message}</p>}
@@ -89,7 +89,7 @@ const Modal: React.FC<ModalProps> = ({
         {showCloseButton && (
           <ButtonContainer>
             <Button
-              label={t("close")}
+              label={t('close')}
               onClick={onClose}
               backgroundColor="#3498db"
             />
