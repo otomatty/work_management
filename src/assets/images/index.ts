@@ -4,5 +4,6 @@ import calc from './calc.svg';
 import book from './book.svg';
 import filebox from './filebox.svg';
 import printer from './printer.svg';
+import attachecase from './attachecase.svg';
 
-export { calender, website, calc, book, filebox, printer };
+export { calender, website, calc, book, filebox, printer, attachecase };

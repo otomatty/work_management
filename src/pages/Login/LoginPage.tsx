@@ -10,6 +10,7 @@ import { useNavigate } from 'react-router-dom';
 import { FcGoogle } from 'react-icons/fc';
 import { useTranslation } from 'react-i18next'; // i18nextのフックをインポート
 import Header from '../../components/organisms/Header';
+import { FaEye, FaEyeSlash } from 'react-icons/fa'; // アイコンをインポート
 
 const LoginContainer = styled.div`
   display: flex;
@@ -65,6 +66,12 @@ const Icon = styled.span`
 const LoginPage: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false); // パスワード表示状態
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
   const navigate = useNavigate();
   const { t } = useTranslation('login'); // 翻訳関数の取得
 
@@ -101,12 +108,29 @@ const LoginPage: React.FC = () => {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
-        <Input
-          type="password"
-          placeholder={t('password')} // プレースホルダーを翻訳
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
+        <div style={{ position: 'relative' }}>
+          <Input
+            type={showPassword ? 'text' : 'password'} // パスワード表示状態に応じてタイプを変更
+            placeholder={t('password')} // プレースホルダーを翻訳
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+          <button
+            type="button"
+            onClick={togglePasswordVisibility}
+            style={{
+              position: 'absolute',
+              right: '10px',
+              top: '37%',
+              transform: 'translateY(-50%)',
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer',
+            }}
+          >
+            {showPassword ? <FaEyeSlash /> : <FaEye />}
+          </button>
+        </div>
         <Button type="submit">{t('login')}</Button>
         <Button onClick={googleLogin}>
           <Icon>

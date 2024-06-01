@@ -9,6 +9,7 @@ import logo from '../../logo.webp';
 const HeaderContainer = styled.header`
   display: flex;
   justify-content: space-between;
+  margin: 20px 0;
 `;
 
 const Title = styled(motion.h1)`
