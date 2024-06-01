@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import ProblemList from "./ProblemList";
+import ProblemList from "./ui/ProblemList";
 import { generateProblems } from "../../../utils/problemGenerator";
 import Button from "../../../components/atoms/Button/Button";
 import styled from "styled-components";
@@ -39,7 +39,7 @@ const ProblemConfirmPage = () => {
       terms,
       problemCount,
       includeNegatives,
-      pageCount, // ページ数を受け取る
+      pageCount,
     } = location.state;
 
     const newProblems = generateProblems(
@@ -48,7 +48,7 @@ const ProblemConfirmPage = () => {
       parseInt(terms),
       parseInt(problemCount),
       includeNegatives,
-      parseInt(pageCount) // ページ数を引数として渡す
+      parseInt(pageCount)
     );
     setProblems(newProblems);
   }, [location.state]);
@@ -64,7 +64,7 @@ const ProblemConfirmPage = () => {
       : parseInt(location.state.problemCount);
 
   const handleBack = () => {
-    navigate("/select", { state: location.state });
+    navigate("/calculation-generator", { state: location.state });
   };
 
   const handlePrint = () => {

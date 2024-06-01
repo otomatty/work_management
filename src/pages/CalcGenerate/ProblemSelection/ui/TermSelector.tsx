@@ -1,8 +1,8 @@
 import React from "react";
-import Container from "../../../components/layout/Container";
-import Wrapper from "../../../components/layout/Wrapper";
-import Description from "../../../components/atoms/Description/Description";
-import SelectBox from "../../../components/atoms/SelectBox/SelectBox";
+import Container from "../../../../components/layout/Container";
+import Wrapper from "../../../../components/layout/Wrapper";
+import Description from "../../../../components/atoms/Description/Description";
+import SelectBox from "../../../../components/atoms/SelectBox/SelectBox";
 
 // コンポーネント定義
 interface TermSelectorProps {

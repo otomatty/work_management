@@ -1,17 +1,17 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
-import styled from 'styled-components';
-import { createGlobalStyle } from 'styled-components';
-import ProblemTypeToggle from './ProblemTypeToggle';
-import NumberFormatToggle from './NumberFormatToggle';
-import TermSelector from './TermSelector';
-import ProblemCountSelector from './ProblemCountSelector';
-import PageCountSelector from './PageCountSelector';
-import IncludeNegativeNumbersToggle from './IncludeNegativeNumbersToggle';
-import CreateProblemButton from '../../../components/molecules/CreateProblemButton';
-import NoSelectionModal from '../../../components/atoms/NoSelectionModal/NoSelectionModal';
-import Header from '../../../components/organisms/Header';
-import Container from '../../../components/layout/Container';
+import React, { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+import styled from "styled-components";
+import { createGlobalStyle } from "styled-components";
+import ProblemTypeToggle from "./ui/ProblemTypeToggle";
+import NumberFormatToggle from "./ui/NumberFormatToggle";
+import TermSelector from "./ui/TermSelector";
+import ProblemCountSelector from "./ui/ProblemCountSelector";
+import PageCountSelector from "./ui/PageCountSelector";
+import IncludeNegativeNumbersToggle from "./ui/IncludeNegativeNumbersToggle";
+import CreateProblemButton from "../../../components/molecules/CreateProblemButton";
+import NoSelectionModal from "../../../components/atoms/NoSelectionModal/NoSelectionModal";
+import Header from "../../../components/organisms/Header";
+import Container from "../../../components/layout/Container";
 // その他のインポートは省略
 const GlobalStyle = createGlobalStyle`
   body {
@@ -21,7 +21,7 @@ const GlobalStyle = createGlobalStyle`
 
 const PageContainer = styled.main`
   max-width: 600px;
-  margin: 0 auto;
+  margin: 40px auto 0 auto;
   padding: 20px;
   background-color: #f8f9fa;
   border-radius: 8px;
@@ -45,14 +45,14 @@ const ProblemSelectionPage = () => {
 
   // 「加法」と「整数」をデフォルト値として設定し、location.stateからの値があればそれを使用
   const [selectedTypes, setSelectedTypes] = useState(
-    location.state?.selectedTypes || ['addition']
+    location.state?.selectedTypes || ["addition"]
   );
   const [selectedFormats, setSelectedFormats] = useState(
-    location.state?.selectedFormats || ['integer']
+    location.state?.selectedFormats || ["integer"]
   );
-  const [terms, setTerms] = useState(location.state?.terms || '2');
+  const [terms, setTerms] = useState(location.state?.terms || "2");
   const [problemCount, setProblemCount] = useState(10); // 初期値を数値に変更
-  const [pageCount, setPageCount] = useState(location.state?.pageCount || '1');
+  const [pageCount, setPageCount] = useState(location.state?.pageCount || "1");
   const [includeNegatives, setIncludeNegatives] = useState(
     location.state?.includeNegatives || false
   );
@@ -60,17 +60,17 @@ const ProblemSelectionPage = () => {
 
   useEffect(() => {
     if (location.state) {
-      setSelectedTypes(location.state.selectedTypes || ['addition']);
-      setSelectedFormats(location.state.selectedFormats || ['integer']);
-      setTerms(location.state.terms || '2');
-      setProblemCount(location.state.problemCount || '10');
-      setPageCount(location.state.pageCount || '1');
+      setSelectedTypes(location.state.selectedTypes || ["addition"]);
+      setSelectedFormats(location.state.selectedFormats || ["integer"]);
+      setTerms(location.state.terms || "2");
+      setProblemCount(location.state.problemCount || "10");
+      setPageCount(location.state.pageCount || "1");
       setIncludeNegatives(location.state.includeNegatives || false);
     }
   }, [location.state]);
 
   useEffect(() => {
-    console.log('Selected Formats in ProblemSelectionScreen:', selectedFormats);
+    console.log("Selected Formats in ProblemSelectionScreen:", selectedFormats);
   }, [selectedFormats]);
 
   const handleToggleIncludeNegatives = () => {
@@ -93,7 +93,7 @@ const ProblemSelectionPage = () => {
       setIsModalOpen(true); // モーダルを表示
       return; // ここで処理を終了
     }
-    navigate('/confirm', {
+    navigate("/confirm", {
       state: {
         selectedTypes,
         selectedFormats,

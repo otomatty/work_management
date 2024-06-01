@@ -1,9 +1,9 @@
 import React from "react";
 import styled from "styled-components";
-import Container from "../../../components/layout/Container";
-import Wrapper from "../../../components/layout/Wrapper";
-import Checkbox from "../../../components/atoms/Checkbox/Checkbox";
-import Description from "../../../components/atoms/Description/Description";
+import Container from "../../../../components/layout/Container";
+import Wrapper from "../../../../components/layout/Wrapper";
+import Checkbox from "../../../../components/atoms/Checkbox/Checkbox";
+import Description from "../../../../components/atoms/Description/Description";
 
 // ラベルスタイルを更新
 const StyledLabel = styled.label`

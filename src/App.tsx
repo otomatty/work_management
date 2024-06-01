@@ -13,10 +13,14 @@ import HomePage from "./pages/HomePage/HomePage";
 import WorkRecord from "./pages/WorkRecord/WorkRecord";
 import AdminDashboard from "./pages/WorkManagement/AdminDashboard";
 import ProblemSelectionPage from "./pages/CalcGenerate/ProblemSelection/ProblemSelectionPage";
+import ProblemConfirmPage from "./pages/CalcGenerate/ProblemConfirm/ProblemConfirmPage"; // Added
+import ProblemSelection from "./pages/ThreeSubjectsTests/ProblemSelection";
+import SubjectSelectorPage from "./pages/ThreeSubjectsTests/SubjectSelectorPage";
 import LoginPage from "./pages/Login/LoginPage";
 import LoadingAnimation from "./components/layout/LoadingAnimation";
 import { AnimatePresence } from "framer-motion";
 import { createGlobalStyle } from "styled-components";
+import ScrollToTop from "./components/atoms/ScrollToTop/ScrollToTop"; // ScrollToTopのインポート
 
 const GlobalStyle = createGlobalStyle`
   body {
@@ -81,6 +85,7 @@ const App: React.FC = () => {
     <>
       <GlobalStyle />
       <Router>
+        <ScrollToTop /> {/* ScrollToTopコンポーネントを追加 */}
         <AnimatePresence>
           {loading ? <LoadingAnimation /> : null}
         </AnimatePresence>
@@ -104,6 +109,15 @@ const App: React.FC = () => {
               element={
                 user ? <ProblemSelectionPage /> : <Navigate to="/login" />
               }
+            />
+            <Route
+              path="/confirm"
+              element={user ? <ProblemConfirmPage /> : <Navigate to="/login" />}
+            />
+            <Route path="/subject-selector" element={<SubjectSelectorPage />} />
+            <Route
+              path="/problem-selection/:category"
+              element={<ProblemSelection />}
             />
           </Routes>
         )}

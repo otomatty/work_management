@@ -1,6 +1,6 @@
-import { doc, setDoc, getDoc } from 'firebase/firestore';
-import { db } from '../../../firebase/firebase';
-import { getDocIdAndDayKey } from '../../helpers';
+import { doc, setDoc, getDoc } from "firebase/firestore";
+import { db } from "../../../firebase/firebase";
+import { getDocIdAndDayKey } from "../../helpers";
 
 export const saveTotalTimes = async (
   teacherId: string,
@@ -45,4 +45,31 @@ export const getTotalTimes = async (
   }
 
   return null;
+};
+
+export const getCurrentAndPreviousMonthTimes = async (
+  teacherId: string,
+  year: number,
+  month: number
+): Promise<{
+  currentMonth: { totalTeachTime: number; totalOfficeTime: number } | null;
+  previousMonth: { totalTeachTime: number; totalOfficeTime: number } | null;
+}> => {
+  const currentMonthData = await getTotalTimes(teacherId, year, month);
+
+  // 先月の年と月を計算
+  const previousMonthDate = new Date(year, month - 2); // monthは0から始まるため-2
+  const previousYear = previousMonthDate.getFullYear();
+  const previousMonth = previousMonthDate.getMonth() + 1; // monthは0から始まるため+1
+
+  const previousMonthData = await getTotalTimes(
+    teacherId,
+    previousYear,
+    previousMonth
+  );
+
+  return {
+    currentMonth: currentMonthData,
+    previousMonth: previousMonthData,
+  };
 };

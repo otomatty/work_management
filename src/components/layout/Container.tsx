@@ -1,9 +1,9 @@
-import React from 'react';
-import styled from 'styled-components';
+import React from "react";
+import styled from "styled-components";
 
-const StyledContainer = styled.section`
-  margin: 0 auto 20px auto;
-  max-width: 1200px;
+const StyledContainer = styled.div`
+  margin: 40px auto;
+  max-width: 1000px;
   @media screen and (max-width: 600px) {
     max-width: 400px;
   }

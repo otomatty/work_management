@@ -22,15 +22,15 @@ const TooltipTrigger = styled.span`
 `;
 
 interface ModalBackgroundProps {
-  isVisible: boolean;
+  $isVisible: boolean;
 }
 
 const ModalBackground = styled.div.attrs<ModalBackgroundProps>((props) => ({
   style: {
-    visibility: props.isVisible ? "visible" : "hidden",
-    opacity: props.isVisible ? 1 : 0,
+    visibility: props.$isVisible ? "visible" : "hidden",
+    opacity: props.$isVisible ? 1 : 0,
   },
-}))`
+}))<ModalBackgroundProps>`
   position: fixed;
   top: 0;
   left: 0;
@@ -79,7 +79,7 @@ const ModalTooltip = ({ children }: ModalTooltipProps) => {
       <TooltipContainer>
         <TooltipTrigger onClick={toggleVisibility}>?</TooltipTrigger>
       </TooltipContainer>
-      <ModalBackground isVisible={isVisible} onClick={toggleVisibility}>
+      <ModalBackground $isVisible={isVisible} onClick={toggleVisibility}>
         <ModalContent onClick={(e) => e.stopPropagation()}>
           <CloseButton onClick={toggleVisibility}>&times;</CloseButton>
           {children}

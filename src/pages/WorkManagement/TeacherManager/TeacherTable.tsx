@@ -1,18 +1,19 @@
-import React, { useState, useEffect } from 'react';
-import styled from 'styled-components';
-import AddTeacherForm from './AddTeacherForm';
-import Modal from '../../../components/molecules/Modal';
-import Button from '../../../components/atoms/Button/Button'; // Buttonコンポーネントをインポート
-import ButtonGroup from '../../../components/layout/ButtonGroup';
-import { getTotalTimes } from '../../../firebase/teachers/monthlySummaries/monthlySummaries'; // 追加
-import { useNavigate } from 'react-router-dom'; // 追加
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'; // FontAwesomeをインポート
-import { faTrash, faEdit } from '@fortawesome/free-solid-svg-icons'; // 必要なアイコンをインポート
+import React, { useState, useEffect } from "react";
+import styled from "styled-components";
+import AddTeacherForm from "./AddTeacherForm";
+import Modal from "../../../components/molecules/Modal";
+import Button from "../../../components/atoms/Button/Button"; // Buttonコンポーネントをインポート
+import ButtonGroup from "../../../components/layout/ButtonGroup";
+import { getCurrentAndPreviousMonthTimes } from "../../../firebase/teachers/monthlySummaries/monthlySummaries"; // 修正
+import { useNavigate } from "react-router-dom"; // 追加
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"; // FontAwesomeをインポート
+import { faTrash, faEdit } from "@fortawesome/free-solid-svg-icons"; // 必要なアイコンをインポート
 
 const Table = styled.table`
   width: 100%;
   border-collapse: collapse;
   margin-top: 20px;
+  border: 2px solid #ccc; /* テーブルの外側の線を太く */
 `;
 
 const Th = styled.th`
@@ -20,12 +21,30 @@ const Th = styled.th`
   color: #333;
   padding: 10px;
   border: 1px solid #ddd;
+
+  &.border-right {
+    border-right: 2px solid #ccc; /* 境界の縦の線を太く */
+  }
 `;
 
 const Td = styled.td`
   padding: 8px;
   border: 1px solid #ddd;
-  text-align: left;
+  text-align: right;
+  &:nth-child(1) {
+    text-align: center;
+  }
+  &:nth-child(1),
+  &:nth-child(3) {
+    border-right: 2px solid #ccc; /* 境界の縦の線を太く */
+  }
+`;
+
+const TeacherNameTd = styled(Td)`
+  cursor: pointer;
+  &:hover {
+    background-color: #f0f0f0; /* ホバー時の背景色 */
+  }
 `;
 
 const DeleteIcon = styled(FontAwesomeIcon)`
@@ -79,9 +98,12 @@ const TeacherTable: React.FC<Props> = ({
   const [selectedTeacherId, setSelectedTeacherId] = useState<string | null>(
     null
   );
-  const [inputTeacherName, setInputTeacherName] = useState<string>('');
+  const [inputTeacherName, setInputTeacherName] = useState<string>("");
   const [monthlyTimes, setMonthlyTimes] = useState<{
-    [key: string]: { totalTeachTime: number; totalOfficeTime: number };
+    [key: string]: {
+      currentMonth: { totalTeachTime: number; totalOfficeTime: number } | null;
+      previousMonth: { totalTeachTime: number; totalOfficeTime: number } | null;
+    };
   }>({});
   const navigate = useNavigate(); // 追加
 
@@ -101,13 +123,13 @@ const TeacherTable: React.FC<Props> = ({
 
       const times = await Promise.all(
         teachers.map(async (teacher) => {
-          const data = await getTotalTimes(
+          const data = await getCurrentAndPreviousMonthTimes(
             teacher.id,
             currentYear,
             currentMonth
           );
           return {
-            [teacher.id]: data || { totalTeachTime: 0, totalOfficeTime: 0 },
+            [teacher.id]: data,
           };
         })
       );
@@ -131,16 +153,16 @@ const TeacherTable: React.FC<Props> = ({
       onDelete(selectedTeacherId!);
       setIsModalOpen(false);
       setSelectedTeacherId(null);
-      setInputTeacherName('');
+      setInputTeacherName("");
     } else {
-      alert('講師名が一致しません。');
+      alert("講師名が一致しません。");
     }
   };
 
   const handleCancelDelete = () => {
     setIsModalOpen(false);
     setSelectedTeacherId(null);
-    setInputTeacherName('');
+    setInputTeacherName("");
   };
 
   const handleTeacherClick = (id: string) => {
@@ -148,7 +170,7 @@ const TeacherTable: React.FC<Props> = ({
   };
 
   const handleEditClick = (id: string) => {
-    const newName = prompt('新しい講師名を入力してください:');
+    const newName = prompt("新しい講師名を入力してください:");
     if (newName) {
       onUpdate(id, newName);
     }
@@ -159,17 +181,27 @@ const TeacherTable: React.FC<Props> = ({
       <Table>
         <thead>
           <tr>
-            <Th>講師名</Th>
-            <Th>今月の教務時間</Th>
-            <Th>今月の事務時間</Th>
+            <Th rowSpan={2} className="border-right">
+              講師名
+            </Th>
+            <Th colSpan={2} className="border-right">
+              先月
+            </Th>
+            <Th colSpan={2}>今月</Th>
+          </tr>
+          <tr>
+            <Th>教務時間</Th>
+            <Th className="border-right">事務時間</Th>
+            <Th>教務時間</Th>
+            <Th>事務時間</Th>
           </tr>
         </thead>
         <tbody>
           {teachers.map((teacher) => (
             <tr key={teacher.id}>
-              <Td
+              <TeacherNameTd
                 onClick={() => handleTeacherClick(teacher.id)}
-                style={{ cursor: 'pointer' }}
+                style={{ cursor: "pointer" }}
               >
                 {teacher.name}
                 {deleteMode && (
@@ -190,18 +222,32 @@ const TeacherTable: React.FC<Props> = ({
                     }}
                   />
                 )}
+              </TeacherNameTd>
+              <Td>
+                {formatTime(
+                  monthlyTimes[teacher.id]?.previousMonth?.totalTeachTime || 0
+                )}
+              </Td>
+              <Td className="border-right">
+                {formatTime(
+                  monthlyTimes[teacher.id]?.previousMonth?.totalOfficeTime || 0
+                )}
               </Td>
               <Td>
-                {formatTime(monthlyTimes[teacher.id]?.totalTeachTime || 0)}
+                {formatTime(
+                  monthlyTimes[teacher.id]?.currentMonth?.totalTeachTime || 0
+                )}
               </Td>
               <Td>
-                {formatTime(monthlyTimes[teacher.id]?.totalOfficeTime || 0)}
+                {formatTime(
+                  monthlyTimes[teacher.id]?.currentMonth?.totalOfficeTime || 0
+                )}
               </Td>
             </tr>
           ))}
           {adding && (
             <tr>
-              <Td colSpan={deleteMode || editMode ? 4 : 3}>
+              <Td colSpan={deleteMode || editMode ? 6 : 5}>
                 <AddTeacherForm onAdd={onAdd} onCancel={onCancel} />
               </Td>
             </tr>
