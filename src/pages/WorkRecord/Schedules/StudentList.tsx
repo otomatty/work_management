@@ -1,30 +1,30 @@
-import React, { useState } from "react";
-import { motion } from "framer-motion";
-import styled from "styled-components";
-import StudentEditModal from "./StudentEditModal";
-import { Student } from "../../../types";
-import { addStudent, updateStudent, deleteStudent } from "../../../firebase";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../redux/store";
+import React, { useState } from 'react';
+import { motion } from 'framer-motion';
+import styled from 'styled-components';
+import StudentEditModal from './StudentEditModal';
+import { TeacherStudent } from '../../../types';
+import { addStudent, updateStudent, deleteStudent } from '../../../firebase';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../../redux/store';
 
 const ListContainer = styled.div<{ $dayOfWeek: string }>`
   margin: 10px 8px 0 8px;
   border-bottom: ${({ $dayOfWeek }) =>
-    $dayOfWeek === "Saturday"
-      ? "1px solid #bbebfa"
-      : $dayOfWeek === "Sunday"
-        ? "1px solid #ffd9df"
-        : "1px solid #f0f0f0"};
+    $dayOfWeek === 'Saturday'
+      ? '1px solid #bbebfa'
+      : $dayOfWeek === 'Sunday'
+        ? '1px solid #ffd9df'
+        : '1px solid #f0f0f0'};
 `;
 
 const ListItem = styled.div<{ $dayOfWeek: string }>`
   padding: 8px;
   border-bottom: ${({ $dayOfWeek }) =>
-    $dayOfWeek === "Saturday"
-      ? "1px solid #bbebfa"
-      : $dayOfWeek === "Sunday"
-        ? "1px solid #ffd9df"
-        : "1px solid #f0f0f0"};
+    $dayOfWeek === 'Saturday'
+      ? '1px solid #bbebfa'
+      : $dayOfWeek === 'Sunday'
+        ? '1px solid #ffd9df'
+        : '1px solid #f0f0f0'};
   &:last-child {
     border-bottom: none;
   }
@@ -64,8 +64,8 @@ const AddButton = styled(motion.button)`
 
 interface StudentListProps {
   dayOfWeek: string;
-  students: Student[];
-  onStudentListChange: (students: Student[]) => void;
+  students: TeacherStudent[];
+  onStudentListChange: (students: TeacherStudent[]) => void;
 }
 
 const StudentList: React.FC<StudentListProps> = ({
@@ -75,25 +75,27 @@ const StudentList: React.FC<StudentListProps> = ({
 }) => {
   const teacherId = useSelector((state: RootState) => state.teacher.teacherId);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
+  const [selectedStudent, setSelectedStudent] = useState<TeacherStudent | null>(
+    null
+  );
 
-  const handleStudentClick = (student: Student) => {
+  const handleStudentClick = (student: TeacherStudent) => {
     setSelectedStudent(student);
     setIsModalOpen(true);
   };
 
   const handleAddButtonClick = () => {
     setSelectedStudent({
-      studentId: "", // 新しい生徒なのでIDは空
-      studentName: "",
-      grade: "",
-      subject: "",
+      studentId: '', // 新しい生徒なのでIDは空
+      studentName: '',
+      grade: '',
+      subject: '',
       time: 0,
     });
     setIsModalOpen(true);
   };
 
-  const handleUpdateStudent = async (updatedStudent: Student) => {
+  const handleUpdateStudent = async (updatedStudent: TeacherStudent) => {
     if (!updatedStudent.studentId) {
       // 新しい生徒を追加
       try {
@@ -107,7 +109,7 @@ const StudentList: React.FC<StudentListProps> = ({
           { ...updatedStudent, studentId: newStudent.id },
         ]);
       } catch (error) {
-        console.error("Error adding new student:", error);
+        console.error('Error adding new student:', error);
       }
     } else {
       // 既存の生徒を更新
@@ -125,7 +127,7 @@ const StudentList: React.FC<StudentListProps> = ({
         );
         onStudentListChange(updatedStudents);
       } catch (error) {
-        console.error("Error updating student:", error);
+        console.error('Error updating student:', error);
       }
     }
     setIsModalOpen(false);
@@ -139,42 +141,42 @@ const StudentList: React.FC<StudentListProps> = ({
       );
       onStudentListChange(updatedStudents);
     } catch (error) {
-      console.error("Error deleting student:", error);
+      console.error('Error deleting student:', error);
     }
     setIsModalOpen(false);
   };
 
   const formatGradeAndSubject = (grade: string, subject: string) => {
     if (!grade || !subject) {
-      return "未設定";
+      return '未設定';
     }
 
     const gradeMap: { [key: string]: string } = {
-      年少: "年少",
-      年中: "年中",
-      年長: "年長",
-      小学1年: "小1",
-      小学2年: "小2",
-      小学3年: "小3",
-      小学4年: "小4",
-      小学5年: "小5",
-      小学6年: "小6",
-      中学1年: "中1",
-      中学2年: "中2",
-      中学3年: "中3",
-      高校1年: "高1",
-      高校2年: "高2",
-      高校3年: "高3",
-      社会人: "Ad",
+      年少: '年少',
+      年中: '年中',
+      年長: '年長',
+      小学1年: '小1',
+      小学2年: '小2',
+      小学3年: '小3',
+      小学4年: '小4',
+      小学5年: '小5',
+      小学6年: '小6',
+      中学1年: '中1',
+      中学2年: '中2',
+      中学3年: '中3',
+      高校1年: '高1',
+      高校2年: '高2',
+      高校3年: '高3',
+      社会人: 'Ad',
     };
 
     const subjectMap: { [key: string]: string } = {
-      国語: "国",
-      英語: "英",
-      数学: "数",
-      理科: "理",
-      社会: "社",
-      英会話: "会話",
+      国語: '国',
+      英語: '英',
+      数学: '数',
+      理科: '理',
+      社会: '社',
+      英会話: '会話',
     };
 
     return `${gradeMap[grade] || grade}${subjectMap[subject] || subject}`;
@@ -200,7 +202,7 @@ const StudentList: React.FC<StudentListProps> = ({
         })}
         {isModalOpen && (
           <StudentEditModal
-            key={selectedStudent ? selectedStudent.studentId : "new"}
+            key={selectedStudent ? selectedStudent.studentId : 'new'}
             student={selectedStudent}
             onClose={() => setIsModalOpen(false)}
             onUpdate={handleUpdateStudent}
@@ -212,7 +214,7 @@ const StudentList: React.FC<StudentListProps> = ({
       <AddButton
         whileHover={{
           scale: 1.05,
-          boxShadow: "0px 0px 8px rgba(0, 0, 0, 0.3)",
+          boxShadow: '0px 0px 8px rgba(0, 0, 0, 0.3)',
         }}
         transition={{ duration: 0.3 }}
         onClick={handleAddButtonClick}

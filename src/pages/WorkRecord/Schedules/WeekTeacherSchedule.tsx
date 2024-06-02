@@ -1,28 +1,28 @@
-import React, { useState } from "react";
-import styled from "styled-components";
-import { motion, AnimatePresence } from "framer-motion";
-import DayTeacherSchedule from "./DayTeacherSchedule";
-import AnimatedCaret from "../../../components/atoms/AnimatedCaret/AnimatedCaret";
-import Tooltip from "../../../components/atoms/Tooltip/Tooltip";
+import React, { useState } from 'react';
+import styled from 'styled-components';
+import { motion, AnimatePresence } from 'framer-motion';
+import DayTeacherSchedule from './DayTeacherSchedule';
+import AnimatedCaret from '../../../components/atoms/AnimatedCaret/AnimatedCaret';
+import Tooltip from '../../../components/atoms/Tooltip/Tooltip';
 
 const dayOfWeekMap: Record<string, string> = {
-  Monday: "月曜日",
-  Tuesday: "火曜日",
-  Wednesday: "水曜日",
-  Thursday: "木曜日",
-  Friday: "金曜日",
-  Saturday: "土曜日",
-  Sunday: "日曜日",
+  Monday: '月曜日',
+  Tuesday: '火曜日',
+  Wednesday: '水曜日',
+  Thursday: '木曜日',
+  Friday: '金曜日',
+  Saturday: '土曜日',
+  Sunday: '日曜日',
 };
 
 const daysOfWeek = [
-  "Sunday",
-  "Monday",
-  "Tuesday",
-  "Wednesday",
-  "Thursday",
-  "Friday",
-  "Saturday",
+  'Sunday',
+  'Monday',
+  'Tuesday',
+  'Wednesday',
+  'Thursday',
+  'Friday',
+  'Saturday',
 ];
 
 const Container = styled.div`
@@ -69,7 +69,7 @@ const WeekTeacherSchedule: React.FC = () => {
         {isOpen && (
           <WeekContainer
             initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
+            animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
           >
             {daysOfWeek.map((day) => (

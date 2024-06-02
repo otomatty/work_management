@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
-import { Student } from '../../../types';
+import { TeacherStudent } from '../../../types';
 import Modal from '../../../components/molecules/Modal';
 import GradeSelector from '../../../components/molecules/GradeSelector';
 
@@ -53,9 +53,9 @@ const BackButton = styled(Button)`
 `;
 
 interface StudentEditModalProps {
-  student: Student | null;
+  student: TeacherStudent | null;
   onClose: () => void;
-  onUpdate: (student: Student) => void;
+  onUpdate: (student: TeacherStudent) => void;
   onDelete: (firestoreId: string) => void;
   isNewStudent: boolean; // New prop added
 }
@@ -85,7 +85,7 @@ const StudentEditModal: React.FC<StudentEditModalProps> = ({
 
   const handleUpdateClick = () => {
     if (student) {
-      const updatedStudent: Student = {
+      const updatedStudent: TeacherStudent = {
         ...student,
         studentId: student.studentId, // 一意のIDを生成
         studentName,

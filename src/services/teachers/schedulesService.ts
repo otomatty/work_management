@@ -17,26 +17,26 @@ import {
   deleteEndTime,
   getSchedules as fetchSchedulesFromFirebase,
   addSchedule as addScheduleToFirebase,
-} from "../../firebase";
+} from '../../firebase';
 
-import { Student, Schedule } from "../../types";
+import { TeacherStudent, Schedule } from '../../types';
 
-import { updateSchedule as updateScheduleInFirebase } from "../../firebase/teachers/schedules/schedules";
+import { updateSchedule as updateScheduleInFirebase } from '../../firebase/teachers/schedules/schedules';
 
 export const schedulesService = {
   // Student related functions
   addStudent: async (
     teacherId: string,
     dayOfWeek: string,
-    student: Student
+    student: TeacherStudent
   ) => {
     try {
       // Firestore が自動的に一意の ID を生成する
       const docRef = await addStudent(teacherId, dayOfWeek, student);
-      console.log("Student added successfully with ID: ", docRef.id);
+      console.log('Student added successfully with ID: ', docRef.id);
       return docRef.id; // 追加された生徒の ID を返す
     } catch (error) {
-      console.error("Error adding student:", error);
+      console.error('Error adding student:', error);
       throw error;
     }
   },
@@ -44,7 +44,7 @@ export const schedulesService = {
     try {
       return await getStudents(teacherId, dayOfWeek);
     } catch (error) {
-      console.error("Error fetching students:", error);
+      console.error('Error fetching students:', error);
       throw error;
     }
   },
@@ -52,13 +52,13 @@ export const schedulesService = {
     teacherId: string,
     dayOfWeek: string,
     studentId: string,
-    student: Partial<Student>
+    student: Partial<TeacherStudent>
   ) => {
     try {
       await updateStudent(teacherId, dayOfWeek, studentId, student);
-      console.log("Student updated successfully");
+      console.log('Student updated successfully');
     } catch (error) {
-      console.error("Error updating student:", error);
+      console.error('Error updating student:', error);
       throw error;
     }
   },
@@ -69,9 +69,9 @@ export const schedulesService = {
   ) => {
     try {
       await deleteStudent(teacherId, dayOfWeek, studentId);
-      console.log("Student deleted successfully");
+      console.log('Student deleted successfully');
     } catch (error) {
-      console.error("Error deleting student:", error);
+      console.error('Error deleting student:', error);
       throw error;
     }
   },
@@ -84,9 +84,9 @@ export const schedulesService = {
   ) => {
     try {
       await addScheduleClassroom(teacherId, dayOfWeek, classroom);
-      console.log("Classroom added successfully");
+      console.log('Classroom added successfully');
     } catch (error) {
-      console.error("Error adding classroom:", error);
+      console.error('Error adding classroom:', error);
       throw error;
     }
   },
@@ -94,7 +94,7 @@ export const schedulesService = {
     try {
       return await getScheduleClassroom(teacherId, dayOfWeek);
     } catch (error) {
-      console.error("Error fetching classroom:", error);
+      console.error('Error fetching classroom:', error);
       throw error;
     }
   },
@@ -105,18 +105,18 @@ export const schedulesService = {
   ) => {
     try {
       await updateScheduleClassroom(teacherId, dayOfWeek, classroom);
-      console.log("Classroom updated successfully");
+      console.log('Classroom updated successfully');
     } catch (error) {
-      console.error("Error updating classroom:", error);
+      console.error('Error updating classroom:', error);
       throw error;
     }
   },
   deleteScheduleClassroom: async (teacherId: string, dayOfWeek: string) => {
     try {
       await deleteScheduleClassroom(teacherId, dayOfWeek);
-      console.log("Classroom deleted successfully");
+      console.log('Classroom deleted successfully');
     } catch (error) {
-      console.error("Error deleting classroom:", error);
+      console.error('Error deleting classroom:', error);
       throw error;
     }
   },
@@ -129,18 +129,18 @@ export const schedulesService = {
   ) => {
     try {
       await addStartTime(teacherId, dayOfWeek, startTime);
-      console.log("Start time added successfully");
+      console.log('Start time added successfully');
     } catch (error) {
-      console.error("Error adding start time:", error);
+      console.error('Error adding start time:', error);
       throw error;
     }
   },
   addEndTime: async (teacherId: string, dayOfWeek: string, endTime: string) => {
     try {
       await addEndTime(teacherId, dayOfWeek, endTime);
-      console.log("End time added successfully");
+      console.log('End time added successfully');
     } catch (error) {
-      console.error("Error adding end time:", error);
+      console.error('Error adding end time:', error);
       throw error;
     }
   },
@@ -148,7 +148,7 @@ export const schedulesService = {
     try {
       return await getStartTime(teacherId, dayOfWeek);
     } catch (error) {
-      console.error("Error fetching start time:", error);
+      console.error('Error fetching start time:', error);
       throw error;
     }
   },
@@ -156,7 +156,7 @@ export const schedulesService = {
     try {
       return await getEndTime(teacherId, dayOfWeek);
     } catch (error) {
-      console.error("Error fetching end time:", error);
+      console.error('Error fetching end time:', error);
       throw error;
     }
   },
@@ -167,9 +167,9 @@ export const schedulesService = {
   ) => {
     try {
       await updateStartTime(teacherId, dayOfWeek, startTime);
-      console.log("Start time updated successfully");
+      console.log('Start time updated successfully');
     } catch (error) {
-      console.error("Error updating start time:", error);
+      console.error('Error updating start time:', error);
       throw error;
     }
   },
@@ -180,27 +180,27 @@ export const schedulesService = {
   ) => {
     try {
       await updateEndTime(teacherId, dayOfWeek, endTime);
-      console.log("End time updated successfully");
+      console.log('End time updated successfully');
     } catch (error) {
-      console.error("Error updating end time:", error);
+      console.error('Error updating end time:', error);
       throw error;
     }
   },
   deleteStartTime: async (teacherId: string, dayOfWeek: string) => {
     try {
       await deleteStartTime(teacherId, dayOfWeek);
-      console.log("Start time deleted successfully");
+      console.log('Start time deleted successfully');
     } catch (error) {
-      console.error("Error deleting start time:", error);
+      console.error('Error deleting start time:', error);
       throw error;
     }
   },
   deleteEndTime: async (teacherId: string, dayOfWeek: string) => {
     try {
       await deleteEndTime(teacherId, dayOfWeek);
-      console.log("End time deleted successfully");
+      console.log('End time deleted successfully');
     } catch (error) {
-      console.error("Error deleting end time:", error);
+      console.error('Error deleting end time:', error);
       throw error;
     }
   },
@@ -216,7 +216,7 @@ export const schedulesService = {
       }
       return schedules;
     } catch (error) {
-      console.error("Error fetching schedules:", error);
+      console.error('Error fetching schedules:', error);
       throw error;
     }
   },
@@ -231,7 +231,7 @@ export const schedulesService = {
       const schedules = await schedulesService.getSchedules(params.teacherId);
       return schedules;
     } catch (error) {
-      console.error("Error fetching schedules from API:", error);
+      console.error('Error fetching schedules from API:', error);
       throw error;
     }
   },
@@ -252,16 +252,16 @@ export const schedulesService = {
         }
       }
 
-      console.log("Schedule and students added/updated successfully");
+      console.log('Schedule and students added/updated successfully');
     } catch (error) {
-      console.error("Error adding/updating schedule and students:", error);
+      console.error('Error adding/updating schedule and students:', error);
       throw error;
     }
   },
   fetchSchedules: async () => {
-    const response = await fetch("/api/schedules");
+    const response = await fetch('/api/schedules');
     if (!response.ok) {
-      throw new Error("Failed to fetch schedules");
+      throw new Error('Failed to fetch schedules');
     }
     return await response.json();
   },
@@ -282,9 +282,9 @@ export const schedulesService = {
           await updateStudent(teacherId, dayOfWeek, student.studentId, student);
         }
       }
-      console.log("Schedule and students updated successfully");
+      console.log('Schedule and students updated successfully');
     } catch (error) {
-      console.error("Error updating schedule and students:", error);
+      console.error('Error updating schedule and students:', error);
       throw error;
     }
   },

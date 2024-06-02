@@ -1,7 +1,7 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import styled from "styled-components";
-import { useTranslation } from "react-i18next"; // i18nextのフックをインポート
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import styled from 'styled-components';
+import { useTranslation } from 'react-i18next'; // i18nextのフックをインポート
 import {
   calender,
   website,
@@ -10,11 +10,11 @@ import {
   filebox,
   printer,
   attachecase,
-} from "../../assets/images";
-import CellComponent from "../../components/atoms/AnimatedCell/AnimatedCell";
-import Modal from "../../components/molecules/Modal";
-import TeacherSelection from "./TeacherSelection/TeacherSelection";
-import ComingSoonOverlay from "./ComingSoonOverlay";
+} from '../../assets/images';
+import CellComponent from '../../components/atoms/AnimatedCell/AnimatedCell';
+import Modal from '../../components/molecules/Modal';
+import TeacherSelection from './TeacherSelection/TeacherSelection';
+import ComingSoonOverlay from './ComingSoonOverlay';
 
 const CategoryTitle = styled.p`
   font-size: 2rem;
@@ -68,7 +68,7 @@ const Icon = styled.img`
 const PanelSelector: React.FC = () => {
   const navigate = useNavigate();
   const [isModalOpen, setModalOpen] = useState(false);
-  const { t } = useTranslation("homePage"); // 翻訳関数の取得
+  const { t } = useTranslation('homePage'); // 翻訳関数の取得
 
   const handleNavigate = (path: string) => {
     navigate(path);
@@ -83,59 +83,58 @@ const PanelSelector: React.FC = () => {
   };
 
   const handleThreeSubjectsClick = () => {
-    navigate("/subject-selector"); // 画面遷移
+    navigate('/subject-selector'); // 画面遷移
   };
 
   return (
     <PanelContainer>
-      <CategoryTitle>{t("workManagement")}</CategoryTitle>
+      <CategoryTitle>{t('workManagement')}</CategoryTitle>
       <PanelWrapper>
         <CellComponent>
           <Panel onClick={openModal}>
-            <Icon src={attachecase} alt={t("workRecordIcon")} />
-            <h2>{t("workRecord", { ns: "homePage" })}</h2>
+            <Icon src={attachecase} alt={t('workRecordIcon')} />
+            <h2>{t('workRecord')}</h2>
+          </Panel>
+        </CellComponent>
+        <CellComponent>
+          <Panel onClick={() => handleNavigate('/student-info')}>
+            <Icon src={filebox} alt={t('studentInfoIcon')} />
+            <h2>{t('studentInfo')}</h2>
           </Panel>
         </CellComponent>
         <CellComponent>
           <Panel>
-            <Icon src={filebox} alt={t("studentListIcon")} />
-            <h2>{t("studentList")}</h2>
+            <Icon src={website} alt={t('homeManagementIcon')} />
+            <h2>{t('homePage')}</h2>
             <ComingSoonOverlay />
           </Panel>
         </CellComponent>
         <CellComponent>
           <Panel>
-            <Icon src={website} alt={t("homeManagementIcon")} />
-            <h2>{t("homePage")}</h2>
-            <ComingSoonOverlay />
-          </Panel>
-        </CellComponent>
-        <CellComponent>
-          <Panel>
-            <Icon src={calender} alt={t("annualScheduleIcon")} />
-            <h2>{t("annualSchedule")}</h2>
+            <Icon src={calender} alt={t('annualScheduleIcon')} />
+            <h2>{t('annualSchedule')}</h2>
             <ComingSoonOverlay />
           </Panel>
         </CellComponent>
       </PanelWrapper>
-      <CategoryTitle>{t("problemGenerator")}</CategoryTitle>
+      <CategoryTitle>{t('problemGenerator')}</CategoryTitle>
       <PanelWrapper>
         <CellComponent>
-          <Panel onClick={() => handleNavigate("/calculation-generator")}>
-            <Icon src={calc} alt={t("calculationGeneratorIcon")} />
-            <h2>{t("calculationProblems")}</h2>
+          <Panel onClick={() => handleNavigate('/calculation-generator')}>
+            <Icon src={calc} alt={t('calculationGeneratorIcon')} />
+            <h2>{t('calculationProblems')}</h2>
           </Panel>
         </CellComponent>
         <CellComponent>
           <Panel onClick={handleThreeSubjectsClick}>
-            <Icon src={printer} alt={t("threeSubjectsProblemsIcon")} />
-            <h2>{t("threeSubjectsProblems")}</h2>
+            <Icon src={printer} alt={t('threeSubjectsProblemsIcon')} />
+            <h2>{t('threeSubjectsProblems')}</h2>
           </Panel>
         </CellComponent>
         <CellComponent>
           <Panel>
-            <Icon src={book} alt={t("termQuizGeneratorIcon")} />
-            <h2>{t("englishVocabularyProblems")}</h2>
+            <Icon src={book} alt={t('termQuizGeneratorIcon')} />
+            <h2>{t('englishVocabularyProblems')}</h2>
             <ComingSoonOverlay />
           </Panel>
         </CellComponent>

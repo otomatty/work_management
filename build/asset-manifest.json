@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/static/css/main.d0321b1e.css",
-    "main.js": "/static/js/main.a5ebad64.js",
+    "main.js": "/static/js/main.1865c217.js",
     "static/media/logo.webp": "/static/media/logo.a430be698702c68f7863.webp",
     "static/media/KaTeX_AMS-Regular.ttf": "/static/media/KaTeX_AMS-Regular.853be92419a6c3766b9a.ttf",
     "static/media/KaTeX_Main-Regular.ttf": "/static/media/KaTeX_Main-Regular.9eba1d77abcf2aa6e94e.ttf",
@@ -57,6 +57,7 @@
     "static/media/KaTeX_Caligraphic-Bold.woff2": "/static/media/KaTeX_Caligraphic-Bold.a1abf90dfd72792a577a.woff2",
     "static/media/KaTeX_Caligraphic-Regular.woff2": "/static/media/KaTeX_Caligraphic-Regular.d6484fce1ef428d5bd94.woff2",
     "static/media/calender.svg": "/static/media/calender.1f6945ff9f86b90900958bcad3c97a40.svg",
+    "static/media/attachecase.svg": "/static/media/attachecase.d9d3bc60b0ae09364cff42534d514b87.svg",
     "static/media/KaTeX_Size1-Regular.woff": "/static/media/KaTeX_Size1-Regular.0108e89c9003e8c14ea3.woff",
     "static/media/KaTeX_Size2-Regular.woff": "/static/media/KaTeX_Size2-Regular.3a99e70aee4076660d38.woff",
     "static/media/KaTeX_Size4-Regular.woff": "/static/media/KaTeX_Size4-Regular.aeffd8025cba3647f1a6.woff",
@@ -72,10 +73,10 @@
     "index.html": "/index.html",
     "static/media/getFetch.cjs": "/static/media/getFetch.c4cca45e22bc1b2c7d0d.cjs",
     "main.d0321b1e.css.map": "/static/css/main.d0321b1e.css.map",
-    "main.a5ebad64.js.map": "/static/js/main.a5ebad64.js.map"
+    "main.1865c217.js.map": "/static/js/main.1865c217.js.map"
   },
   "entrypoints": [
     "static/css/main.d0321b1e.css",
-    "static/js/main.a5ebad64.js"
+    "static/js/main.1865c217.js"
   ]
 }

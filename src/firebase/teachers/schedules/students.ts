@@ -1,4 +1,4 @@
-import { db } from "../../firebase";
+import { db } from '../../firebase';
 import {
   collection,
   doc,
@@ -6,30 +6,30 @@ import {
   deleteDoc,
   addDoc,
   updateDoc,
-} from "firebase/firestore";
-import { Student } from "../../../types";
+} from 'firebase/firestore';
+import { TeacherStudent } from '../../../types';
 
 // 生徒情報を追加
 export async function addStudent(
   teacherId: string,
   dayOfWeek: string,
-  student: Student
+  student: TeacherStudent
 ) {
   const studentsRef = collection(
     db,
-    "teachers",
+    'teachers',
     teacherId,
-    "schedules",
+    'schedules',
     dayOfWeek,
-    "students"
+    'students'
   );
   try {
     const docRef = await addDoc(studentsRef, student);
-    console.log("Student added successfully with ID: ", docRef.id);
+    console.log('Student added successfully with ID: ', docRef.id);
     return docRef; // 追加されたドキュメントの参照を返す
   } catch (e) {
-    console.error("Error adding student: ", e);
-    throw new Error("Failed to add student");
+    console.error('Error adding student: ', e);
+    throw new Error('Failed to add student');
   }
 }
 
@@ -37,21 +37,21 @@ export async function addStudent(
 export async function getStudents(
   teacherId: string,
   dayOfWeek: string
-): Promise<Student[]> {
+): Promise<TeacherStudent[]> {
   const studentsRef = collection(
     db,
-    "teachers",
+    'teachers',
     teacherId,
-    "schedules",
+    'schedules',
     dayOfWeek,
-    "students"
+    'students'
   );
-  const students: Student[] = [];
+  const students: TeacherStudent[] = [];
 
   try {
     const querySnapshot = await getDocs(studentsRef);
     querySnapshot.forEach((doc) => {
-      const studentData = doc.data() as Student;
+      const studentData = doc.data() as TeacherStudent;
       students.push({
         ...studentData,
         studentId: doc.id, // ドキュメントIDを追加
@@ -59,7 +59,7 @@ export async function getStudents(
     });
     return students;
   } catch (e) {
-    console.error("Error fetching students: ", e);
+    console.error('Error fetching students: ', e);
     return [];
   }
 }
@@ -69,23 +69,23 @@ export async function updateStudent(
   teacherId: string,
   dayOfWeek: string,
   studentId: string,
-  student: Partial<Student>
+  student: Partial<TeacherStudent>
 ) {
   const studentRef = doc(
     db,
-    "teachers",
+    'teachers',
     teacherId,
-    "schedules",
+    'schedules',
     dayOfWeek,
-    "students",
+    'students',
     studentId
   );
   try {
     await updateDoc(studentRef, student);
-    console.log("Student updated successfully");
+    console.log('Student updated successfully');
   } catch (e) {
-    console.error("Error updating student: ", e);
-    throw new Error("Failed to update student");
+    console.error('Error updating student: ', e);
+    throw new Error('Failed to update student');
   }
 }
 
@@ -97,18 +97,18 @@ export async function deleteStudent(
 ) {
   const studentRef = doc(
     db,
-    "teachers",
+    'teachers',
     teacherId,
-    "schedules",
+    'schedules',
     dayOfWeek,
-    "students",
+    'students',
     studentId
   );
   try {
     await deleteDoc(studentRef);
-    console.log("Student deleted successfully");
+    console.log('Student deleted successfully');
   } catch (e) {
-    console.error("Error deleting student: ", e);
-    throw new Error("Failed to delete student");
+    console.error('Error deleting student: ', e);
+    throw new Error('Failed to delete student');
   }
 }
