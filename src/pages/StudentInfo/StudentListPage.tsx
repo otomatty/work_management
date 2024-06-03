@@ -1,32 +1,26 @@
-import React, { useEffect, useState } from "react";
-import { getStudents, deleteStudent } from "../../firebase/students/students";
-import { StudentCollection } from "../../types";
-import StudentForm from "./StudentForm/StudentForm";
-import Container from "../../components/layout/Container";
-import Header from "../../components/organisms/Header";
-import { useTranslation } from "react-i18next";
-import DeleteModeToggle from "../../components/molecules/DeleteModeToggle";
-import EditModeToggle from "../../components/molecules/EditModeToggle";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTrash, faEdit } from "@fortawesome/free-solid-svg-icons";
-import styled from "styled-components";
-
-const DeleteIcon = styled(FontAwesomeIcon)`
-  color: #dc3545;
-  cursor: pointer;
-  margin-left: 10px;
-`;
-
-const EditIcon = styled(FontAwesomeIcon)`
-  color: #007bff;
-  cursor: pointer;
-  margin-left: 10px;
-`;
+import React, { useEffect, useState } from 'react';
+import { studentsService } from '../../services/students/studentsServices';
+import {
+  StudentCollection,
+  ContactInfo,
+  SiblingInfo,
+  NotificationInfo,
+} from '../../types';
+import StudentForm from './StudentForm/StudentForm';
+import Container from '../../components/layout/Container';
+import Header from '../../components/organisms/Header';
+import { useTranslation } from 'react-i18next';
+import DeleteModeToggle from '../../components/molecules/DeleteModeToggle';
+import EditModeToggle from '../../components/molecules/EditModeToggle';
+import StudentTable from './StudentTable/StudentTable';
 
 const StudentListPage: React.FC = () => {
-  const { t } = useTranslation("studentInfo");
+  const { t } = useTranslation('studentInfo');
 
   const [students, setStudents] = useState<StudentCollection[]>([]);
+  const [contacts, setContacts] = useState<ContactInfo[]>([]);
+  const [siblings, setSiblings] = useState<SiblingInfo[]>([]);
+  const [notifications, setNotifications] = useState<NotificationInfo[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [showForm, setShowForm] = useState<boolean>(false);
   const [deleteMode, setDeleteMode] = useState<boolean>(false);
@@ -36,18 +30,39 @@ const StudentListPage: React.FC = () => {
   );
 
   useEffect(() => {
-    const fetchStudents = async () => {
+    const fetchData = async () => {
+      setLoading(true);
       try {
-        const studentsData = await getStudents();
+        const studentsData = await studentsService.getStudents();
         setStudents(studentsData);
+
+        const contactsPromises = studentsData.map((student) =>
+          studentsService.getContacts(student.studentId)
+        );
+        const siblingsPromises = studentsData.map((student) =>
+          studentsService.getSiblings(student.studentId)
+        );
+        const notificationsPromises = studentsData.map((student) =>
+          studentsService.getNotifications(student.studentId)
+        );
+
+        const [allContacts, allSiblings, allNotifications] = await Promise.all([
+          Promise.all(contactsPromises),
+          Promise.all(siblingsPromises),
+          Promise.all(notificationsPromises),
+        ]);
+
+        setContacts(allContacts.flat());
+        setSiblings(allSiblings.flat());
+        setNotifications(allNotifications.flat());
       } catch (error) {
-        console.error("Error fetching students: ", error);
+        console.error('Error fetching data: ', error);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchStudents();
+    fetchData();
   }, []);
 
   const handleAddStudentClick = () => {
@@ -56,12 +71,12 @@ const StudentListPage: React.FC = () => {
 
   const handleCloseForm = () => {
     setShowForm(false);
-    setStudentToEdit(null); // フォームを閉じたときに編集モードをリセット
+    setStudentToEdit(null);
   };
 
   const handleStudentAdded = (newStudent: StudentCollection) => {
     setStudents((prevStudents) => [...prevStudents, newStudent]);
-    setShowForm(false); // フォームを閉じる
+    setShowForm(false);
   };
 
   const handleToggleDeleteMode = () => {
@@ -74,12 +89,12 @@ const StudentListPage: React.FC = () => {
 
   const handleDeleteStudent = async (studentId: string) => {
     try {
-      await deleteStudent(studentId);
+      await studentsService.deleteStudent(studentId);
       setStudents((prevStudents) =>
         prevStudents.filter((student) => student.studentId !== studentId)
       );
     } catch (error) {
-      console.error("Error deleting student:", error);
+      console.error('Error deleting student:', error);
     }
   };
 
@@ -89,7 +104,7 @@ const StudentListPage: React.FC = () => {
   };
 
   if (loading) {
-    return <div>{t("loading")}</div>;
+    return <div>{t('loading')}</div>;
   }
 
   return (
@@ -107,8 +122,8 @@ const StudentListPage: React.FC = () => {
         activeLabel="編集モード終了"
         inactiveLabel="生徒編集"
       />
-      <h2>{t("studentList")}</h2>
-      <button onClick={handleAddStudentClick}>{t("addStudent")}</button>
+      <h2>{t('studentList')}</h2>
+      <button onClick={handleAddStudentClick}>{t('addStudent')}</button>
       {showForm && (
         <StudentForm
           onClose={handleCloseForm}
@@ -116,25 +131,16 @@ const StudentListPage: React.FC = () => {
           studentToEdit={studentToEdit}
         />
       )}
-      <ul>
-        {students.map((student) => (
-          <li key={student.studentId}>
-            {student.studentName} - {student.grade} - {student.schoolName}
-            {deleteMode && (
-              <DeleteIcon
-                icon={faTrash}
-                onClick={() => handleDeleteStudent(student.studentId)}
-              />
-            )}
-            {editMode && (
-              <EditIcon
-                icon={faEdit}
-                onClick={() => handleEditStudent(student)}
-              />
-            )}
-          </li>
-        ))}
-      </ul>
+      <StudentTable
+        students={students}
+        contacts={contacts}
+        siblings={siblings}
+        notifications={notifications}
+        onDelete={handleDeleteStudent}
+        onEdit={handleEditStudent}
+        deleteMode={deleteMode}
+        editMode={editMode}
+      />
     </Container>
   );
 };
