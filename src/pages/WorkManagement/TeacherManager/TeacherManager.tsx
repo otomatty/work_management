@@ -1,19 +1,19 @@
-import React, { useState, useEffect, startTransition } from 'react';
-import styled from 'styled-components';
-import { useDispatch, useSelector } from 'react-redux';
-import { ThunkDispatch } from 'redux-thunk';
-import { Action } from 'redux';
-import { RootState } from '../../../redux/store';
+import React, { useState, useEffect, startTransition } from "react";
+import styled from "styled-components";
+import { useDispatch, useSelector } from "react-redux";
+import { ThunkDispatch } from "redux-thunk";
+import { Action } from "redux";
+import { RootState } from "../../../redux/store";
 import {
   fetchTeachers,
   addNewTeacher,
   removeTeacher,
   updateTeacherName,
-} from '../../../redux/teacher/teacherSlice';
-import TeacherTable from './TeacherTable';
-import DeleteModeToggle from './DeleteModeToggle';
-import EditModeToggle from './EditModeToggle';
-import TimeFormatToggle from '../../../components/atoms/TimeFormatToggle/TimeFormatToggle';
+} from "../../../redux/teacher/teacherSlice";
+import TeacherTable from "./TeacherTable";
+import DeleteModeToggle from "../../../components/molecules/DeleteModeToggle";
+import EditModeToggle from "../../../components/molecules/EditModeToggle";
+import TimeFormatToggle from "../../../components/atoms/TimeFormatToggle/TimeFormatToggle";
 
 const Toolbar = styled.div`
   display: flex;
@@ -41,9 +41,7 @@ const AddButton = styled.button`
 
 const TeacherManager: React.FC = () => {
   const dispatch: ThunkDispatch<RootState, void, Action> = useDispatch();
-  const { teachers, loading, error } = useSelector(
-    (state: RootState) => state.teacher
-  );
+  const { teachers } = useSelector((state: RootState) => state.teacher);
   const [adding, setAdding] = useState(false);
   const [deleteMode, setDeleteMode] = useState(false);
   const [editMode, setEditMode] = useState(false);
@@ -85,10 +83,14 @@ const TeacherManager: React.FC = () => {
             <AddButton onClick={() => setAdding(true)}>講師追加</AddButton>
           )}
           <DeleteModeToggle
+            activeLabel="削除モード終了"
+            inactiveLabel="講師削除"
             deleteMode={deleteMode}
             onToggle={() => setDeleteMode(!deleteMode)}
           />
           <EditModeToggle
+            activeLabel="編集モード終了"
+            inactiveLabel="講師編集"
             editMode={editMode}
             onToggle={() => setEditMode(!editMode)}
           />
@@ -107,8 +109,6 @@ const TeacherManager: React.FC = () => {
         onCancel={() => setAdding(false)}
         isTimeFormat={isTimeFormat}
       />
-      {loading && <p>Loading...</p>}
-      {error && <p>Error: {error}</p>}
     </div>
   );
 };

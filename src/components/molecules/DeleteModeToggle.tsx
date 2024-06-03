@@ -19,12 +19,19 @@ const Button = styled.button`
 interface Props {
   deleteMode: boolean;
   onToggle: () => void;
+  activeLabel: string; // Added
+  inactiveLabel: string; // Added
 }
 
-const DeleteModeToggle: React.FC<Props> = ({ deleteMode, onToggle }) => {
+const DeleteModeToggle: React.FC<Props> = ({
+  deleteMode,
+  onToggle,
+  activeLabel,
+  inactiveLabel,
+}) => {
   return (
     <Button onClick={onToggle}>
-      {deleteMode ? "削除モード終了" : "講師削除"}
+      {deleteMode ? activeLabel : inactiveLabel}
     </Button>
   );
 };

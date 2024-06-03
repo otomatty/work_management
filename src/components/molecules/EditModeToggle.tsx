@@ -1,5 +1,5 @@
-import React from 'react';
-import styled from 'styled-components';
+import React from "react";
+import styled from "styled-components";
 
 const Button = styled.button`
   font-size: 0.8rem;
@@ -19,13 +19,18 @@ const Button = styled.button`
 interface Props {
   editMode: boolean;
   onToggle: () => void;
+  activeLabel: string; // Added
+  inactiveLabel: string; // Added
 }
 
-const EditModeToggle: React.FC<Props> = ({ editMode, onToggle }) => {
+const EditModeToggle: React.FC<Props> = ({
+  editMode,
+  onToggle,
+  activeLabel,
+  inactiveLabel,
+}) => {
   return (
-    <Button onClick={onToggle}>
-      {editMode ? '編集モード終了' : '講師編集'}
-    </Button>
+    <Button onClick={onToggle}>{editMode ? activeLabel : inactiveLabel}</Button>
   );
 };
 

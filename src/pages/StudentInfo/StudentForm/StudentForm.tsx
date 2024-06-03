@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import React, { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 
 import {
   addStudent,
@@ -8,7 +8,8 @@ import {
   addSiblingInfo,
   addLearningInfo,
   addAchievements,
-} from '../../../firebase/students/students';
+  updateStudent, // Added for updating student
+} from "../../../firebase/students/students";
 import {
   StudentCollection,
   ContactInfo,
@@ -16,14 +17,14 @@ import {
   SiblingInfo,
   LearningInfo,
   Achievements,
-} from '../../../types';
-import BasicInfoForm from './BasicInfoForm';
-import ContactInfoForm from './ContactInfoForm';
-import NotificationInfoForm from './NotificationInfoForm';
-import SiblingInfoForm from './SiblingInfoForm';
-import LearningInfoForm from './LearningInfoForm';
-import AchievementsForm from './AchievementsForm';
-import styled from 'styled-components';
+} from "../../../types";
+import BasicInfoForm from "./BasicInfoForm";
+import ContactInfoForm from "./ContactInfoForm";
+import NotificationInfoForm from "./NotificationInfoForm";
+import SiblingInfoForm from "./SiblingInfoForm";
+import LearningInfoForm from "./LearningInfoForm";
+import AchievementsForm from "./AchievementsForm";
+import styled from "styled-components";
 
 const FormWrapper = styled.div`
   display: flex;
@@ -63,50 +64,64 @@ const CloseButton = styled.button`
 
 interface StudentFormProps {
   onClose: () => void;
+  onStudentAdded: (student: StudentCollection) => void;
+  studentToEdit?: StudentCollection | null; // Changed to StudentCollection | null
 }
 
-const StudentForm: React.FC<StudentFormProps> = ({ onClose }) => {
-  const { t } = useTranslation('studentInfo');
-  const [student, setStudent] = useState<StudentCollection>({
-    studentId: '',
-    studentName: '',
-    gender: '',
-    dateOfBirth: '',
-    grade: '',
-    schoolName: '',
-  });
+const StudentForm: React.FC<StudentFormProps> = ({
+  onClose,
+  onStudentAdded,
+  studentToEdit, // Changed to StudentCollection | null
+}) => {
+  const { t } = useTranslation("studentInfo");
+  const [student, setStudent] = useState<StudentCollection>(
+    studentToEdit || {
+      studentId: "",
+      studentName: "",
+      gender: "",
+      dateOfBirth: "",
+      grade: "",
+      schoolName: "",
+    }
+  );
   const [contactInfo, setContactInfo] = useState<ContactInfo>({
-    studentId: '',
-    guardianName: '',
-    guardianPhone: '',
-    guardianEmail: '',
-    address: '',
-    lineId: '',
-    lineRegisteredBy: '',
+    studentId: "",
+    guardianName: "",
+    guardianPhone: "",
+    guardianEmail: "",
+    address: "",
+    lineId: "",
+    lineRegisteredBy: "",
   });
   const [notificationInfo, setNotificationInfo] = useState<NotificationInfo>({
-    studentId: '',
+    studentId: "",
     notificationSent: false,
     notificationReceived: false,
   });
   const [siblingInfo, setSiblingInfo] = useState<SiblingInfo>({
-    studentId: '',
+    studentId: "",
     siblingNames: [],
   });
   const [learningInfo, setLearningInfo] = useState<LearningInfo>({
-    studentId: '',
-    course: '',
-    schedule: '',
-    grades: '',
-    homeworkStatus: '',
+    studentId: "",
+    course: "",
+    schedule: "",
+    grades: "",
+    homeworkStatus: "",
   });
   const [achievements, setAchievements] = useState<Achievements>({
-    studentId: '',
-    eikenLevel: '',
-    sukenLevel: '',
-    highSchoolAdmissions: '',
-    universityAdmissions: '',
+    studentId: "",
+    eikenLevel: "",
+    sukenLevel: "",
+    highSchoolAdmissions: "",
+    universityAdmissions: "",
   });
+
+  useEffect(() => {
+    if (studentToEdit) {
+      setStudent(studentToEdit);
+    }
+  }, [studentToEdit]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -130,16 +145,23 @@ const StudentForm: React.FC<StudentFormProps> = ({ onClose }) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const studentRef = await addStudent(student);
-      const studentId = studentRef.id;
-      await addContactInfo({ ...contactInfo, studentId });
-      await addNotificationInfo({ ...notificationInfo, studentId });
-      await addSiblingInfo({ ...siblingInfo, studentId });
-      await addLearningInfo({ ...learningInfo, studentId });
-      await addAchievements({ ...achievements, studentId });
-      console.log('All documents written successfully');
+      if (studentToEdit) {
+        await updateStudent(student.studentId, student); // Update student logic
+        console.log("Student updated successfully");
+      } else {
+        const studentRef = await addStudent(student);
+        const studentId = studentRef.id;
+        await addContactInfo({ ...contactInfo, studentId });
+        await addNotificationInfo({ ...notificationInfo, studentId });
+        await addSiblingInfo({ ...siblingInfo, studentId });
+        await addLearningInfo({ ...learningInfo, studentId });
+        await addAchievements({ ...achievements, studentId });
+        console.log("All documents written successfully");
+        onStudentAdded({ ...student, studentId });
+      }
+      onClose();
     } catch (error) {
-      console.error('Error adding document: ', error);
+      console.error("Error adding/updating document: ", error);
     }
   };
 
@@ -157,7 +179,7 @@ const StudentForm: React.FC<StudentFormProps> = ({ onClose }) => {
         addSibling={() =>
           setSiblingInfo((prevState) => ({
             ...prevState,
-            siblingNames: [...prevState.siblingNames, ''],
+            siblingNames: [...prevState.siblingNames, ""],
           }))
         }
       />
@@ -171,10 +193,10 @@ const StudentForm: React.FC<StudentFormProps> = ({ onClose }) => {
       />
       <div>
         <SubmitButton type="submit" onClick={handleSubmit}>
-          {t('submit')}
+          {studentToEdit ? t("update") : t("submit")}
         </SubmitButton>
         <CloseButton type="button" onClick={onClose}>
-          {t('close')}
+          {t("close")}
         </CloseButton>
       </div>
     </FormWrapper>

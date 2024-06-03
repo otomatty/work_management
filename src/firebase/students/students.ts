@@ -1,5 +1,12 @@
-import { db } from '../firebase';
-import { collection, addDoc, getDocs } from 'firebase/firestore';
+import { db } from "../firebase";
+import {
+  collection,
+  addDoc,
+  getDocs,
+  deleteDoc,
+  doc,
+  updateDoc,
+} from "firebase/firestore";
 import {
   StudentCollection,
   ContactInfo,
@@ -7,11 +14,11 @@ import {
   SiblingInfo,
   LearningInfo,
   Achievements,
-} from '../../types';
+} from "../../types";
 
 // 生徒情報を追加
 export async function addStudent(student: StudentCollection) {
-  const studentsRef = collection(db, 'students');
+  const studentsRef = collection(db, "students");
   const studentRef = await addDoc(studentsRef, student);
   return studentRef;
 }
@@ -20,9 +27,9 @@ export async function addStudent(student: StudentCollection) {
 export async function addContactInfo(contactInfo: ContactInfo) {
   const contactInfoRef = collection(
     db,
-    'students',
+    "students",
     contactInfo.studentId,
-    'contactInfo'
+    "contactInfo"
   );
   await addDoc(contactInfoRef, contactInfo);
 }
@@ -31,9 +38,9 @@ export async function addContactInfo(contactInfo: ContactInfo) {
 export async function addNotificationInfo(notificationInfo: NotificationInfo) {
   const notificationInfoRef = collection(
     db,
-    'students',
+    "students",
     notificationInfo.studentId,
-    'notificationInfo'
+    "notificationInfo"
   );
   await addDoc(notificationInfoRef, notificationInfo);
 }
@@ -42,9 +49,9 @@ export async function addNotificationInfo(notificationInfo: NotificationInfo) {
 export async function addSiblingInfo(siblingInfo: SiblingInfo) {
   const siblingInfoRef = collection(
     db,
-    'students',
+    "students",
     siblingInfo.studentId,
-    'siblingInfo'
+    "siblingInfo"
   );
   await addDoc(siblingInfoRef, siblingInfo);
 }
@@ -53,9 +60,9 @@ export async function addSiblingInfo(siblingInfo: SiblingInfo) {
 export async function addLearningInfo(learningInfo: LearningInfo) {
   const learningInfoRef = collection(
     db,
-    'students',
+    "students",
     learningInfo.studentId,
-    'learningInfo'
+    "learningInfo"
   );
   await addDoc(learningInfoRef, learningInfo);
 }
@@ -64,20 +71,40 @@ export async function addLearningInfo(learningInfo: LearningInfo) {
 export async function addAchievements(achievements: Achievements) {
   const achievementsRef = collection(
     db,
-    'students',
+    "students",
     achievements.studentId,
-    'achievements'
+    "achievements"
   );
   await addDoc(achievementsRef, achievements);
 }
 
 // 生徒情報を取得
 export async function getStudents(): Promise<StudentCollection[]> {
-  const studentsRef = collection(db, 'students');
+  const studentsRef = collection(db, "students");
   const querySnapshot = await getDocs(studentsRef);
   const students: StudentCollection[] = [];
   querySnapshot.forEach((doc) => {
     students.push({ ...doc.data(), studentId: doc.id } as StudentCollection);
   });
   return students;
+}
+
+export async function deleteStudent(studentId: string) {
+  const studentRef = doc(db, "students", studentId);
+  await deleteDoc(studentRef);
+}
+
+// 生徒情報を更新
+export async function updateStudent(
+  studentId: string,
+  student: Partial<StudentCollection>
+) {
+  const studentRef = doc(db, "students", studentId);
+  try {
+    await updateDoc(studentRef, student);
+    console.log("Student updated successfully");
+  } catch (e) {
+    console.error("Error updating student: ", e);
+    throw new Error("Failed to update student");
+  }
 }
