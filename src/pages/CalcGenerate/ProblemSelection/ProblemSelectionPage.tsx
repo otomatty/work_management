@@ -12,6 +12,7 @@ import CreateProblemButton from "../../../components/molecules/CreateProblemButt
 import NoSelectionModal from "../../../components/atoms/NoSelectionModal/NoSelectionModal";
 import Header from "../../../components/organisms/Header";
 import Container from "../../../components/layout/Container";
+import SectionContainer from "../../../components/layout/SectionContainer";
 // その他のインポートは省略
 const GlobalStyle = createGlobalStyle`
   body {
@@ -20,8 +21,7 @@ const GlobalStyle = createGlobalStyle`
 `;
 
 const PageContainer = styled.main`
-  max-width: 600px;
-  margin: 40px auto 0 auto;
+  max-width: 1200px;
   padding: 20px;
   background-color: #f8f9fa;
   border-radius: 8px;
@@ -33,7 +33,7 @@ const SelectWrapper = styled.div`
 `;
 
 const Title = styled.h2`
-  font-size: 1.4rem;
+  font-size: 2rem;
   font-weight: bold;
   margin-bottom: 30px;
   padding: 10px;
@@ -108,9 +108,11 @@ const ProblemSelectionPage = () => {
   return (
     <Container>
       <GlobalStyle />
-      <Header />
+      <SectionContainer>
+        <Header />
+      </SectionContainer>
       <PageContainer>
-        <Title>問題選択</Title>
+        <Title>出題する問題の形式を選択してください</Title>
         <SelectWrapper>
           <ProblemTypeToggle
             selectedTypes={selectedTypes}

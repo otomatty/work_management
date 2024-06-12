@@ -15,6 +15,15 @@ import DeleteModeToggle from "../../../components/molecules/DeleteModeToggle";
 import EditModeToggle from "../../../components/molecules/EditModeToggle";
 import TimeFormatToggle from "../../../components/atoms/TimeFormatToggle/TimeFormatToggle";
 
+const Title = styled.h3`
+  margin: 20px auto 20px auto;
+`;
+
+const Container = styled.div`
+  background-color: #fff;
+  margin-bottom: 20px;
+`;
+
 const Toolbar = styled.div`
   display: flex;
   justify-content: space-between;
@@ -28,7 +37,6 @@ const AddButton = styled.button`
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  margin-left: 10px;
 
   &:hover {
     background-color: #0056b3;
@@ -75,8 +83,8 @@ const TeacherManager: React.FC = () => {
   };
 
   return (
-    <div>
-      <h2>講師一覧表</h2>
+    <Container>
+      <Title>講師一覧表</Title>
       <Toolbar>
         <div>
           {!adding && (
@@ -109,7 +117,7 @@ const TeacherManager: React.FC = () => {
         onCancel={() => setAdding(false)}
         isTimeFormat={isTimeFormat}
       />
-    </div>
+    </Container>
   );
 };
 

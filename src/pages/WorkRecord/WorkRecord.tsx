@@ -8,6 +8,7 @@ import Calendar from "./Calendar";
 import Header from "../../components/organisms/Header";
 import MonthNavigation from "./MonthNavigation";
 import MonthlySummary from "./MonthlySummary"; // New component imported
+import SectionContainer from "../../components/layout/SectionContainer";
 
 interface WorkRecordProps {
   selectedTeacherId: string;
@@ -23,11 +24,8 @@ const Container = styled.div`
 const CalenderInfo = styled.div`
   display: flex;
   justify-content: space-between;
-  margin: 20px auto 20px auto;
   padding: 10px 60px 10px 20px;
-  background-color: #fff;
   border-radius: 8px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   box-sizing: border-box;
 `;
 
@@ -53,18 +51,22 @@ const WorkRecord: React.FC<WorkRecordProps> = ({ selectedTeacherId }) => {
 
   return (
     <Container>
-      <Header />
-      <CalenderInfo>
-        <div>
-          <h2>勤務記録票 - {teacherName}</h2>
-          <MonthNavigation />
-        </div>
-        <MonthlySummary
-          teacherId={selectedTeacherId}
-          year={currentYear}
-          month={currentMonth}
-        />
-      </CalenderInfo>
+      <SectionContainer>
+        <Header />
+      </SectionContainer>
+      <SectionContainer>
+        <CalenderInfo>
+          <div>
+            <h2>勤務記録票 - {teacherName}</h2>
+            <MonthNavigation />
+          </div>
+          <MonthlySummary
+            teacherId={selectedTeacherId}
+            year={currentYear}
+            month={currentMonth}
+          />
+        </CalenderInfo>
+      </SectionContainer>
       <Calendar />
     </Container>
   );

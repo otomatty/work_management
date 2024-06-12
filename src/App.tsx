@@ -1,27 +1,29 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 import {
   BrowserRouter as Router,
   Route,
   Routes,
   Navigate,
   useParams,
-} from 'react-router-dom';
-import { onAuthStateChanged } from 'firebase/auth';
-import { auth } from './firebase/firebase';
-import { User } from 'firebase/auth';
-import HomePage from './pages/HomePage/HomePage';
-import WorkRecord from './pages/WorkRecord/WorkRecord';
-import AdminDashboard from './pages/WorkManagement/AdminDashboard';
-import ProblemSelectionPage from './pages/CalcGenerate/ProblemSelection/ProblemSelectionPage';
-import ProblemConfirmPage from './pages/CalcGenerate/ProblemConfirm/ProblemConfirmPage'; // Added
-import ProblemSelection from './pages/ThreeSubjectsTests/ProblemSelection';
-import SubjectSelectorPage from './pages/ThreeSubjectsTests/SubjectSelectorPage';
-import LoginPage from './pages/Login/LoginPage';
-import LoadingAnimation from './components/layout/LoadingAnimation';
-import { AnimatePresence } from 'framer-motion';
-import { createGlobalStyle } from 'styled-components';
-import ScrollToTop from './components/atoms/ScrollToTop/ScrollToTop'; // ScrollToTopのインポート
-import StudentListPage from './pages/StudentInfo/StudentListPage';
+} from "react-router-dom";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "./firebase/firebase";
+import { User } from "firebase/auth";
+import HomePage from "./pages/HomePage/HomePage";
+import WorkRecord from "./pages/WorkRecord/WorkRecord";
+import AdminDashboard from "./pages/WorkManagement/AdminDashboard";
+import ProblemSelectionPage from "./pages/CalcGenerate/ProblemSelection/ProblemSelectionPage";
+import ProblemConfirmPage from "./pages/CalcGenerate/ProblemConfirm/ProblemConfirmPage";
+import ProblemSelection from "./pages/ThreeSubjectsTests/ProblemSelection";
+import SubjectSelectorPage from "./pages/ThreeSubjectsTests/SubjectSelectorPage";
+import LoginPage from "./pages/Login/LoginPage";
+import LoadingAnimation from "./components/layout/LoadingAnimation";
+import { AnimatePresence } from "framer-motion";
+import { createGlobalStyle } from "styled-components";
+import ScrollToTop from "./components/atoms/ScrollToTop/ScrollToTop";
+import StudentListPage from "./pages/StudentInfo/StudentListPage";
+import ChangePinPage from "./pages/ChangePinPage/ChangePinPage"; // パスコード変更ページをインポート
+import ResetPinPage from "./pages/ResetPinPage/ResetPinPage"; // パスコードリセットページをインポート
 
 const GlobalStyle = createGlobalStyle`
   body {
@@ -30,6 +32,7 @@ const GlobalStyle = createGlobalStyle`
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    background-color:#88bee6;
   }
 
  h1 {
@@ -86,7 +89,7 @@ const App: React.FC = () => {
     <>
       <GlobalStyle />
       <Router>
-        <ScrollToTop /> {/* ScrollToTopコンポーネントを追加 */}
+        <ScrollToTop />
         <AnimatePresence>
           {loading ? <LoadingAnimation /> : null}
         </AnimatePresence>
@@ -121,6 +124,10 @@ const App: React.FC = () => {
               element={<ProblemSelection />}
             />
             <Route path="/student-info" element={<StudentListPage />} />
+            <Route path="/change-pin" element={<ChangePinPage />} />{" "}
+            {/* パスコード変更ページのルートを追加 */}
+            <Route path="/reset-pin" element={<ResetPinPage />} />{" "}
+            {/* パスコードリセットページのルートを追加 */}
           </Routes>
         )}
       </Router>

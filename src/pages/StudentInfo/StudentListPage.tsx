@@ -1,21 +1,22 @@
-import React, { useEffect, useState } from 'react';
-import { studentsService } from '../../services/students/studentsServices';
+import React, { useEffect, useState } from "react";
+import { studentsService } from "../../services/students/studentsServices";
 import {
   StudentCollection,
   ContactInfo,
   SiblingInfo,
   NotificationInfo,
-} from '../../types';
-import StudentForm from './StudentForm/StudentForm';
-import Container from '../../components/layout/Container';
-import Header from '../../components/organisms/Header';
-import { useTranslation } from 'react-i18next';
-import DeleteModeToggle from '../../components/molecules/DeleteModeToggle';
-import EditModeToggle from '../../components/molecules/EditModeToggle';
-import StudentTable from './StudentTable/StudentTable';
+} from "../../types";
+import StudentForm from "./StudentForm/StudentForm";
+import Container from "../../components/layout/Container";
+import Header from "../../components/organisms/Header";
+import { useTranslation } from "react-i18next";
+import DeleteModeToggle from "../../components/molecules/DeleteModeToggle";
+import EditModeToggle from "../../components/molecules/EditModeToggle";
+import StudentTable from "./StudentTable/StudentTable";
+import SectionContainer from "../../components/layout/SectionContainer";
 
 const StudentListPage: React.FC = () => {
-  const { t } = useTranslation('studentInfo');
+  const { t } = useTranslation("studentInfo");
 
   const [students, setStudents] = useState<StudentCollection[]>([]);
   const [contacts, setContacts] = useState<ContactInfo[]>([]);
@@ -56,7 +57,7 @@ const StudentListPage: React.FC = () => {
         setSiblings(allSiblings.flat());
         setNotifications(allNotifications.flat());
       } catch (error) {
-        console.error('Error fetching data: ', error);
+        console.error("Error fetching data: ", error);
       } finally {
         setLoading(false);
       }
@@ -94,7 +95,7 @@ const StudentListPage: React.FC = () => {
         prevStudents.filter((student) => student.studentId !== studentId)
       );
     } catch (error) {
-      console.error('Error deleting student:', error);
+      console.error("Error deleting student:", error);
     }
   };
 
@@ -104,43 +105,47 @@ const StudentListPage: React.FC = () => {
   };
 
   if (loading) {
-    return <div>{t('loading')}</div>;
+    return <div>{t("loading")}</div>;
   }
 
   return (
     <Container>
-      <Header />
-      <DeleteModeToggle
-        deleteMode={deleteMode}
-        onToggle={handleToggleDeleteMode}
-        activeLabel="削除モード終了"
-        inactiveLabel="生徒削除"
-      />
-      <EditModeToggle
-        editMode={editMode}
-        onToggle={handleToggleEditMode}
-        activeLabel="編集モード終了"
-        inactiveLabel="生徒編集"
-      />
-      <h2>{t('studentList')}</h2>
-      <button onClick={handleAddStudentClick}>{t('addStudent')}</button>
-      {showForm && (
-        <StudentForm
-          onClose={handleCloseForm}
-          onStudentAdded={handleStudentAdded}
-          studentToEdit={studentToEdit}
+      <SectionContainer>
+        <Header />
+      </SectionContainer>
+      <SectionContainer>
+        <button onClick={handleAddStudentClick}>{t("addStudent")}</button>
+        {showForm && (
+          <StudentForm
+            onClose={handleCloseForm}
+            onStudentAdded={handleStudentAdded}
+            studentToEdit={studentToEdit}
+          />
+        )}
+        <DeleteModeToggle
+          deleteMode={deleteMode}
+          onToggle={handleToggleDeleteMode}
+          activeLabel="削除モード終了"
+          inactiveLabel="生徒削除"
         />
-      )}
-      <StudentTable
-        students={students}
-        contacts={contacts}
-        siblings={siblings}
-        notifications={notifications}
-        onDelete={handleDeleteStudent}
-        onEdit={handleEditStudent}
-        deleteMode={deleteMode}
-        editMode={editMode}
-      />
+        <EditModeToggle
+          editMode={editMode}
+          onToggle={handleToggleEditMode}
+          activeLabel="編集モード終了"
+          inactiveLabel="生徒編集"
+        />
+        <h2>{t("studentList")}</h2>
+        <StudentTable
+          students={students}
+          contacts={contacts}
+          siblings={siblings}
+          notifications={notifications}
+          onDelete={handleDeleteStudent}
+          onEdit={handleEditStudent}
+          deleteMode={deleteMode}
+          editMode={editMode}
+        />
+      </SectionContainer>
     </Container>
   );
 };

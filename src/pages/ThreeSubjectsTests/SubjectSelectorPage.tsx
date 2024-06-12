@@ -31,7 +31,7 @@ const ButtonGrid = styled.div`
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 20px;
   width: 100%;
-  max-width: 1000px;
+  max-width: 1200px;
 `;
 
 const CategoryButton = styled.button<{ selected: boolean; color: string }>`
