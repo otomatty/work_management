@@ -32,7 +32,7 @@ const GlobalStyle = createGlobalStyle`
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    background-color:#88bee6;
+    background-color:#f7f7f7;
   }
 
  h1 {
